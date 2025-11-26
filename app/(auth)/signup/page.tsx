@@ -6,6 +6,8 @@ import { useRouter } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { Calendar, Mail, Lock, User, AlertCircle, CheckCircle } from 'lucide-react';
 
+export const dynamic = 'force-dynamic';
+
 export default function SignupPage() {
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
