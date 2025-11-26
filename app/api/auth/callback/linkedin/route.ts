@@ -91,7 +91,7 @@ export async function GET(request: NextRequest) {
       account_name: accountName,
       account_handle: '',
       access_token,
-      refresh_token: null,
+      refresh_token: undefined,
       token_expires_at: expiresAt,
       is_active: true,
     });
