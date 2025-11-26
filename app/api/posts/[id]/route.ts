@@ -5,9 +5,10 @@ import { getPostById, updatePost, deletePost } from '@/lib/db/posts';
 // GET /api/posts/[id] - Get a specific post
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const supabase = await createClient();
     const {
       data: { user },
@@ -17,7 +18,7 @@ export async function GET(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const post = await getPostById(params.id, user.id);
+    const post = await getPostById(id, user.id);
     return NextResponse.json(post);
   } catch (error) {
     console.error('Error fetching post:', error);
@@ -31,9 +32,10 @@ export async function GET(
 // PATCH /api/posts/[id] - Update a post
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const supabase = await createClient();
     const {
       data: { user },
@@ -44,7 +46,7 @@ export async function PATCH(
     }
 
     const body = await request.json();
-    const post = await updatePost(params.id, user.id, body);
+    const post = await updatePost(id, user.id, body);
     return NextResponse.json(post);
   } catch (error) {
     console.error('Error updating post:', error);
@@ -58,9 +60,10 @@ export async function PATCH(
 // DELETE /api/posts/[id] - Delete a post
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await params;
     const supabase = await createClient();
     const {
       data: { user },
@@ -70,7 +73,7 @@ export async function DELETE(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    await deletePost(params.id, user.id);
+    await deletePost(id, user.id);
     return NextResponse.json({ success: true });
   } catch (error) {
     console.error('Error deleting post:', error);
