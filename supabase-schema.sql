@@ -66,6 +66,12 @@ CREATE TABLE IF NOT EXISTS public.posts (
   ai_generated BOOLEAN DEFAULT false,
   ai_prompt TEXT,
 
+  -- Error tracking for publishing failures
+  error_message TEXT,
+  error_details JSONB,
+  retry_count INTEGER DEFAULT 0,
+  last_retry_at TIMESTAMP WITH TIME ZONE,
+
   created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL
 );
@@ -93,6 +99,18 @@ CREATE TABLE IF NOT EXISTS public.analytics_snapshots (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL
 );
 
+-- Notifications table for publishing status updates
+CREATE TABLE IF NOT EXISTS public.notifications (
+  id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+  user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE NOT NULL,
+  type TEXT NOT NULL DEFAULT 'info' CHECK (type IN ('success', 'error', 'warning', 'info')),
+  title TEXT NOT NULL,
+  message TEXT NOT NULL,
+  post_id UUID REFERENCES public.posts(id) ON DELETE CASCADE,
+  is_read BOOLEAN DEFAULT false,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL
+);
+
 -- Create indexes for better query performance
 CREATE INDEX IF NOT EXISTS idx_posts_user_id ON public.posts(user_id);
 CREATE INDEX IF NOT EXISTS idx_posts_status ON public.posts(status);
@@ -102,6 +120,9 @@ CREATE INDEX IF NOT EXISTS idx_social_accounts_user_id ON public.social_accounts
 CREATE INDEX IF NOT EXISTS idx_social_accounts_platform ON public.social_accounts(platform);
 CREATE INDEX IF NOT EXISTS idx_ai_generations_user_id ON public.ai_generations(user_id);
 CREATE INDEX IF NOT EXISTS idx_analytics_snapshots_post_id ON public.analytics_snapshots(post_id);
+CREATE INDEX IF NOT EXISTS idx_notifications_user_id ON public.notifications(user_id);
+CREATE INDEX IF NOT EXISTS idx_notifications_is_read ON public.notifications(is_read);
+CREATE INDEX IF NOT EXISTS idx_notifications_created_at ON public.notifications(created_at DESC);
 
 -- Enable Row Level Security (RLS)
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
@@ -109,6 +130,7 @@ ALTER TABLE public.social_accounts ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.posts ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.ai_generations ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.analytics_snapshots ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.notifications ENABLE ROW LEVEL SECURITY;
 
 -- RLS Policies for profiles
 CREATE POLICY "Users can view their own profile" ON public.profiles
@@ -164,6 +186,16 @@ CREATE POLICY "Users can view analytics for their posts" ON public.analytics_sna
   );
 
 CREATE POLICY "System can insert analytics snapshots" ON public.analytics_snapshots
+  FOR INSERT WITH CHECK (true);
+
+-- RLS Policies for notifications
+CREATE POLICY "Users can view their own notifications" ON public.notifications
+  FOR SELECT USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can update their own notifications" ON public.notifications
+  FOR UPDATE USING (auth.uid() = user_id);
+
+CREATE POLICY "System can insert notifications" ON public.notifications
   FOR INSERT WITH CHECK (true);
 
 -- Function to automatically update updated_at timestamp

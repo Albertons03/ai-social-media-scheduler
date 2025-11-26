@@ -67,6 +67,12 @@ export interface Post {
   ai_generated: boolean;
   ai_prompt?: string;
 
+  // Error tracking
+  error_message?: string;
+  error_details?: any;
+  retry_count: number;
+  last_retry_at?: string;
+
   created_at: string;
   updated_at: string;
 }
@@ -89,6 +95,19 @@ export interface AnalyticsSnapshot {
   comments_count: number;
   shares_count: number;
   snapshot_at: string;
+  created_at: string;
+}
+
+export type NotificationType = 'success' | 'error' | 'warning' | 'info';
+
+export interface Notification {
+  id: string;
+  user_id: string;
+  type: NotificationType;
+  title: string;
+  message: string;
+  post_id?: string;
+  is_read: boolean;
   created_at: string;
 }
 
