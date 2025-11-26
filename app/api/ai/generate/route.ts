@@ -3,10 +3,6 @@ import { createClient } from '@/lib/supabase/server';
 import { createAIGeneration } from '@/lib/db/ai-generations';
 import OpenAI from 'openai';
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-
 // POST /api/ai/generate - Generate content with AI
 export async function POST(request: NextRequest) {
   try {
@@ -60,6 +56,11 @@ export async function POST(request: NextRequest) {
     } else if (platform === 'twitter') {
       systemMessage += ' Keep it under 280 characters and make it impactful for Twitter audience.';
     }
+
+    // Initialize OpenAI client
+    const openai = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+    });
 
     // Call OpenAI API
     const completion = await openai.chat.completions.create({
