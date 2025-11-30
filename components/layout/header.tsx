@@ -2,7 +2,6 @@ import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { Calendar, LogOut, Settings } from "lucide-react";
 import Link from "next/link";
-import { NotificationBell } from "@/components/notifications/notification-bell";
 
 export async function Header() {
   const supabase = await createClient();
@@ -61,9 +60,6 @@ export async function Header() {
 
         {/* Right - User Actions */}
         <div className="flex items-center gap-4">
-          {/* Notifications */}
-          <NotificationBell />
-
           {/* Settings Button */}
           <Link
             href="/settings"
