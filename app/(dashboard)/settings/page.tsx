@@ -166,7 +166,7 @@ export default async function SettingsPage() {
                   accountId={tiktokAccount.id}
                   platform="TikTok"
                   accountHandle={
-                    tiktokAccount.account_handle || tiktokAccount.account_name
+                    tiktokAccount.account_handle || tiktokAccount.account_name || "TikTok User"
                   }
                 />
               ) : (
@@ -229,7 +229,7 @@ export default async function SettingsPage() {
                 <SocialAccountActions
                   accountId={linkedinAccount.id}
                   platform="LinkedIn"
-                  accountHandle={linkedinAccount.account_name}
+                  accountHandle={linkedinAccount.account_name || "LinkedIn User"}
                 />
               ) : (
                 <Link href="/api/auth/linkedin">
@@ -298,7 +298,7 @@ export default async function SettingsPage() {
                   accountId={twitterAccount.id}
                   platform="Twitter"
                   accountHandle={
-                    twitterAccount.account_handle || twitterAccount.account_name
+                    twitterAccount.account_handle || twitterAccount.account_name || "Twitter User"
                   }
                 />
               ) : (
