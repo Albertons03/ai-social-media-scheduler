@@ -1,5 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
+import crypto from 'crypto';
+
+// Helper function to generate PKCE code challenge
+function generatePKCE() {
+  const codeVerifier = crypto.randomBytes(32).toString('hex');
+  const codeChallenge = crypto
+    .createHash('sha256')
+    .update(codeVerifier)
+    .digest('base64')
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_')
+    .replace(/=/g, '');
+  return { codeVerifier, codeChallenge };
+}
 
 // GET /api/auth/tiktok - Initiate TikTok OAuth flow
 export async function GET(request: NextRequest) {
@@ -23,15 +37,25 @@ export async function GET(request: NextRequest) {
       );
     }
 
+    // Generate PKCE parameters (required by TikTok)
+    const { codeVerifier, codeChallenge } = generatePKCE();
+
     // Generate a random state for CSRF protection
     const state = Math.random().toString(36).substring(7);
 
-    // Store state in cookie for verification
+    // Store state and code verifier in cookies for verification
     const response = NextResponse.redirect(
-      `https://www.tiktok.com/v2/auth/authorize/?client_key=${clientKey}&scope=user.info.basic,video.upload,video.publish&response_type=code&redirect_uri=${encodeURIComponent(redirectUri)}&state=${state}`
+      `https://www.tiktok.com/v2/auth/authorize/?client_key=${clientKey}&scope=user.info.basic&response_type=code&redirect_uri=${encodeURIComponent(redirectUri)}&state=${state}&code_challenge=${codeChallenge}&code_challenge_method=S256`
     );
 
     response.cookies.set('tiktok_oauth_state', state, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 600, // 10 minutes
+    });
+
+    response.cookies.set('tiktok_code_verifier', codeVerifier, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
