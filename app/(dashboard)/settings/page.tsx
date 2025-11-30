@@ -146,9 +146,9 @@ export default async function SettingsPage() {
                       <div className="flex items-center gap-1 text-xs text-gray-500">
                         <Clock className="h-3 w-3" />
                         Token expires in:{" "}
-                        {formatTokenExpiry(tiktokAccount.token_expires_at)}
+                        {formatTokenExpiry(tiktokAccount?.token_expires_at || null)}
                         {isTokenExpiringSoon(
-                          tiktokAccount.token_expires_at
+                          tiktokAccount?.token_expires_at || null
                         ) && (
                           <span className="text-orange-500 font-medium ml-1">
                             ⚠️ Refresh soon
@@ -214,7 +214,7 @@ export default async function SettingsPage() {
                       <div className="flex items-center gap-1 text-xs text-gray-500">
                         <Clock className="h-3 w-3" />
                         Token expires in:{" "}
-                        {formatTokenExpiry(linkedinAccount.token_expires_at)}
+                        {formatTokenExpiry(linkedinAccount?.token_expires_at || null)}
                         <span className="text-gray-400 ml-1">
                           (No refresh - reconnect when expired)
                         </span>
@@ -278,9 +278,9 @@ export default async function SettingsPage() {
                       <div className="flex items-center gap-1 text-xs text-gray-500">
                         <Clock className="h-3 w-3" />
                         Token expires in:{" "}
-                        {formatTokenExpiry(twitterAccount.token_expires_at)}
+                        {formatTokenExpiry(twitterAccount?.token_expires_at || null)}
                         {isTokenExpiringSoon(
-                          twitterAccount.token_expires_at
+                          twitterAccount?.token_expires_at || null
                         ) && (
                           <span className="text-orange-500 font-medium ml-1">
                             ⚠️ Refresh soon
