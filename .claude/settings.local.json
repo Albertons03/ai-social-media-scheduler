@@ -14,7 +14,8 @@
       "Bash(\"D:\\ai-analytics-dashboard\\backend\\venv\\Scripts\\python.exe\":*)",
       "Bash(curl:*)",
       "Bash(git checkout:*)",
-      "Bash(pkill:*)"
+      "Bash(pkill:*)",
+      "Bash(uvx semgrep:*)"
     ],
     "deny": [],
     "ask": []

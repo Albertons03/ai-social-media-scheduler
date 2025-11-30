@@ -1,5 +1,18 @@
+-- ============================================================================
+-- SUPABASE DATABASE SCHEMA - AI Social Media Scheduler
+-- ============================================================================
+-- NOTE: This file now uses "CREATE IF NOT EXISTS" for all objects to safely
+-- run multiple times without errors. RLS Policies use DROP IF EXISTS first.
+--
+-- Run this entire file in Supabase SQL Editor to set up/update the database.
+-- ============================================================================
+
 -- Enable UUID extension
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
+-- ============================================================================
+-- TABLES
+-- ============================================================================
 
 -- Profiles table (extends Supabase auth.users)
 CREATE TABLE IF NOT EXISTS public.profiles (
@@ -111,7 +124,10 @@ CREATE TABLE IF NOT EXISTS public.notifications (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc'::text, NOW()) NOT NULL
 );
 
--- Create indexes for better query performance
+-- ============================================================================
+-- INDEXES
+-- ============================================================================
+
 CREATE INDEX IF NOT EXISTS idx_posts_user_id ON public.posts(user_id);
 CREATE INDEX IF NOT EXISTS idx_posts_status ON public.posts(status);
 CREATE INDEX IF NOT EXISTS idx_posts_scheduled_for ON public.posts(scheduled_for);
@@ -124,13 +140,37 @@ CREATE INDEX IF NOT EXISTS idx_notifications_user_id ON public.notifications(use
 CREATE INDEX IF NOT EXISTS idx_notifications_is_read ON public.notifications(is_read);
 CREATE INDEX IF NOT EXISTS idx_notifications_created_at ON public.notifications(created_at DESC);
 
--- Enable Row Level Security (RLS)
+-- ============================================================================
+-- ROW LEVEL SECURITY (RLS)
+-- ============================================================================
+
+-- Enable RLS on all tables
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.social_accounts ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.posts ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.ai_generations ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.analytics_snapshots ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.notifications ENABLE ROW LEVEL SECURITY;
+
+-- Drop existing policies to avoid conflicts (they'll be recreated)
+DROP POLICY IF EXISTS "Users can view their own profile" ON public.profiles;
+DROP POLICY IF EXISTS "Users can update their own profile" ON public.profiles;
+DROP POLICY IF EXISTS "Users can insert their own profile" ON public.profiles;
+DROP POLICY IF EXISTS "Users can view their own social accounts" ON public.social_accounts;
+DROP POLICY IF EXISTS "Users can insert their own social accounts" ON public.social_accounts;
+DROP POLICY IF EXISTS "Users can update their own social accounts" ON public.social_accounts;
+DROP POLICY IF EXISTS "Users can delete their own social accounts" ON public.social_accounts;
+DROP POLICY IF EXISTS "Users can view their own posts" ON public.posts;
+DROP POLICY IF EXISTS "Users can insert their own posts" ON public.posts;
+DROP POLICY IF EXISTS "Users can update their own posts" ON public.posts;
+DROP POLICY IF EXISTS "Users can delete their own posts" ON public.posts;
+DROP POLICY IF EXISTS "Users can view their own AI generations" ON public.ai_generations;
+DROP POLICY IF EXISTS "Users can insert their own AI generations" ON public.ai_generations;
+DROP POLICY IF EXISTS "Users can view analytics for their posts" ON public.analytics_snapshots;
+DROP POLICY IF EXISTS "System can insert analytics snapshots" ON public.analytics_snapshots;
+DROP POLICY IF EXISTS "Users can view their own notifications" ON public.notifications;
+DROP POLICY IF EXISTS "Users can update their own notifications" ON public.notifications;
+DROP POLICY IF EXISTS "System can insert notifications" ON public.notifications;
 
 -- RLS Policies for profiles
 CREATE POLICY "Users can view their own profile" ON public.profiles
@@ -198,6 +238,10 @@ CREATE POLICY "Users can update their own notifications" ON public.notifications
 CREATE POLICY "System can insert notifications" ON public.notifications
   FOR INSERT WITH CHECK (true);
 
+-- ============================================================================
+-- FUNCTIONS & TRIGGERS
+-- ============================================================================
+
 -- Function to automatically update updated_at timestamp
 CREATE OR REPLACE FUNCTION public.handle_updated_at()
 RETURNS TRIGGER AS $$
@@ -207,7 +251,12 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
--- Triggers for updated_at
+-- Drop existing triggers to avoid conflicts
+DROP TRIGGER IF EXISTS set_updated_at_profiles ON public.profiles;
+DROP TRIGGER IF EXISTS set_updated_at_social_accounts ON public.social_accounts;
+DROP TRIGGER IF EXISTS set_updated_at_posts ON public.posts;
+
+-- Recreate triggers
 CREATE TRIGGER set_updated_at_profiles
   BEFORE UPDATE ON public.profiles
   FOR EACH ROW

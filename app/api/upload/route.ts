@@ -28,18 +28,32 @@ export async function POST(request: NextRequest) {
     const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'video/mp4', 'video/quicktime'];
     if (!allowedTypes.includes(file.type)) {
       return NextResponse.json(
-        { error: 'Invalid file type. Only images and videos are allowed.' },
+        { error: 'Invalid file type. Only images (JPEG, PNG, WebP) and videos (MP4, MOV) are allowed.' },
         { status: 400 }
       );
     }
 
-    // Validate file size (max 100MB for videos, 10MB for images)
-    const maxSize = file.type.startsWith('video/') ? 100 * 1024 * 1024 : 10 * 1024 * 1024;
+    // Validate file size (max 50MB for TikTok videos per their API, 10MB for images)
+    let maxSize = 10 * 1024 * 1024; // 10MB for images
+    if (file.type.startsWith('video/')) {
+      maxSize = 50 * 1024 * 1024; // 50MB for videos (TikTok API limit)
+    }
     if (file.size > maxSize) {
       return NextResponse.json(
         { error: `File too large. Max size: ${maxSize / (1024 * 1024)}MB` },
         { status: 400 }
       );
+    }
+
+    // Validate video format for TikTok requirements
+    if (file.type.startsWith('video/')) {
+      // TikTok requires MP4 format
+      if (file.type !== 'video/mp4' && file.type !== 'video/quicktime') {
+        return NextResponse.json(
+          { error: 'Video must be in MP4 or MOV format for TikTok compatibility.' },
+          { status: 400 }
+        );
+      }
     }
 
     // Generate unique filename

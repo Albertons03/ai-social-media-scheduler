@@ -1,0 +1,8 @@
+{
+  "functions": [
+    {
+      "key": "publish-scheduled-posts",
+      "verifyJwt": false
+    }
+  ]
+}

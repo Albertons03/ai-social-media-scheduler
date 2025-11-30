@@ -1,11 +1,18 @@
-import { createClient } from '@/lib/supabase/server';
-import { redirect } from 'next/navigation';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { getSocialAccounts } from '@/lib/db/social-accounts';
-import { Badge } from '@/components/ui/badge';
-import { CheckCircle2, XCircle, ExternalLink } from 'lucide-react';
-import Link from 'next/link';
+import { createClient } from "@/lib/supabase/server";
+import { redirect } from "next/navigation";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { getSocialAccounts } from "@/lib/db/social-accounts";
+import { Badge } from "@/components/ui/badge";
+import { CheckCircle2, XCircle, ExternalLink, Clock } from "lucide-react";
+import Link from "next/link";
+import { SocialAccountActions } from "@/components/settings/social-account-actions";
 
 export default async function SettingsPage() {
   const supabase = await createClient();
@@ -15,22 +22,47 @@ export default async function SettingsPage() {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    redirect('/login');
+    redirect("/login");
   }
 
   // Fetch user profile
   const { data: profile } = await supabase
-    .from('profiles')
-    .select('*')
-    .eq('id', user.id)
+    .from("profiles")
+    .select("*")
+    .eq("id", user.id)
     .single();
 
   // Fetch connected social accounts
   const socialAccounts = await getSocialAccounts(user.id);
 
-  const tiktokAccount = socialAccounts.find((a) => a.platform === 'tiktok');
-  const linkedinAccount = socialAccounts.find((a) => a.platform === 'linkedin');
-  const twitterAccount = socialAccounts.find((a) => a.platform === 'twitter');
+  const tiktokAccount = socialAccounts.find((a) => a.platform === "tiktok");
+  const linkedinAccount = socialAccounts.find((a) => a.platform === "linkedin");
+  const twitterAccount = socialAccounts.find((a) => a.platform === "twitter");
+
+  // Helper to check if token is expiring soon (within 30 minutes)
+  const isTokenExpiringSoon = (expiresAt: string | null): boolean => {
+    if (!expiresAt) return true;
+    const expiryTime = new Date(expiresAt).getTime();
+    const now = Date.now();
+    const thirtyMinutes = 30 * 60 * 1000;
+    return now >= expiryTime - thirtyMinutes;
+  };
+
+  // Helper to format token expiry
+  const formatTokenExpiry = (expiresAt: string | null): string => {
+    if (!expiresAt) return "Unknown";
+    const expiry = new Date(expiresAt);
+    const now = new Date();
+    if (expiry <= now) return "Expired";
+
+    const diffMs = expiry.getTime() - now.getTime();
+    const diffMins = Math.floor(diffMs / 60000);
+    const diffHours = Math.floor(diffMs / 3600000);
+
+    if (diffMins < 60) return `${diffMins} min`;
+    if (diffHours < 24) return `${diffHours} hours`;
+    return `${Math.floor(diffHours / 24)} days`;
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -55,8 +87,12 @@ export default async function SettingsPage() {
               <p className="text-gray-900 mt-1">{user.email}</p>
             </div>
             <div>
-              <label className="text-sm font-medium text-gray-700">Full Name</label>
-              <p className="text-gray-900 mt-1">{profile?.full_name || 'Not set'}</p>
+              <label className="text-sm font-medium text-gray-700">
+                Full Name
+              </label>
+              <p className="text-gray-900 mt-1">
+                {profile?.full_name || "Not set"}
+              </p>
             </div>
             <Button variant="outline" size="sm">
               Edit Profile
@@ -82,23 +118,43 @@ export default async function SettingsPage() {
                 <div>
                   <h3 className="font-semibold text-gray-900">TikTok</h3>
                   {tiktokAccount ? (
-                    <div className="flex items-center gap-2 mt-1">
-                      <Badge variant={tiktokAccount.is_active ? 'success' : 'secondary'}>
-                        {tiktokAccount.is_active ? (
-                          <>
-                            <CheckCircle2 className="h-3 w-3 mr-1" />
-                            Connected
-                          </>
-                        ) : (
-                          <>
-                            <XCircle className="h-3 w-3 mr-1" />
-                            Inactive
-                          </>
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2">
+                        <Badge
+                          variant={
+                            tiktokAccount.is_active ? "success" : "secondary"
+                          }
+                        >
+                          {tiktokAccount.is_active ? (
+                            <>
+                              <CheckCircle2 className="h-3 w-3 mr-1" />
+                              Connected
+                            </>
+                          ) : (
+                            <>
+                              <XCircle className="h-3 w-3 mr-1" />
+                              Inactive
+                            </>
+                          )}
+                        </Badge>
+                        <span className="text-sm text-gray-600">
+                          @
+                          {tiktokAccount.account_handle ||
+                            tiktokAccount.account_name}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-1 text-xs text-gray-500">
+                        <Clock className="h-3 w-3" />
+                        Token expires in:{" "}
+                        {formatTokenExpiry(tiktokAccount.token_expires_at)}
+                        {isTokenExpiringSoon(
+                          tiktokAccount.token_expires_at
+                        ) && (
+                          <span className="text-orange-500 font-medium ml-1">
+                            ⚠️ Refresh soon
+                          </span>
                         )}
-                      </Badge>
-                      <span className="text-sm text-gray-600">
-                        @{tiktokAccount.account_handle || tiktokAccount.account_name}
-                      </span>
+                      </div>
                     </div>
                   ) : (
                     <p className="text-sm text-gray-600 mt-1">Not connected</p>
@@ -106,14 +162,13 @@ export default async function SettingsPage() {
                 </div>
               </div>
               {tiktokAccount ? (
-                <div className="flex gap-2">
-                  <Button variant="outline" size="sm">
-                    Disconnect
-                  </Button>
-                  <Button variant="outline" size="sm">
-                    Refresh
-                  </Button>
-                </div>
+                <SocialAccountActions
+                  accountId={tiktokAccount.id}
+                  platform="TikTok"
+                  accountHandle={
+                    tiktokAccount.account_handle || tiktokAccount.account_name
+                  }
+                />
               ) : (
                 <Link href="/api/auth/tiktok">
                   <Button size="sm">
@@ -133,23 +188,37 @@ export default async function SettingsPage() {
                 <div>
                   <h3 className="font-semibold text-gray-900">LinkedIn</h3>
                   {linkedinAccount ? (
-                    <div className="flex items-center gap-2 mt-1">
-                      <Badge variant={linkedinAccount.is_active ? 'success' : 'secondary'}>
-                        {linkedinAccount.is_active ? (
-                          <>
-                            <CheckCircle2 className="h-3 w-3 mr-1" />
-                            Connected
-                          </>
-                        ) : (
-                          <>
-                            <XCircle className="h-3 w-3 mr-1" />
-                            Inactive
-                          </>
-                        )}
-                      </Badge>
-                      <span className="text-sm text-gray-600">
-                        {linkedinAccount.account_name}
-                      </span>
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2">
+                        <Badge
+                          variant={
+                            linkedinAccount.is_active ? "success" : "secondary"
+                          }
+                        >
+                          {linkedinAccount.is_active ? (
+                            <>
+                              <CheckCircle2 className="h-3 w-3 mr-1" />
+                              Connected
+                            </>
+                          ) : (
+                            <>
+                              <XCircle className="h-3 w-3 mr-1" />
+                              Inactive
+                            </>
+                          )}
+                        </Badge>
+                        <span className="text-sm text-gray-600">
+                          {linkedinAccount.account_name}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-1 text-xs text-gray-500">
+                        <Clock className="h-3 w-3" />
+                        Token expires in:{" "}
+                        {formatTokenExpiry(linkedinAccount.token_expires_at)}
+                        <span className="text-gray-400 ml-1">
+                          (No refresh - reconnect when expired)
+                        </span>
+                      </div>
                     </div>
                   ) : (
                     <p className="text-sm text-gray-600 mt-1">Not connected</p>
@@ -157,14 +226,11 @@ export default async function SettingsPage() {
                 </div>
               </div>
               {linkedinAccount ? (
-                <div className="flex gap-2">
-                  <Button variant="outline" size="sm">
-                    Disconnect
-                  </Button>
-                  <Button variant="outline" size="sm">
-                    Refresh
-                  </Button>
-                </div>
+                <SocialAccountActions
+                  accountId={linkedinAccount.id}
+                  platform="LinkedIn"
+                  accountHandle={linkedinAccount.account_name}
+                />
               ) : (
                 <Link href="/api/auth/linkedin">
                   <Button size="sm">
@@ -184,23 +250,43 @@ export default async function SettingsPage() {
                 <div>
                   <h3 className="font-semibold text-gray-900">Twitter / X</h3>
                   {twitterAccount ? (
-                    <div className="flex items-center gap-2 mt-1">
-                      <Badge variant={twitterAccount.is_active ? 'success' : 'secondary'}>
-                        {twitterAccount.is_active ? (
-                          <>
-                            <CheckCircle2 className="h-3 w-3 mr-1" />
-                            Connected
-                          </>
-                        ) : (
-                          <>
-                            <XCircle className="h-3 w-3 mr-1" />
-                            Inactive
-                          </>
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2">
+                        <Badge
+                          variant={
+                            twitterAccount.is_active ? "success" : "secondary"
+                          }
+                        >
+                          {twitterAccount.is_active ? (
+                            <>
+                              <CheckCircle2 className="h-3 w-3 mr-1" />
+                              Connected
+                            </>
+                          ) : (
+                            <>
+                              <XCircle className="h-3 w-3 mr-1" />
+                              Inactive
+                            </>
+                          )}
+                        </Badge>
+                        <span className="text-sm text-gray-600">
+                          @
+                          {twitterAccount.account_handle ||
+                            twitterAccount.account_name}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-1 text-xs text-gray-500">
+                        <Clock className="h-3 w-3" />
+                        Token expires in:{" "}
+                        {formatTokenExpiry(twitterAccount.token_expires_at)}
+                        {isTokenExpiringSoon(
+                          twitterAccount.token_expires_at
+                        ) && (
+                          <span className="text-orange-500 font-medium ml-1">
+                            ⚠️ Refresh soon
+                          </span>
                         )}
-                      </Badge>
-                      <span className="text-sm text-gray-600">
-                        @{twitterAccount.account_handle || twitterAccount.account_name}
-                      </span>
+                      </div>
                     </div>
                   ) : (
                     <p className="text-sm text-gray-600 mt-1">Not connected</p>
@@ -208,14 +294,13 @@ export default async function SettingsPage() {
                 </div>
               </div>
               {twitterAccount ? (
-                <div className="flex gap-2">
-                  <Button variant="outline" size="sm">
-                    Disconnect
-                  </Button>
-                  <Button variant="outline" size="sm">
-                    Refresh
-                  </Button>
-                </div>
+                <SocialAccountActions
+                  accountId={twitterAccount.id}
+                  platform="Twitter"
+                  accountHandle={
+                    twitterAccount.account_handle || twitterAccount.account_name
+                  }
+                />
               ) : (
                 <Link href="/api/auth/twitter">
                   <Button size="sm">
@@ -232,12 +317,16 @@ export default async function SettingsPage() {
         <Card>
           <CardHeader>
             <CardTitle>API Usage</CardTitle>
-            <CardDescription>Monitor your AI content generation usage</CardDescription>
+            <CardDescription>
+              Monitor your AI content generation usage
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               <div className="flex justify-between items-center">
-                <span className="text-sm text-gray-600">AI Generations this month</span>
+                <span className="text-sm text-gray-600">
+                  AI Generations this month
+                </span>
                 <span className="font-semibold">0 / Unlimited</span>
               </div>
               <div className="flex justify-between items-center">

@@ -294,6 +294,7 @@ async function publishScheduledPosts(): Promise<FunctionResponse> {
 
 /**
  * HTTP handler for the edge function
+ * This function is called by pg_cron every 5 minutes to publish scheduled posts
  */
 serve(async (req: Request) => {
   // Only accept POST requests
@@ -303,11 +304,15 @@ serve(async (req: Request) => {
 
   try {
     console.log("Received publishing request");
+    console.log("Headers:", req.headers);
 
     const result = await publishScheduledPosts();
 
     return new Response(JSON.stringify(result), {
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+      },
       status: 200,
     });
   } catch (error) {
@@ -319,7 +324,10 @@ serve(async (req: Request) => {
         timestamp: new Date().toISOString(),
       }),
       {
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+        },
         status: 500,
       }
     );
