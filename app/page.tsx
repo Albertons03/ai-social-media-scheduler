@@ -1,5 +1,5 @@
-import Link from 'next/link';
-import { ArrowRight, Calendar, Sparkles, TrendingUp } from 'lucide-react';
+import Link from "next/link";
+import { ArrowRight, Calendar, Sparkles, TrendingUp } from "lucide-react";
 
 export default function Home() {
   return (
@@ -32,12 +32,12 @@ export default function Home() {
       <section className="container mx-auto px-4 py-20 text-center">
         <div className="max-w-4xl mx-auto space-y-6">
           <h1 className="text-5xl md:text-6xl font-bold tracking-tight">
-            AI-Powered Social Media{' '}
+            AI-Powered Social Media{" "}
             <span className="text-primary">Scheduling</span>
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Schedule posts across TikTok, LinkedIn, and Twitter with AI-generated
-            content. Save time and boost engagement.
+            Schedule posts across TikTok, LinkedIn, and Twitter with
+            AI-generated content. Save time and boost engagement.
           </p>
           <div className="flex items-center justify-center gap-4 pt-4">
             <Link
@@ -57,6 +57,19 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Legal Links Section */}
+      <section className="container mx-auto px-4 pt-8 pb-4 text-center">
+        <div className="flex flex-col md:flex-row items-center justify-center gap-4 text-sm text-muted-foreground">
+          <Link href="/terms" className="underline hover:text-primary">
+            Terms of Service
+          </Link>
+          <span className="hidden md:inline">|</span>
+          <Link href="/policy" className="underline hover:text-primary">
+            Privacy Policy
+          </Link>
+        </div>
+      </section>
+
       {/* Features Section */}
       <section className="container mx-auto px-4 py-20">
         <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
@@ -66,8 +79,8 @@ export default function Home() {
             </div>
             <h3 className="text-xl font-semibold">AI Content Generation</h3>
             <p className="text-muted-foreground">
-              Generate engaging captions and content ideas with GPT-4. Perfect for
-              when creativity runs dry.
+              Generate engaging captions and content ideas with GPT-4. Perfect
+              for when creativity runs dry.
             </p>
           </div>
 
@@ -98,7 +111,9 @@ export default function Home() {
       {/* Platforms Section */}
       <section className="container mx-auto px-4 py-20">
         <div className="text-center space-y-4 mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold">Supported Platforms</h2>
+          <h2 className="text-3xl md:text-4xl font-bold">
+            Supported Platforms
+          </h2>
           <p className="text-muted-foreground">
             Connect and manage all your social media accounts in one place
           </p>
@@ -128,7 +143,10 @@ export default function Home() {
       {/* Footer */}
       <footer className="border-t border-border mt-20">
         <div className="container mx-auto px-4 py-8 text-center text-sm text-muted-foreground">
-          <p>&copy; {new Date().getFullYear()} SocialScheduler. All rights reserved.</p>
+          <p>
+            &copy; {new Date().getFullYear()} SocialScheduler. All rights
+            reserved.
+          </p>
         </div>
       </footer>
     </div>
