@@ -4,6 +4,8 @@ import * as React from "react";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { CalendarView } from "@/components/calendar/calendar-view";
+import { CalendarGrid } from "@/components/calendar/calendar-grid";
+import { CalendarToolbar } from "@/components/calendar/calendar-toolbar";
 import { PostForm } from "@/components/post/post-form";
 import {
   Dialog,
@@ -12,6 +14,7 @@ import {
   DialogTitle,
   DialogClose,
 } from "@/components/ui/dialog";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Plus, CalendarOff, Clock } from "lucide-react";
 import { Post } from "@/lib/types/database.types";
 import {
@@ -19,12 +22,17 @@ import {
   getRelativeTime,
   getUserTimezone,
 } from "@/lib/utils";
+import { addDays, addWeeks, addMonths, subDays, subWeeks, subMonths, startOfToday } from "date-fns";
+import { triggerConfetti } from "@/lib/utils/confetti";
+import { toast } from "sonner";
 
 export default function SchedulePage() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const [currentDate, setCurrentDate] = useState<Date>(startOfToday());
+  const [view, setView] = useState<"day" | "week" | "month">("week");
 
   useEffect(() => {
     fetchPosts();
@@ -55,10 +63,36 @@ export default function SchedulePage() {
 
       await fetchPosts();
       setIsCreateModalOpen(false);
+
+      // Trigger confetti animation
+      triggerConfetti(postData.platform);
+      toast.success("Post scheduled successfully! 🎉");
     } catch (error) {
       console.error("Error creating post:", error);
+      toast.error("Failed to create post");
       throw error;
     }
+  };
+
+  const handleReorder = async (reorderedPosts: Post[]) => {
+    setPosts(reorderedPosts);
+    toast.success("Posts reordered successfully");
+  };
+
+  const handlePrevious = () => {
+    if (view === "day") setCurrentDate(subDays(currentDate, 1));
+    else if (view === "week") setCurrentDate(subWeeks(currentDate, 1));
+    else setCurrentDate(subMonths(currentDate, 1));
+  };
+
+  const handleNext = () => {
+    if (view === "day") setCurrentDate(addDays(currentDate, 1));
+    else if (view === "week") setCurrentDate(addWeeks(currentDate, 1));
+    else setCurrentDate(addMonths(currentDate, 1));
+  };
+
+  const handleToday = () => {
+    setCurrentDate(startOfToday());
   };
 
   const handleDateClick = (date: Date) => {
@@ -87,117 +121,85 @@ export default function SchedulePage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <p className="text-gray-600">Loading...</p>
+      <div className="flex items-center justify-center py-12">
+        <p className="text-muted-foreground">Loading calendar...</p>
       </div>
     );
   }
 
+  const scheduledPosts = posts.filter((p) => p.scheduled_for);
+
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="container mx-auto px-4 py-8">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <h1 className="text-3xl font-bold">Schedule Posts</h1>
-            <p className="text-gray-600 mt-2">
-              Manage and schedule your social media posts
-            </p>
-            <p className="text-xs text-gray-400 mt-1 flex items-center gap-1">
-              <Clock className="h-3 w-3" />
-              Timezone: {getUserTimezone()}
-            </p>
-          </div>
-          <Button onClick={() => setIsCreateModalOpen(true)}>
-            <Plus className="h-4 w-4 mr-2" />
-            Create Post
-          </Button>
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">Schedule</h1>
+          <p className="text-muted-foreground mt-2">
+            Manage and schedule your social media posts
+          </p>
+          <p className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
+            <Clock className="h-3 w-3" />
+            Timezone: {getUserTimezone()}
+          </p>
         </div>
-
-        {/* Calendar View */}
-        <CalendarView
-          posts={posts.filter((p) => p.scheduled_for)}
-          onDateClick={handleDateClick}
-          onPostClick={handlePostClick}
-        />
-
-        {/* Upcoming Posts List */}
-        <div className="mt-8">
-          <h2 className="text-xl font-semibold mb-4">All Posts</h2>
-          <div className="bg-white rounded-lg border border-gray-200 divide-y">
-            {posts.length === 0 ? (
-              <div className="p-16 text-center">
-                <div className="flex justify-center mb-4">
-                  <div className="p-4 bg-gray-100 rounded-full">
-                    <CalendarOff className="h-12 w-12 text-gray-400" />
-                  </div>
-                </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                  No posts yet
-                </h3>
-                <p className="text-gray-500 mb-6 max-w-md mx-auto">
-                  Get started by creating your first social media post. Use AI
-                  to generate engaging content!
-                </p>
-                <Button onClick={() => setIsCreateModalOpen(true)}>
-                  <Plus className="h-4 w-4 mr-2" />
-                  Create Your First Post
-                </Button>
-              </div>
-            ) : (
-              posts.map((post) => (
-                <div
-                  key={post.id}
-                  className="p-4 hover:bg-gray-50 cursor-pointer transition-colors"
-                  onClick={() => handlePostClick(post)}
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-2">
-                        <span
-                          className={`px-2 py-1 text-xs rounded-full font-medium ${
-                            post.platform === "tiktok"
-                              ? "bg-pink-100 text-pink-700"
-                              : post.platform === "linkedin"
-                              ? "bg-blue-100 text-blue-700"
-                              : "bg-sky-100 text-sky-700"
-                          }`}
-                        >
-                          {post.platform}
-                        </span>
-                        <span
-                          className={`px-2 py-1 text-xs rounded-full font-medium ${
-                            post.status === "published"
-                              ? "bg-green-100 text-green-700"
-                              : post.status === "scheduled"
-                              ? "bg-blue-100 text-blue-700"
-                              : post.status === "failed"
-                              ? "bg-red-100 text-red-700"
-                              : "bg-gray-100 text-gray-700"
-                          }`}
-                        >
-                          {post.status}
-                        </span>
-                      </div>
-                      <p className="text-gray-900 font-medium">
-                        {post.content.substring(0, 100)}
-                        {post.content.length > 100 ? "..." : ""}
-                      </p>
-                      <p className="text-sm text-gray-500 mt-1">
-                        {formatPostTime(post)}
-                      </p>
-                    </div>
-                    <div className="text-right text-sm text-gray-500">
-                      <p>{post.views_count} views</p>
-                      <p>{post.likes_count} likes</p>
-                    </div>
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
-        </div>
+        <Button onClick={() => setIsCreateModalOpen(true)}>
+          <Plus className="h-4 w-4 mr-2" />
+          Create Post
+        </Button>
       </div>
+
+      {/* Calendar Card */}
+      <Card>
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle>Calendar View</CardTitle>
+              <CardDescription>Drag and drop to reschedule posts</CardDescription>
+            </div>
+          </div>
+          <CalendarToolbar
+            currentDate={currentDate}
+            view={view}
+            onViewChange={setView}
+            onPrevious={handlePrevious}
+            onNext={handleNext}
+            onToday={handleToday}
+          />
+        </CardHeader>
+        <CardContent>
+          {scheduledPosts.length > 0 ? (
+            <CalendarGrid posts={scheduledPosts} onReorder={handleReorder} />
+          ) : (
+            <div className="flex flex-col items-center justify-center py-12 text-center">
+              <CalendarOff className="h-12 w-12 text-muted-foreground mb-4" />
+              <h3 className="text-lg font-semibold mb-2">No scheduled posts</h3>
+              <p className="text-muted-foreground mb-6 max-w-md">
+                Get started by creating your first social media post. Use AI to generate engaging content!
+              </p>
+              <Button onClick={() => setIsCreateModalOpen(true)}>
+                <Plus className="h-4 w-4 mr-2" />
+                Create Your First Post
+              </Button>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Legacy Calendar View (Fallback) */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Traditional Calendar</CardTitle>
+          <CardDescription>Click on dates to schedule posts</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <CalendarView
+            posts={scheduledPosts}
+            onDateClick={handleDateClick}
+            onPostClick={handlePostClick}
+          />
+        </CardContent>
+      </Card>
 
       {/* Create Post Modal */}
       <Dialog open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen}>
