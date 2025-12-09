@@ -9,6 +9,8 @@ import {
   useSensor,
   useSensors,
   DragEndEvent,
+  DragStartEvent,
+  DragOverlay,
 } from "@dnd-kit/core";
 import {
   arrayMove,
@@ -17,7 +19,7 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CalendarEvent } from "./calendar-event";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface Post {
   id: string;
@@ -33,6 +35,7 @@ interface CalendarGridProps {
 
 export function CalendarGrid({ posts, onReorder }: CalendarGridProps) {
   const [items, setItems] = React.useState(posts);
+  const [activeId, setActiveId] = React.useState<string | null>(null);
 
   React.useEffect(() => {
     setItems(posts);
@@ -49,6 +52,10 @@ export function CalendarGrid({ posts, onReorder }: CalendarGridProps) {
     })
   );
 
+  const handleDragStart = (event: DragStartEvent) => {
+    setActiveId(event.active.id as string);
+  };
+
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
 
@@ -61,16 +68,36 @@ export function CalendarGrid({ posts, onReorder }: CalendarGridProps) {
         return newItems;
       });
     }
+
+    setActiveId(null);
   };
+
+  const handleDragCancel = () => {
+    setActiveId(null);
+  };
+
+  const activePost = activeId ? items.find((post) => post.id === activeId) : null;
 
   if (items.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-12 text-center">
-        <p className="text-muted-foreground mb-2">No posts scheduled</p>
+      <motion.div
+        className="flex flex-col items-center justify-center py-12 text-center"
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.3 }}
+      >
+        <motion.div
+          animate={{ scale: [1, 1.1, 1] }}
+          transition={{ duration: 2, repeat: Infinity }}
+          className="text-6xl mb-4"
+        >
+          📅
+        </motion.div>
+        <p className="text-muted-foreground mb-2 font-medium">No posts scheduled</p>
         <p className="text-sm text-muted-foreground">
           Create your first post to see it here
         </p>
-      </div>
+      </motion.div>
     );
   }
 
@@ -78,20 +105,53 @@ export function CalendarGrid({ posts, onReorder }: CalendarGridProps) {
     <DndContext
       sensors={sensors}
       collisionDetection={closestCenter}
+      onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
+      onDragCancel={handleDragCancel}
     >
       <SortableContext items={items.map((p) => p.id)} strategy={verticalListSortingStrategy}>
-        <motion.div
-          className="space-y-2"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.3 }}
-        >
-          {items.map((post) => (
-            <CalendarEvent key={post.id} id={post.id} post={post} />
-          ))}
-        </motion.div>
+        <AnimatePresence>
+          <motion.div
+            className="space-y-3"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.3 }}
+          >
+            {items.map((post, index) => (
+              <motion.div
+                key={post.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ delay: index * 0.05 }}
+              >
+                <CalendarEvent id={post.id} post={post} />
+              </motion.div>
+            ))}
+          </motion.div>
+        </AnimatePresence>
       </SortableContext>
+
+      {/* Drag Overlay with enhanced styling */}
+      <DragOverlay dropAnimation={null}>
+        {activePost ? (
+          <motion.div
+            initial={{ scale: 1.05, rotate: 2 }}
+            animate={{ scale: 1.08, rotate: -2 }}
+            transition={{ duration: 0.2 }}
+            className="cursor-grabbing"
+          >
+            <div className="relative">
+              {/* Glow effect */}
+              <div className="absolute -inset-2 bg-primary/30 blur-2xl rounded-lg" />
+              {/* Content */}
+              <div className="relative">
+                <CalendarEvent id={activePost.id} post={activePost} />
+              </div>
+            </div>
+          </motion.div>
+        ) : null}
+      </DragOverlay>
     </DndContext>
   );
 }

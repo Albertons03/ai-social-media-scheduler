@@ -1,5 +1,4 @@
 import { createClient } from '@/lib/supabase/server';
-import { Calendar, TrendingUp, Users, FileText } from 'lucide-react';
 import { getPostAnalytics } from '@/lib/db/posts';
 import { StatsCard } from '@/components/dashboard/stats-card';
 import { QuickActions } from '@/components/dashboard/quick-actions';
@@ -49,28 +48,32 @@ export default async function DashboardPage() {
           title="Scheduled Posts"
           value={analytics.scheduled}
           description="Posts ready to publish"
-          icon={Calendar}
+          icon="calendar"
           trend={{ value: 12, isPositive: true }}
+          index={0}
         />
         <StatsCard
           title="Total Views"
           value={analytics.total_views.toLocaleString()}
           description="Across all platforms"
-          icon={TrendingUp}
+          icon="trending"
           trend={{ value: 8, isPositive: true }}
+          index={1}
         />
         <StatsCard
           title="Engagement Rate"
           value={`${engagementRate}%`}
           description="Average engagement"
-          icon={Users}
+          icon="users"
           trend={{ value: 3, isPositive: true }}
+          index={2}
         />
         <StatsCard
           title="Published"
           value={analytics.published}
           description="Successfully posted"
-          icon={FileText}
+          icon="file"
+          index={3}
         />
       </div>
 
