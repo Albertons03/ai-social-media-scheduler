@@ -225,7 +225,10 @@ export function PostForm({
           body: formData,
         });
 
-        if (!response.ok) throw new Error("Failed to upload media");
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || "Failed to upload media");
+        }
         const data = await response.json();
         mediaUrl = data.url;
       }

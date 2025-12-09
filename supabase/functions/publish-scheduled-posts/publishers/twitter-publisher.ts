@@ -131,32 +131,23 @@ export async function publishToTwitter(
 
     let tweetData: { id: string; text: string };
 
-    // Publish with or without media
+    // NOTE: Twitter API v2 with OAuth 2.0 does NOT support media upload
+    // Media upload requires OAuth 1.0a with the v1.1 API
+    // For now, we only support text-only tweets with OAuth 2.0
     if (mediaBuffer && post.media_type) {
-      console.log(
-        `Publishing with ${post.media_type} media to Twitter (size: ${mediaBuffer.byteLength} bytes)`
+      console.warn(
+        `⚠️ Twitter API v2 with OAuth 2.0 does not support media upload. Publishing text-only tweet.`
       );
-
-      // Upload media
-      const mediaId = await uploadTwitterMedia(
-        mediaBuffer,
-        post.media_type as "image" | "video",
-        account.access_token
-      );
-
-      // Publish tweet with media
-      tweetData = await publishTweetWithMedia(
-        post.content,
-        [mediaId],
-        account.access_token
-      );
-    } else {
-      // Publish text-only tweet
-      tweetData = await publishTextTweet(
-        post.content,
-        account.access_token
+      console.warn(
+        `To use media, you need to implement OAuth 1.0a authentication.`
       );
     }
+
+    // Always publish text-only tweet (OAuth 2.0 limitation)
+    tweetData = await publishTextTweet(
+      post.content,
+      account.access_token
+    );
 
     console.log(
       `Successfully published to Twitter - Tweet ID: ${tweetData.id}`

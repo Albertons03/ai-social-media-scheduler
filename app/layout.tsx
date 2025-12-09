@@ -9,6 +9,10 @@ export const metadata: Metadata = {
   title: 'Social Media Scheduler - AI-Powered Content Management',
   description: 'Schedule and manage your TikTok, LinkedIn, and Twitter posts with AI-powered content generation',
   keywords: ['social media', 'scheduler', 'tiktok', 'linkedin', 'twitter', 'ai', 'content management'],
+  icons: {
+    icon: '/logo.svg',
+    apple: '/logo.svg',
+  },
 };
 
 export default function RootLayout({
