@@ -8,15 +8,11 @@ import { getPlatformClasses } from "@/lib/utils/platform-colors";
 import { GripVertical } from "lucide-react";
 import { format } from "date-fns";
 import { motion } from "framer-motion";
+import { Post } from "@/lib/types/database.types";
 
 interface CalendarEventProps {
   id: string;
-  post: {
-    id: string;
-    content: string;
-    platform: "tiktok" | "linkedin" | "twitter";
-    scheduled_for?: string | null;
-  };
+  post: Post;
 }
 
 const platformEmojis = {

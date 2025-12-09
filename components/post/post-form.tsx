@@ -6,7 +6,13 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Select } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -303,14 +309,18 @@ export function PostForm({
           <div>
             <Label htmlFor="platform">Platform</Label>
             <Select
-              id="platform"
               value={platform}
-              onChange={(e) => setPlatform(e.target.value as Platform)}
+              onValueChange={(value) => setPlatform(value as Platform)}
               disabled={isEditing}
             >
-              <option value="twitter">Twitter</option>
-              <option value="tiktok">TikTok</option>
-              <option value="linkedin">LinkedIn</option>
+              <SelectTrigger id="platform">
+                <SelectValue placeholder="Select platform" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="twitter">Twitter</SelectItem>
+                <SelectItem value="tiktok">TikTok</SelectItem>
+                <SelectItem value="linkedin">LinkedIn</SelectItem>
+              </SelectContent>
             </Select>
           </div>
 
@@ -340,15 +350,19 @@ export function PostForm({
               </div>
             ) : (
               <Select
-                id="account"
                 value={selectedAccountId}
-                onChange={(e) => setSelectedAccountId(e.target.value)}
+                onValueChange={setSelectedAccountId}
               >
-                {accountsForPlatform.map((account) => (
-                  <option key={account.id} value={account.id}>
-                    {account.account_name} (@{account.account_handle})
-                  </option>
-                ))}
+                <SelectTrigger id="account">
+                  <SelectValue placeholder="Select account" />
+                </SelectTrigger>
+                <SelectContent>
+                  {accountsForPlatform.map((account) => (
+                    <SelectItem key={account.id} value={account.id}>
+                      {account.account_name} (@{account.account_handle})
+                    </SelectItem>
+                  ))}
+                </SelectContent>
               </Select>
             )}
           </div>
@@ -447,15 +461,17 @@ export function PostForm({
               <div>
                 <Label htmlFor="privacy">Privacy Level</Label>
                 <Select
-                  id="privacy"
                   value={privacyLevel}
-                  onChange={(e) =>
-                    setPrivacyLevel(e.target.value as PrivacyLevel)
-                  }
+                  onValueChange={(value) => setPrivacyLevel(value as PrivacyLevel)}
                 >
-                  <option value="PUBLIC">Public</option>
-                  <option value="FRIENDS">Friends Only</option>
-                  <option value="PRIVATE">Private</option>
+                  <SelectTrigger id="privacy">
+                    <SelectValue placeholder="Select privacy level" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="PUBLIC">Public</SelectItem>
+                    <SelectItem value="FRIENDS">Friends Only</SelectItem>
+                    <SelectItem value="PRIVATE">Private</SelectItem>
+                  </SelectContent>
                 </Select>
               </div>
 

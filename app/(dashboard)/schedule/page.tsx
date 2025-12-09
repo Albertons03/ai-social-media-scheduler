@@ -15,7 +15,7 @@ import {
   DialogClose,
 } from "@/components/ui/dialog";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Plus, CalendarOff, Clock } from "lucide-react";
+import { Plus, Clock } from "lucide-react";
 import { Post } from "@/lib/types/database.types";
 import {
   formatToLocalDateTime,
@@ -168,21 +168,7 @@ export default function SchedulePage() {
           />
         </CardHeader>
         <CardContent>
-          {scheduledPosts.length > 0 ? (
-            <CalendarGrid posts={scheduledPosts} onReorder={handleReorder} />
-          ) : (
-            <div className="flex flex-col items-center justify-center py-12 text-center">
-              <CalendarOff className="h-12 w-12 text-muted-foreground mb-4" />
-              <h3 className="text-lg font-semibold mb-2">No scheduled posts</h3>
-              <p className="text-muted-foreground mb-6 max-w-md">
-                Get started by creating your first social media post. Use AI to generate engaging content!
-              </p>
-              <Button onClick={() => setIsCreateModalOpen(true)}>
-                <Plus className="h-4 w-4 mr-2" />
-                Create Your First Post
-              </Button>
-            </div>
-          )}
+          <CalendarGrid posts={scheduledPosts} onReorder={handleReorder} />
         </CardContent>
       </Card>
 

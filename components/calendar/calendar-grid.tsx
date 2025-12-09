@@ -20,13 +20,7 @@ import {
 } from "@dnd-kit/sortable";
 import { CalendarEvent } from "./calendar-event";
 import { motion, AnimatePresence } from "framer-motion";
-
-interface Post {
-  id: string;
-  content: string;
-  platform: "tiktok" | "linkedin" | "twitter";
-  scheduled_for?: string | null;
-}
+import { Post } from "@/lib/types/database.types";
 
 interface CalendarGridProps {
   posts: Post[];
