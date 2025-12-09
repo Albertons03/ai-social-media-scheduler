@@ -21,6 +21,7 @@ export async function GET(request: NextRequest) {
 
     // Verify state for CSRF protection
     const storedState = request.cookies.get('tiktok_oauth_state')?.value;
+    const codeVerifier = request.cookies.get('tiktok_code_verifier')?.value;
 
     if (error) {
       console.error('TikTok OAuth error:', error);
@@ -32,6 +33,13 @@ export async function GET(request: NextRequest) {
     if (!code || !state || state !== storedState) {
       return NextResponse.redirect(
         new URL('/settings?error=invalid_state', request.url)
+      );
+    }
+
+    if (!codeVerifier) {
+      console.error('TikTok OAuth error: code_verifier not found');
+      return NextResponse.redirect(
+        new URL('/settings?error=missing_code_verifier', request.url)
       );
     }
 
@@ -51,6 +59,7 @@ export async function GET(request: NextRequest) {
         code,
         grant_type: 'authorization_code',
         redirect_uri: redirectUri,
+        code_verifier: codeVerifier,
       }),
     });
 
@@ -96,11 +105,12 @@ export async function GET(request: NextRequest) {
       is_active: true,
     });
 
-    // Clear the state cookie
+    // Clear the state and code_verifier cookies
     const response = NextResponse.redirect(
       new URL('/settings?success=tiktok_connected', request.url)
     );
     response.cookies.delete('tiktok_oauth_state');
+    response.cookies.delete('tiktok_code_verifier');
 
     return response;
   } catch (error) {

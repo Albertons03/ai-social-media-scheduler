@@ -43,9 +43,12 @@ export async function GET(request: NextRequest) {
     // Generate a random state for CSRF protection
     const state = Math.random().toString(36).substring(7);
 
+    // TikTok scopes: user.info.basic, video.upload, video.publish
+    const scopes = 'user.info.basic,video.upload,video.publish';
+
     // Store state and code verifier in cookies for verification
     const response = NextResponse.redirect(
-      `https://www.tiktok.com/v2/auth/authorize/?client_key=${clientKey}&scope=user.info.basic&response_type=code&redirect_uri=${encodeURIComponent(redirectUri)}&state=${state}&code_challenge=${codeChallenge}&code_challenge_method=S256`
+      `https://www.tiktok.com/v2/auth/authorize/?client_key=${clientKey}&scope=${scopes}&response_type=code&redirect_uri=${encodeURIComponent(redirectUri)}&state=${state}&code_challenge=${codeChallenge}&code_challenge_method=S256`
     );
 
     response.cookies.set('tiktok_oauth_state', state, {
