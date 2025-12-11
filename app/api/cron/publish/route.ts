@@ -38,6 +38,67 @@ async function publishToTwitter(
 }
 
 /**
+ * Publish a post to LinkedIn
+ */
+async function publishToLinkedIn(
+  post: any,
+  account: any
+): Promise<{ postId: string }> {
+  // Get user profile to get person URN
+  const profileResponse = await fetch("https://api.linkedin.com/v2/userinfo", {
+    headers: {
+      Authorization: `Bearer ${account.access_token}`,
+    },
+  });
+
+  if (!profileResponse.ok) {
+    throw new Error(
+      `LinkedIn profile error: ${profileResponse.status}`
+    );
+  }
+
+  const profileData = await profileResponse.json();
+  const personUrn = `urn:li:person:${profileData.sub}`;
+
+  // Create post
+  const postBody = {
+    author: personUrn,
+    lifecycleState: "PUBLISHED",
+    specificContent: {
+      "com.linkedin.ugc.ShareContent": {
+        shareCommentary: {
+          text: post.content,
+        },
+        shareMediaCategory: "NONE",
+      },
+    },
+    visibility: {
+      "com.linkedin.ugc.MemberNetworkVisibility": "PUBLIC",
+    },
+  };
+
+  const response = await fetch("https://api.linkedin.com/v2/ugcPosts", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${account.access_token}`,
+      "Content-Type": "application/json",
+      "X-Restli-Protocol-Version": "2.0.0",
+    },
+    body: JSON.stringify(postBody),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(
+      `LinkedIn API error: ${response.status} - ${JSON.stringify(errorData)}`
+    );
+  }
+
+  const data = await response.json();
+  return { postId: data.id };
+}
+
+/**
  * Refresh Twitter access token if expired
  */
 async function refreshTwitterToken(account: any): Promise<string> {
@@ -70,6 +131,34 @@ async function refreshTwitterToken(account: any): Promise<string> {
 }
 
 /**
+ * Refresh LinkedIn access token if expired
+ */
+async function refreshLinkedInToken(account: any): Promise<string> {
+  const clientId = process.env.LINKEDIN_CLIENT_ID;
+  const clientSecret = process.env.LINKEDIN_CLIENT_SECRET;
+
+  const response = await fetch("https://www.linkedin.com/oauth/v2/accessToken", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body: new URLSearchParams({
+      grant_type: "refresh_token",
+      refresh_token: account.refresh_token,
+      client_id: clientId!,
+      client_secret: clientSecret!,
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to refresh LinkedIn token");
+  }
+
+  const data = await response.json();
+  return data.access_token;
+}
+
+/**
  * Publish a single post
  */
 async function publishPost(
@@ -94,7 +183,12 @@ async function publishPost(
 
     if (tokenExpiresAt < fiveMinutesFromNow) {
       console.log("Token expired, refreshing...");
-      accessToken = await refreshTwitterToken(account);
+
+      if (post.platform === "twitter") {
+        accessToken = await refreshTwitterToken(account);
+      } else if (post.platform === "linkedin") {
+        accessToken = await refreshLinkedInToken(account);
+      }
 
       // Update token in database
       await supabase
@@ -133,6 +227,23 @@ async function publishPost(
         };
 
       case "linkedin":
+        result = await publishToLinkedIn(post, account);
+
+        // Update post status to published
+        await supabase
+          .from("posts")
+          .update({
+            status: "published",
+            published_at: new Date().toISOString(),
+            linkedin_post_id: result.postId,
+          })
+          .eq("id", post.id);
+
+        return {
+          success: true,
+          ...baseResult,
+        };
+
       case "tiktok":
         // Not implemented yet
         throw new Error(`${post.platform} publishing not yet implemented`);

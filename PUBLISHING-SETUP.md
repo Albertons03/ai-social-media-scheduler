@@ -29,6 +29,10 @@ Add these to your Vercel environment variables:
 TWITTER_CLIENT_ID=your_twitter_client_id
 TWITTER_CLIENT_SECRET=your_twitter_client_secret
 
+# LinkedIn API Credentials (required for LinkedIn publishing)
+LINKEDIN_CLIENT_ID=your_linkedin_client_id
+LINKEDIN_CLIENT_SECRET=your_linkedin_client_secret
+
 # Cron Job Security
 CRON_SECRET=your_random_secret_string
 ```
@@ -130,7 +134,7 @@ Check the database or view in the app's schedule page.
 | Platform | Status | Notes |
 |----------|--------|-------|
 | Twitter  | ✅ Implemented | Text-only tweets (OAuth 2.0 limitation) |
-| LinkedIn | ⏳ Planned | Not yet implemented |
+| LinkedIn | ✅ Implemented | Text posts, public visibility |
 | TikTok   | ⏳ Planned | Not yet implemented |
 
 ## Rate Limits
