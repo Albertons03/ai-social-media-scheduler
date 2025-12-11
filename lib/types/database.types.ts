@@ -130,3 +130,22 @@ export interface AIGenerationRequest {
   tone?: string;
   length?: 'short' | 'medium' | 'long';
 }
+
+// AI Conversation types
+export interface ChatMessage {
+  role: 'user' | 'assistant';
+  content: string;
+  timestamp: string;
+}
+
+export interface AIConversation {
+  id: string;
+  user_id: string;
+  conversation_id: string;
+  platform?: Platform;
+  messages: ChatMessage[];
+  model: string;
+  total_tokens_used: number;
+  created_at: string;
+  updated_at: string;
+}

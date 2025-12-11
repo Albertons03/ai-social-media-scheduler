@@ -32,12 +32,12 @@ export default async function AnalyticsPage() {
     : '0.00';
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold">Analytics</h1>
-          <p className="text-gray-600 mt-2">
+          <p className="text-muted-foreground mt-2">
             Track your social media performance across platforms
           </p>
         </div>
@@ -47,44 +47,44 @@ export default async function AnalyticsPage() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Total Views</CardTitle>
-              <Eye className="h-4 w-4 text-gray-600" />
+              <Eye className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{analytics.total_views.toLocaleString()}</div>
-              <p className="text-xs text-gray-600 mt-1">Across all platforms</p>
+              <p className="text-xs text-muted-foreground mt-1">Across all platforms</p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Total Likes</CardTitle>
-              <Heart className="h-4 w-4 text-gray-600" />
+              <Heart className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{analytics.total_likes.toLocaleString()}</div>
-              <p className="text-xs text-gray-600 mt-1">Total engagement</p>
+              <p className="text-xs text-muted-foreground mt-1">Total engagement</p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Comments</CardTitle>
-              <MessageCircle className="h-4 w-4 text-gray-600" />
+              <MessageCircle className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{analytics.total_comments.toLocaleString()}</div>
-              <p className="text-xs text-gray-600 mt-1">Total comments</p>
+              <p className="text-xs text-muted-foreground mt-1">Total comments</p>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Engagement Rate</CardTitle>
-              <TrendingUp className="h-4 w-4 text-gray-600" />
+              <TrendingUp className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">{engagementRate}%</div>
-              <p className="text-xs text-gray-600 mt-1">Overall engagement</p>
+              <p className="text-xs text-muted-foreground mt-1">Overall engagement</p>
             </CardContent>
           </Card>
         </div>
@@ -163,9 +163,9 @@ export default async function AnalyticsPage() {
                   <span className="font-medium text-blue-700">Scheduled</span>
                   <span className="text-2xl font-bold text-blue-700">{analytics.scheduled}</span>
                 </div>
-                <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                  <span className="font-medium text-gray-700">Draft</span>
-                  <span className="text-2xl font-bold text-gray-700">{analytics.draft}</span>
+                <div className="flex items-center justify-between p-3 bg-background rounded-lg">
+                  <span className="font-medium text-muted-foreground">Draft</span>
+                  <span className="text-2xl font-bold text-muted-foreground">{analytics.draft}</span>
                 </div>
                 {analytics.failed > 0 && (
                   <div className="flex items-center justify-between p-3 bg-red-50 rounded-lg">
@@ -188,7 +188,7 @@ export default async function AnalyticsPage() {
           </CardHeader>
           <CardContent>
             {publishedPosts.length === 0 ? (
-              <p className="text-gray-500 text-center py-8">
+              <p className="text-muted-foreground text-center py-8">
                 No published posts yet. Create and publish posts to see analytics.
               </p>
             ) : (
@@ -196,7 +196,7 @@ export default async function AnalyticsPage() {
                 {publishedPosts.map((post, index) => (
                   <div
                     key={post.id}
-                    className="flex items-center gap-4 p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+                    className="flex items-center gap-4 p-4 border border-border rounded-lg hover:bg-background transition-colors"
                   >
                     <div className="flex-shrink-0 w-8 h-8 flex items-center justify-center bg-blue-100 text-blue-600 rounded-full font-bold">
                       {index + 1}
@@ -215,9 +215,9 @@ export default async function AnalyticsPage() {
                           {post.platform}
                         </span>
                       </div>
-                      <p className="text-sm text-gray-900 truncate">{post.content}</p>
+                      <p className="text-sm text-foreground truncate">{post.content}</p>
                     </div>
-                    <div className="flex gap-6 text-sm text-gray-600">
+                    <div className="flex gap-6 text-sm text-muted-foreground">
                       <div className="flex items-center gap-1">
                         <Eye className="h-4 w-4" />
                         {post.views_count.toLocaleString()}

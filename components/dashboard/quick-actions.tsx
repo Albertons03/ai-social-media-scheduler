@@ -20,7 +20,7 @@ export function QuickActions() {
     setRipple({ x, y, key: Date.now() });
     setTimeout(() => setRipple(null), 600);
     triggerConfetti();
-    router.push("/dashboard?action=create");
+    router.push("/schedule"); // Fixed: Go to schedule page to create post
   };
 
   return (
@@ -28,12 +28,7 @@ export function QuickActions() {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           Quick Actions
-          <motion.div
-            animate={{ rotate: [0, 10, -10, 0] }}
-            transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
-          >
-            ⚡
-          </motion.div>
+          <span>⚡</span>
         </CardTitle>
         <CardDescription>Get started with common tasks</CardDescription>
       </CardHeader>
@@ -73,12 +68,7 @@ export function QuickActions() {
                 transition={{ duration: 0.6 }}
               />
             )}
-            <motion.div
-              animate={{ rotate: [0, 360] }}
-              transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-            >
-              <Plus className="mr-2 h-4 w-4" />
-            </motion.div>
+            <Plus className="mr-2 h-4 w-4" />
             Create Post
           </Button>
         </motion.div>
@@ -115,16 +105,10 @@ export function QuickActions() {
               "hover:border-primary/50 hover:bg-primary/5",
               "transition-all duration-300 hover:scale-105"
             )}
-            onClick={() => router.push("/dashboard?action=ai")}
+            onClick={() => router.push("/schedule")} // Fixed: Go to schedule page for AI Chat
           >
             <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-pink-500/10 opacity-0 group-hover:opacity-100 transition-opacity" />
-            <motion.div
-              animate={{ rotate: [0, 360] }}
-              transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-              className="relative z-10"
-            >
-              <Sparkles className="mr-2 h-4 w-4 group-hover:text-purple-500 transition-colors" />
-            </motion.div>
+            <Sparkles className="mr-2 h-4 w-4 relative z-10 group-hover:text-purple-500 transition-colors" />
             <span className="relative z-10">AI Generator</span>
           </Button>
         </motion.div>

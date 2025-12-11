@@ -42,7 +42,10 @@ const DialogContent = React.forwardRef<
   <div
     ref={ref}
     className={cn(
-      'relative z-50 grid w-full max-w-lg gap-4 border border-gray-200 bg-white p-6 shadow-lg duration-200 sm:rounded-lg',
+      'relative z-50 grid w-full max-w-lg gap-4',
+      'border border-border bg-card text-card-foreground',
+      'p-6 shadow-lg duration-200 sm:rounded-lg',
+      'dark:bg-card dark:border-border',
       className
     )}
     {...props}
@@ -101,7 +104,7 @@ const DialogDescription = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <p
     ref={ref}
-    className={cn('text-sm text-gray-500', className)}
+    className={cn('text-sm text-muted-foreground', className)}
     {...props}
   />
 ));
@@ -117,7 +120,13 @@ const DialogClose = ({
   <button
     onClick={onClose}
     className={cn(
-      'absolute right-4 top-4 rounded-sm opacity-70 ring-offset-white transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:ring-offset-2 disabled:pointer-events-none',
+      'absolute right-2 top-2 z-[60]',
+      'rounded-full p-1.5',
+      'bg-muted/80 hover:bg-muted',
+      'text-muted-foreground hover:text-foreground',
+      'transition-all duration-200',
+      'focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2',
+      'disabled:pointer-events-none disabled:opacity-50',
       className
     )}
   >

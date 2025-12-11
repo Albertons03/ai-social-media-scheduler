@@ -7,6 +7,7 @@ import { CalendarView } from "@/components/calendar/calendar-view";
 import { CalendarGrid } from "@/components/calendar/calendar-grid";
 import { CalendarToolbar } from "@/components/calendar/calendar-toolbar";
 import { PostForm } from "@/components/post/post-form";
+import { AIChat } from "@/components/AIChat";
 import {
   Dialog,
   DialogContent,
@@ -15,8 +16,8 @@ import {
   DialogClose,
 } from "@/components/ui/dialog";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Plus, Clock } from "lucide-react";
-import { Post } from "@/lib/types/database.types";
+import { Plus, Clock, Sparkles } from "lucide-react";
+import { Post, Platform } from "@/lib/types/database.types";
 import {
   formatToLocalDateTime,
   getRelativeTime,
@@ -30,9 +31,12 @@ export default function SchedulePage() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [isAIChatModalOpen, setIsAIChatModalOpen] = useState(false);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [currentDate, setCurrentDate] = useState<Date>(startOfToday());
   const [view, setView] = useState<"day" | "week" | "month">("week");
+  const [aiGeneratedContent, setAIGeneratedContent] = useState("");
+  const [selectedPlatformForAI, setSelectedPlatformForAI] = useState<Platform>("twitter");
 
   useEffect(() => {
     fetchPosts();
@@ -63,6 +67,7 @@ export default function SchedulePage() {
 
       await fetchPosts();
       setIsCreateModalOpen(false);
+      setAIGeneratedContent(""); // Clear AI content after post created
 
       // Trigger confetti animation
       triggerConfetti(postData.platform);
@@ -72,6 +77,12 @@ export default function SchedulePage() {
       toast.error("Failed to create post");
       throw error;
     }
+  };
+
+  const handleAIGeneratePost = (content: string) => {
+    setAIGeneratedContent(content);
+    setIsAIChatModalOpen(false);
+    setIsCreateModalOpen(true);
   };
 
   const handleReorder = async (reorderedPosts: Post[]) => {
@@ -143,10 +154,16 @@ export default function SchedulePage() {
             Timezone: {getUserTimezone()}
           </p>
         </div>
-        <Button onClick={() => setIsCreateModalOpen(true)}>
-          <Plus className="h-4 w-4 mr-2" />
-          Create Post
-        </Button>
+        <div className="flex gap-2">
+          <Button onClick={() => setIsCreateModalOpen(true)}>
+            <Plus className="h-4 w-4 mr-2" />
+            Create Post
+          </Button>
+          <Button onClick={() => setIsAIChatModalOpen(true)}>
+            <Sparkles className="h-4 w-4 mr-2" />
+            AI Chat
+          </Button>
+        </div>
       </div>
 
       {/* Calendar Card */}
@@ -187,6 +204,18 @@ export default function SchedulePage() {
         </CardContent>
       </Card>
 
+      {/* AI Chat Modal */}
+      <Dialog open={isAIChatModalOpen} onOpenChange={setIsAIChatModalOpen}>
+        <DialogContent className="max-w-3xl max-h-[90vh] p-0">
+          <DialogClose onClose={() => setIsAIChatModalOpen(false)} />
+          <AIChat
+            platform={selectedPlatformForAI}
+            onGeneratePost={handleAIGeneratePost}
+            onPlatformChange={setSelectedPlatformForAI}
+          />
+        </DialogContent>
+      </Dialog>
+
       {/* Create Post Modal */}
       <Dialog open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen}>
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
@@ -194,7 +223,13 @@ export default function SchedulePage() {
             <DialogTitle>Create New Post</DialogTitle>
             <DialogClose onClose={() => setIsCreateModalOpen(false)} />
           </DialogHeader>
-          <PostForm onSubmit={handleCreatePost} />
+          <PostForm
+            onSubmit={handleCreatePost}
+            initialData={aiGeneratedContent ? {
+              content: aiGeneratedContent,
+              platform: selectedPlatformForAI
+            } : undefined}
+          />
         </DialogContent>
       </Dialog>
 
@@ -212,18 +247,18 @@ export default function SchedulePage() {
             <div className="space-y-4">
               <div>
                 <h3 className="font-semibold mb-2">Content</h3>
-                <p className="text-gray-700">{selectedPost.content}</p>
+                <p className="text-muted-foreground">{selectedPost.content}</p>
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <h3 className="font-semibold mb-2">Platform</h3>
-                  <p className="text-gray-700 capitalize">
+                  <p className="text-foreground capitalize">
                     {selectedPost.platform}
                   </p>
                 </div>
                 <div>
                   <h3 className="font-semibold mb-2">Status</h3>
-                  <p className="text-gray-700 capitalize">
+                  <p className="text-foreground capitalize">
                     {selectedPost.status}
                   </p>
                 </div>
@@ -231,7 +266,7 @@ export default function SchedulePage() {
               {/* Scheduled/Published Time */}
               <div>
                 <h3 className="font-semibold mb-2">Time</h3>
-                <p className="text-gray-700">{formatPostTime(selectedPost)}</p>
+                <p className="text-muted-foreground">{formatPostTime(selectedPost)}</p>
               </div>
               <div className="grid grid-cols-3 gap-4">
                 <div>

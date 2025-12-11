@@ -65,7 +65,7 @@ export default async function SettingsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8 max-w-4xl">
         {/* Header */}
         <div className="mb-8">
@@ -76,7 +76,7 @@ export default async function SettingsPage() {
             </Button>
           </Link>
           <h1 className="text-3xl font-bold">Settings</h1>
-          <p className="text-gray-600 mt-2">
+          <p className="text-muted-foreground mt-2">
             Manage your account and connected social media platforms
           </p>
         </div>
@@ -89,14 +89,14 @@ export default async function SettingsPage() {
           </CardHeader>
           <CardContent className="space-y-4">
             <div>
-              <label className="text-sm font-medium text-gray-700">Email</label>
-              <p className="text-gray-900 mt-1">{user.email}</p>
+              <label className="text-sm font-medium text-muted-foreground">Email</label>
+              <p className="text-foreground mt-1">{user.email}</p>
             </div>
             <div>
-              <label className="text-sm font-medium text-gray-700">
+              <label className="text-sm font-medium text-muted-foreground">
                 Full Name
               </label>
-              <p className="text-gray-900 mt-1">
+              <p className="text-foreground mt-1">
                 {profile?.full_name || "Not set"}
               </p>
             </div>
@@ -116,13 +116,13 @@ export default async function SettingsPage() {
           </CardHeader>
           <CardContent className="space-y-6">
             {/* TikTok */}
-            <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+            <div className="flex items-center justify-between p-4 border border-border rounded-lg">
               <div className="flex items-center gap-4">
                 <div className="h-12 w-12 bg-gradient-to-br from-pink-500 to-purple-600 rounded-lg flex items-center justify-center text-white font-bold text-xl">
                   T
                 </div>
                 <div>
-                  <h3 className="font-semibold text-gray-900">TikTok</h3>
+                  <h3 className="font-semibold text-foreground">TikTok</h3>
                   {tiktokAccount ? (
                     <div className="space-y-1">
                       <div className="flex items-center gap-2">
@@ -143,13 +143,13 @@ export default async function SettingsPage() {
                             </>
                           )}
                         </Badge>
-                        <span className="text-sm text-gray-600">
+                        <span className="text-sm text-muted-foreground">
                           @
                           {tiktokAccount.account_handle ||
                             tiktokAccount.account_name}
                         </span>
                       </div>
-                      <div className="flex items-center gap-1 text-xs text-gray-500">
+                      <div className="flex items-center gap-1 text-xs text-muted-foreground">
                         <Clock className="h-3 w-3" />
                         Token expires in:{" "}
                         {formatTokenExpiry(tiktokAccount?.token_expires_at || null)}
@@ -163,7 +163,7 @@ export default async function SettingsPage() {
                       </div>
                     </div>
                   ) : (
-                    <p className="text-sm text-gray-600 mt-1">Not connected</p>
+                    <p className="text-sm text-muted-foreground mt-1">Not connected</p>
                   )}
                 </div>
               </div>
@@ -186,13 +186,13 @@ export default async function SettingsPage() {
             </div>
 
             {/* LinkedIn */}
-            <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+            <div className="flex items-center justify-between p-4 border border-border rounded-lg">
               <div className="flex items-center gap-4">
                 <div className="h-12 w-12 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-xl">
                   in
                 </div>
                 <div>
-                  <h3 className="font-semibold text-gray-900">LinkedIn</h3>
+                  <h3 className="font-semibold text-foreground">LinkedIn</h3>
                   {linkedinAccount ? (
                     <div className="space-y-1">
                       <div className="flex items-center gap-2">
@@ -213,21 +213,21 @@ export default async function SettingsPage() {
                             </>
                           )}
                         </Badge>
-                        <span className="text-sm text-gray-600">
+                        <span className="text-sm text-muted-foreground">
                           {linkedinAccount.account_name}
                         </span>
                       </div>
-                      <div className="flex items-center gap-1 text-xs text-gray-500">
+                      <div className="flex items-center gap-1 text-xs text-muted-foreground">
                         <Clock className="h-3 w-3" />
                         Token expires in:{" "}
                         {formatTokenExpiry(linkedinAccount?.token_expires_at || null)}
-                        <span className="text-gray-400 ml-1">
+                        <span className="text-muted-foreground ml-1">
                           (No refresh - reconnect when expired)
                         </span>
                       </div>
                     </div>
                   ) : (
-                    <p className="text-sm text-gray-600 mt-1">Not connected</p>
+                    <p className="text-sm text-muted-foreground mt-1">Not connected</p>
                   )}
                 </div>
               </div>
@@ -248,13 +248,13 @@ export default async function SettingsPage() {
             </div>
 
             {/* Twitter/X */}
-            <div className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+            <div className="flex items-center justify-between p-4 border border-border rounded-lg">
               <div className="flex items-center gap-4">
                 <div className="h-12 w-12 bg-sky-500 rounded-lg flex items-center justify-center text-white font-bold text-xl">
                   𝕏
                 </div>
                 <div>
-                  <h3 className="font-semibold text-gray-900">Twitter / X</h3>
+                  <h3 className="font-semibold text-foreground">Twitter / X</h3>
                   {twitterAccount ? (
                     <div className="space-y-1">
                       <div className="flex items-center gap-2">
@@ -275,13 +275,13 @@ export default async function SettingsPage() {
                             </>
                           )}
                         </Badge>
-                        <span className="text-sm text-gray-600">
+                        <span className="text-sm text-muted-foreground">
                           @
                           {twitterAccount.account_handle ||
                             twitterAccount.account_name}
                         </span>
                       </div>
-                      <div className="flex items-center gap-1 text-xs text-gray-500">
+                      <div className="flex items-center gap-1 text-xs text-muted-foreground">
                         <Clock className="h-3 w-3" />
                         Token expires in:{" "}
                         {formatTokenExpiry(twitterAccount?.token_expires_at || null)}
@@ -295,7 +295,7 @@ export default async function SettingsPage() {
                       </div>
                     </div>
                   ) : (
-                    <p className="text-sm text-gray-600 mt-1">Not connected</p>
+                    <p className="text-sm text-muted-foreground mt-1">Not connected</p>
                   )}
                 </div>
               </div>
@@ -330,13 +330,13 @@ export default async function SettingsPage() {
           <CardContent>
             <div className="space-y-4">
               <div className="flex justify-between items-center">
-                <span className="text-sm text-gray-600">
+                <span className="text-sm text-muted-foreground">
                   AI Generations this month
                 </span>
                 <span className="font-semibold">0 / Unlimited</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-sm text-gray-600">Tokens used</span>
+                <span className="text-sm text-muted-foreground">Tokens used</span>
                 <span className="font-semibold">0</span>
               </div>
             </div>

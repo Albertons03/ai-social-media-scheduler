@@ -1,6 +1,7 @@
 import type { Config } from "tailwindcss";
 
 const config: Config = {
+  darkMode: ['class'],
   content: [
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
@@ -48,6 +49,42 @@ const config: Config = {
           "3": "hsl(var(--chart-3))",
           "4": "hsl(var(--chart-4))",
           "5": "hsl(var(--chart-5))",
+        },
+        tiktok: {
+          DEFAULT: '#FE2C55',
+          light: '#FF4D6D',
+          dark: '#E81D44',
+          50: '#FFF1F2',
+          100: '#FFE4E6',
+          200: '#FECDD3',
+          300: '#FE2C55',
+          500: '#FE2C55',
+          600: '#E81D44',
+          700: '#C2122F',
+        },
+        linkedin: {
+          DEFAULT: '#0A66C2',
+          light: '#378FE9',
+          dark: '#004182',
+          50: '#EFF6FF',
+          100: '#DBEAFE',
+          200: '#BFDBFE',
+          300: '#378FE9',
+          500: '#0A66C2',
+          600: '#004182',
+          700: '#003366',
+        },
+        twitter: {
+          DEFAULT: '#1DA1F2',
+          light: '#4AB3F4',
+          dark: '#0C7ABF',
+          50: '#EFF9FF',
+          100: '#DEF2FF',
+          200: '#B6E5FF',
+          300: '#4AB3F4',
+          500: '#1DA1F2',
+          600: '#0C7ABF',
+          700: '#085C8F',
         },
       },
       borderRadius: {

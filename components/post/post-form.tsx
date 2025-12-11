@@ -328,7 +328,7 @@ export function PostForm({
           <div>
             <Label htmlFor="account">Account</Label>
             {isLoadingAccounts ? (
-              <div className="flex items-center gap-2 text-sm text-gray-500 py-2">
+              <div className="flex items-center gap-2 text-sm text-muted-foreground py-2">
                 <Loader2 className="h-4 w-4 animate-spin" />
                 Loading accounts...
               </div>
@@ -406,7 +406,7 @@ export function PostForm({
               onChange={handleMediaChange}
             />
             {mediaPreviewUrl && (
-              <div className="mt-4 rounded-lg overflow-hidden bg-gray-100">
+              <div className="mt-4 rounded-lg overflow-hidden bg-accent">
                 {mediaFile?.type.startsWith("video/") || initialData?.media_type === "video" ? (
                   <video
                     src={mediaPreviewUrl}
@@ -450,7 +450,7 @@ export function PostForm({
               value={scheduledFor}
               onChange={(e) => setScheduledFor(e.target.value)}
             />
-            <p className="text-xs text-gray-500 mt-1">
+            <p className="text-xs text-muted-foreground mt-1">
               Your timezone: {timezoneName}
             </p>
           </div>
@@ -508,7 +508,12 @@ export function PostForm({
                 ? "Update Post"
                 : "Create Post"}
             </Button>
-            <Button type="button" variant="outline" disabled={isLoading}>
+            <Button
+              type="button"
+              variant="outline"
+              disabled={isLoading}
+              onClick={() => window.history.back()}
+            >
               Cancel
             </Button>
           </div>

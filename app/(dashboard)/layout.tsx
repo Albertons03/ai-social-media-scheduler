@@ -36,7 +36,7 @@ export default async function DashboardLayout({
         <Sidebar user={userData} />
         <div className="flex-1 flex flex-col overflow-hidden">
           <TopBar user={userData} />
-          <main className="flex-1 overflow-y-auto bg-muted/30 p-6">
+          <main className="flex-1 overflow-y-auto bg-gradient-to-br from-background via-muted/20 to-primary/5 dark:from-background dark:via-background dark:to-background p-6">
             {children}
           </main>
         </div>

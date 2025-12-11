@@ -55,12 +55,12 @@ export function CalendarView({ posts, onDateClick, onPostClick }: CalendarViewPr
       case 'twitter':
         return 'bg-sky-500';
       default:
-        return 'bg-gray-500';
+        return 'bg-background0';
     }
   };
 
   return (
-    <div className="bg-white rounded-lg border border-gray-200 p-6">
+    <div className="bg-white rounded-lg border border-border p-6">
       {/* Calendar Header */}
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-2xl font-bold">
@@ -84,7 +84,7 @@ export function CalendarView({ posts, onDateClick, onPostClick }: CalendarViewPr
         {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
           <div
             key={day}
-            className="text-center text-sm font-semibold text-gray-600 py-2"
+            className="text-center text-sm font-semibold text-muted-foreground py-2"
           >
             {day}
           </div>
@@ -106,8 +106,8 @@ export function CalendarView({ posts, onDateClick, onPostClick }: CalendarViewPr
             <div
               key={day.toString()}
               className={`
-                h-24 border border-gray-200 rounded-lg p-2 cursor-pointer transition-colors
-                ${isCurrentMonth ? 'bg-white hover:bg-gray-50' : 'bg-gray-50 text-gray-400'}
+                h-24 border border-border rounded-lg p-2 cursor-pointer transition-colors
+                ${isCurrentMonth ? 'bg-white hover:bg-background' : 'bg-background text-muted-foreground'}
                 ${isToday ? 'ring-2 ring-blue-600' : ''}
               `}
               onClick={() => onDateClick?.(day)}
@@ -141,7 +141,7 @@ export function CalendarView({ posts, onDateClick, onPostClick }: CalendarViewPr
                     </div>
                   ))}
                   {postsOnDay.length > 3 && (
-                    <div className="text-xs text-gray-500 px-2">
+                    <div className="text-xs text-muted-foreground px-2">
                       +{postsOnDay.length - 3} more
                     </div>
                   )}
