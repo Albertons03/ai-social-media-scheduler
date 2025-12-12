@@ -168,12 +168,23 @@ async function pollTikTokUploadStatus(
     console.log(
       `TikTok upload status check ${attempt}/${maxAttempts}: ${status}`
     );
+    console.log("Full TikTok status response:", JSON.stringify(data, null, 2));
 
     if (status === "PUBLISH_COMPLETE") {
-      const postIds = data.data.publiclt_available_post_id || [];
+      // Try multiple possible field names (TikTok API inconsistency)
+      const postIds = data.data.publicly_available_post_id
+                   || data.data.publiclt_available_post_id
+                   || data.data.post_id
+                   || [];
+
+      console.log("Post IDs found:", postIds);
+
       if (postIds.length > 0) {
         return postIds[0];
       }
+
+      // If no post IDs, log the full data for debugging
+      console.error("No post ID in response. Full data.data:", JSON.stringify(data.data, null, 2));
       throw new Error("TikTok published but no post ID returned");
     }
 
