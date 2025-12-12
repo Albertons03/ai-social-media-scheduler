@@ -29,10 +29,10 @@ async function initializeTikTokUpload(
   const body = JSON.stringify({
     post_info: {
       title: post.content.substring(0, 150), // Max 150 chars for title
-      privacy_level: post.privacy_level || "PUBLIC",
-      disable_comment: !post.allow_comments,
-      disable_duet: !post.allow_duet,
-      disable_stitch: !post.allow_stitch,
+      privacy_level: post.privacy_level || "PUBLIC_TO_EVERYONE",
+      disable_comment: post.allow_comments === false,
+      disable_duet: post.allow_duet === false,
+      disable_stitch: post.allow_stitch === false,
     },
     source_info: {
       source: "FILE_UPLOAD",
