@@ -91,11 +91,17 @@ async function uploadTikTokChunk(
   chunkData: Uint8Array,
   chunkIndex: number,
   totalChunks: number,
-  chunkSize: number
+  chunkSize: number,
+  totalFileSize: number
 ): Promise<void> {
   const start = chunkIndex * chunkSize;
   const end = start + chunkData.length - 1;
-  const contentRange = `bytes ${start}-${end}/*`;
+  const contentRange = `bytes ${start}-${end}/${totalFileSize}`;
+
+  console.log(`Uploading chunk ${chunkIndex + 1}/${totalChunks}:`);
+  console.log(`  Content-Range: ${contentRange}`);
+  console.log(`  Content-Length: ${chunkData.length}`);
+  console.log(`  Chunk size: ${chunkSize}, Total file size: ${totalFileSize}`);
 
   const response = await fetch(uploadUrl, {
     method: "PUT",
@@ -108,8 +114,15 @@ async function uploadTikTokChunk(
   });
 
   if (!response.ok) {
+    const errorText = await response.text();
+    console.error(`TikTok chunk upload failed:`, {
+      status: response.status,
+      statusText: response.statusText,
+      body: errorText,
+      contentRange,
+    });
     throw new Error(
-      `TikTok chunk upload error: ${response.status}`
+      `TikTok chunk upload error: ${response.status} - ${errorText}`
     );
   }
 
@@ -248,7 +261,7 @@ export async function publishToTikTok(
       const end = Math.min(start + actualChunkSize, mediaBuffer.byteLength);
       const chunk = uint8Array.slice(start, end);
 
-      await uploadTikTokChunk(uploadUrl, chunk, i, chunks, actualChunkSize);
+      await uploadTikTokChunk(uploadUrl, chunk, i, chunks, actualChunkSize, mediaBuffer.byteLength);
     }
 
     console.log(`All ${chunks} chunks uploaded to TikTok`);
