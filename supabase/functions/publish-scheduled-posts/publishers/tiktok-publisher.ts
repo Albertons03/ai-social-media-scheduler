@@ -183,9 +183,10 @@ async function pollTikTokUploadStatus(
         return postIds[0];
       }
 
-      // If no post IDs, log the full data for debugging
-      console.error("No post ID in response. Full data.data:", JSON.stringify(data.data, null, 2));
-      throw new Error("TikTok published but no post ID returned");
+      // For private videos in development mode, TikTok doesn't return post ID
+      // but the video is still successfully published
+      console.log("No post ID returned (likely private video in dev mode). Video published successfully!");
+      return publishId; // Use publishId as fallback identifier
     }
 
     if (status === "FAILED") {
