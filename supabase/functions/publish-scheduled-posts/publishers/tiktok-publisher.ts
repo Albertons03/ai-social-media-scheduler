@@ -15,6 +15,19 @@ export interface TikTokPublishResult {
 const CHUNK_SIZE = 10 * 1024 * 1024; // 10MB chunks (TikTok recommended)
 
 /**
+ * Map frontend privacy values to TikTok API values
+ */
+function mapPrivacyLevel(frontendValue: string | null | undefined): string {
+  const mapping: Record<string, string> = {
+    "PUBLIC": "PUBLIC_TO_EVERYONE",
+    "FRIENDS": "MUTUAL_FOLLOW_FRIENDS",
+    "PRIVATE": "SELF_ONLY",
+  };
+
+  return mapping[frontendValue || "PUBLIC"] || "PUBLIC_TO_EVERYONE";
+}
+
+/**
  * Initialize TikTok video upload
  */
 async function initializeTikTokUpload(
@@ -29,7 +42,7 @@ async function initializeTikTokUpload(
   const requestBody = {
     post_info: {
       title: post.content.substring(0, 150), // Max 150 chars for title
-      privacy_level: post.privacy_level || "PUBLIC_TO_EVERYONE",
+      privacy_level: mapPrivacyLevel(post.privacy_level),
       disable_comment: post.allow_comments === false,
       disable_duet: post.allow_duet === false,
       disable_stitch: post.allow_stitch === false,
