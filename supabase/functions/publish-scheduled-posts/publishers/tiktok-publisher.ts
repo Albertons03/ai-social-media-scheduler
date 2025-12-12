@@ -22,7 +22,9 @@ async function initializeTikTokUpload(
   accessToken: string,
   fileSize: number
 ): Promise<{ publishId: string; uploadUrl: string }> {
-  const totalChunks = Math.ceil(fileSize / CHUNK_SIZE);
+  // Ensure chunk_size <= video_size (TikTok requirement)
+  const actualChunkSize = Math.min(CHUNK_SIZE, fileSize);
+  const totalChunks = Math.ceil(fileSize / actualChunkSize);
 
   const body = JSON.stringify({
     post_info: {
@@ -35,7 +37,7 @@ async function initializeTikTokUpload(
     source_info: {
       source: "FILE_UPLOAD",
       video_size: fileSize,
-      chunk_size: CHUNK_SIZE,
+      chunk_size: actualChunkSize,
       total_chunk_count: totalChunks,
     },
   });
@@ -73,10 +75,11 @@ async function uploadTikTokChunk(
   uploadUrl: string,
   chunkData: Uint8Array,
   chunkIndex: number,
-  totalChunks: number
+  totalChunks: number,
+  chunkSize: number
 ): Promise<void> {
-  const start = chunkIndex * CHUNK_SIZE;
-  const end = Math.min(start + chunkData.length - 1, totalChunks * CHUNK_SIZE - 1);
+  const start = chunkIndex * chunkSize;
+  const end = start + chunkData.length - 1;
   const contentRange = `bytes ${start}-${end}/*`;
 
   const response = await fetch(uploadUrl, {
@@ -220,16 +223,17 @@ export async function publishToTikTok(
 
     console.log(`TikTok upload initialized - Publish ID: ${publishId}`);
 
-    // Upload in chunks
-    const chunks = Math.ceil(mediaBuffer.byteLength / CHUNK_SIZE);
+    // Upload in chunks (ensure chunk_size <= video_size)
+    const actualChunkSize = Math.min(CHUNK_SIZE, mediaBuffer.byteLength);
+    const chunks = Math.ceil(mediaBuffer.byteLength / actualChunkSize);
     const uint8Array = new Uint8Array(mediaBuffer);
 
     for (let i = 0; i < chunks; i++) {
-      const start = i * CHUNK_SIZE;
-      const end = Math.min(start + CHUNK_SIZE, mediaBuffer.byteLength);
+      const start = i * actualChunkSize;
+      const end = Math.min(start + actualChunkSize, mediaBuffer.byteLength);
       const chunk = uint8Array.slice(start, end);
 
-      await uploadTikTokChunk(uploadUrl, chunk, i, chunks);
+      await uploadTikTokChunk(uploadUrl, chunk, i, chunks, actualChunkSize);
     }
 
     console.log(`All ${chunks} chunks uploaded to TikTok`);
