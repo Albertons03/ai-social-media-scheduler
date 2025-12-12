@@ -12,7 +12,7 @@ export interface TikTokPublishResult {
   tikTokPostId: string;
 }
 
-const CHUNK_SIZE = 5 * 1024 * 1024; // 5MB chunks
+const CHUNK_SIZE = 10 * 1024 * 1024; // 10MB chunks (TikTok recommended)
 
 /**
  * Initialize TikTok video upload
