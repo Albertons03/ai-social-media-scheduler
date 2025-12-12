@@ -37,12 +37,8 @@ CREATE POLICY "Anyone can insert into waitlist"
   TO anon, authenticated
   WITH CHECK (true);
 
-CREATE POLICY "Only admins can view waitlist"
-  ON waitlist FOR SELECT
-  TO authenticated
-  USING (auth.uid() IN (
-    SELECT id FROM profiles WHERE tier = 'admin'
-  ));
+-- Note: Waitlist viewing should be done via service_role (dashboard/admin panel)
+-- No SELECT policy for regular users to avoid infinite recursion with profiles table
 
 -- 6. RLS Policies for user_activity (users can only see their own)
 ALTER TABLE user_activity ENABLE ROW LEVEL SECURITY;

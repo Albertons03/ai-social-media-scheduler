@@ -23,7 +23,7 @@ export async function trackPostScheduled(userId: string, platform: string) {
 
     // 2. Increment posts_this_month counter in profiles table
     const { error: incrementError } = await supabase.rpc('increment_post_count', {
-      user_id: userId,
+      p_user_id: userId,
     });
 
     if (incrementError) {
