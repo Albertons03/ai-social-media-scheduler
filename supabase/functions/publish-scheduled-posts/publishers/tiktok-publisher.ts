@@ -26,7 +26,7 @@ async function initializeTikTokUpload(
   const actualChunkSize = Math.min(CHUNK_SIZE, fileSize);
   const totalChunks = Math.ceil(fileSize / actualChunkSize);
 
-  const body = JSON.stringify({
+  const requestBody = {
     post_info: {
       title: post.content.substring(0, 150), // Max 150 chars for title
       privacy_level: post.privacy_level || "PUBLIC_TO_EVERYONE",
@@ -40,7 +40,9 @@ async function initializeTikTokUpload(
       chunk_size: actualChunkSize,
       total_chunk_count: totalChunks,
     },
-  });
+  };
+
+  console.log("TikTok API Request Body:", JSON.stringify(requestBody, null, 2));
 
   const response = await fetch(
     "https://open.tiktokapis.com/v2/post/publish/video/init/",
@@ -50,7 +52,7 @@ async function initializeTikTokUpload(
         "Authorization": `Bearer ${accessToken}`,
         "Content-Type": "application/json",
       },
-      body,
+      body: JSON.stringify(requestBody),
     }
   );
 
