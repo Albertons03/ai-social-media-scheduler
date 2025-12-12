@@ -1,5 +1,5 @@
 // middleware.ts
-import { type NextRequest } from 'next/server';
+import { type NextRequest, NextResponse } from 'next/server';
 import { updateSession } from '@/lib/supabase/middleware';
 
 // Public routes (nem kell auth)
@@ -10,7 +10,7 @@ export async function middleware(request: NextRequest) {
 
   // Ha public route → NEM hívjuk az updateSession-t (bypass auth check)
   if (publicRoutes.some(route => path === route || path.startsWith(route))) {
-    return;
+    return NextResponse.next();
   }
 
   // Minden más route (pl. /app/*) → auth check
