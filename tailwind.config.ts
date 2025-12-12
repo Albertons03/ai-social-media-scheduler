@@ -50,6 +50,15 @@ const config: Config = {
           "4": "hsl(var(--chart-4))",
           "5": "hsl(var(--chart-5))",
         },
+        // Landing page colors
+        'primary-dark': '#0F766E',
+        'primary-light': '#06B6D4',
+        'accent-pink': '#EC4899',
+        'bg-dark': '#0A0A0A',
+        'metric-green': '#10B981',
+        'metric-yellow': '#F59E0B',
+        'metric-purple': '#A855F7',
+        // Platform colors
         tiktok: {
           DEFAULT: '#FE2C55',
           light: '#FF4D6D',
@@ -87,10 +96,32 @@ const config: Config = {
           700: '#085C8F',
         },
       },
+      fontFamily: {
+        display: ['var(--font-sora)', 'Sora', 'sans-serif'],
+        body: ['var(--font-inter)', 'Inter', 'sans-serif'],
+      },
+      fontSize: {
+        'hero': ['4.5rem', { lineHeight: '1.1' }],
+        'display': ['2.5rem', { lineHeight: '1.2' }],
+      },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+      },
+      animation: {
+        'float': 'float 8s ease-in-out infinite',
+        'float-delayed': 'float-delayed 10s ease-in-out infinite',
+      },
+      keyframes: {
+        float: {
+          '0%, 100%': { transform: 'translateY(0) scale(1)' },
+          '50%': { transform: 'translateY(-20px) scale(1.05)' },
+        },
+        'float-delayed': {
+          '0%, 100%': { transform: 'translateY(0) scale(1)' },
+          '50%': { transform: 'translateY(20px) scale(0.95)' },
+        },
       },
     },
   },

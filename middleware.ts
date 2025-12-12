@@ -1,7 +1,19 @@
+// middleware.ts
 import { type NextRequest } from 'next/server';
 import { updateSession } from '@/lib/supabase/middleware';
 
+// Public routes (nem kell auth)
+const publicRoutes = ['/', '/en', '/de', '/hu', '/login', '/signup', '/pricing', '/terms', '/policy', '/api/webhook'];
+
 export async function middleware(request: NextRequest) {
+  const path = request.nextUrl.pathname;
+
+  // Ha public route → NEM hívjuk az updateSession-t (bypass auth check)
+  if (publicRoutes.some(route => path === route || path.startsWith(route))) {
+    return;
+  }
+
+  // Minden más route (pl. /app/*) → auth check
   return await updateSession(request);
 }
 
@@ -12,7 +24,7 @@ export const config = {
      * - _next/static (static files)
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
-     * Feel free to modify this pattern to include more paths.
+     * - Static assets (svg, png, jpg, etc.)
      */
     '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
   ],

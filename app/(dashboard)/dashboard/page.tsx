@@ -4,6 +4,7 @@ import { StatsCard } from '@/components/dashboard/stats-card';
 import { QuickActions } from '@/components/dashboard/quick-actions';
 import { RecentPosts } from '@/components/dashboard/recent-posts';
 import { PlatformStats } from '@/components/dashboard/platform-stats';
+import UsageCounter from '@/app/components/UsageCounter';
 
 export default async function DashboardPage() {
   const supabase = await createClient();
@@ -79,6 +80,9 @@ export default async function DashboardPage() {
 
       {/* Quick Actions */}
       <QuickActions />
+
+      {/* Usage Counter */}
+      <UsageCounter />
 
       {/* Grid for Recent Posts and Platform Stats */}
       <div className="grid gap-4 md:grid-cols-2">
