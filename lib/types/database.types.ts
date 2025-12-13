@@ -11,6 +11,9 @@ export interface Profile {
   email: string;
   full_name?: string;
   avatar_url?: string;
+  tier?: string;
+  posts_this_month?: number;
+  billing_cycle_start?: string;
   created_at: string;
   updated_at: string;
 }

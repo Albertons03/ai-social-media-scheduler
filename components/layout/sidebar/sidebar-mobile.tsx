@@ -18,6 +18,7 @@ interface MobileSidebarProps {
     profile?: {
       full_name?: string;
       avatar_url?: string;
+      tier?: string;
     };
   };
 }
@@ -51,7 +52,7 @@ export function MobileSidebar({ user }: MobileSidebarProps) {
 
           {/* Navigation */}
           <div className="flex-1 overflow-y-auto py-4">
-            <SidebarNav isCollapsed={false} />
+            <SidebarNav isCollapsed={false} user={user} />
           </div>
 
           {/* Footer */}

@@ -15,6 +15,7 @@ interface SidebarProps {
     profile?: {
       full_name?: string;
       avatar_url?: string;
+      tier?: string;
     };
   };
 }
@@ -47,7 +48,7 @@ export function Sidebar({ user }: SidebarProps) {
 
       {/* Navigation */}
       <div className="flex-1 overflow-y-auto py-4">
-        <SidebarNav isCollapsed={isCollapsed} />
+        <SidebarNav isCollapsed={isCollapsed} user={user} />
       </div>
 
       {/* Footer */}
