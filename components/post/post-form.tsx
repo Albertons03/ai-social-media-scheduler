@@ -79,6 +79,7 @@ export function PostForm({
   const [allowStitch, setAllowStitch] = useState(
     initialData?.allow_stitch ?? true
   );
+  const [addTimestamp, setAddTimestamp] = useState(true); // Auto-timestamp to prevent duplicates
   const [isLoading, setIsLoading] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [mediaPreviewUrl, setMediaPreviewUrl] = useState<string | null>(null);
@@ -261,9 +262,17 @@ export function PostForm({
         ? localDatetimeStringToUtc(scheduledFor)
         : null;
 
+      // Add unique timestamp if enabled (prevents Twitter duplicate content errors)
+      let finalContent = content;
+      if (addTimestamp && platform === "twitter") {
+        const now = new Date();
+        const timestamp = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        finalContent = `${content.trim()} ⚡ ${timestamp}`;
+      }
+
       const postData = {
         platform,
-        content,
+        content: finalContent,
         social_account_id: selectedAccountId,
         media_url: mediaUrl,
         thumbnail_url: thumbnailUrl,
@@ -454,6 +463,28 @@ export function PostForm({
               Your timezone: {timezoneName}
             </p>
           </div>
+
+          {/* Twitter-specific: Add unique timestamp */}
+          {platform === "twitter" && (
+            <div className="flex items-center space-x-2 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+              <Checkbox
+                id="add_timestamp"
+                checked={addTimestamp}
+                onCheckedChange={(checked) => setAddTimestamp(checked as boolean)}
+              />
+              <div className="space-y-1">
+                <Label
+                  htmlFor="add_timestamp"
+                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+                >
+                  Add unique timestamp ⚡
+                </Label>
+                <p className="text-xs text-muted-foreground">
+                  Prevents Twitter duplicate content errors by adding a timestamp to your tweet
+                </p>
+              </div>
+            </div>
+          )}
 
           {/* TikTok-specific settings */}
           {platform === "tiktok" && (
