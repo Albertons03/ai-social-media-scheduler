@@ -3,6 +3,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 import { refreshTokenIfNeeded } from "./token-manager.ts";
 import { createSuccessNotification, createErrorNotification } from "./notification-service.ts";
+import { sendSuccessEmail, sendFailureEmail } from "./email-service.ts";
 import { publishToTwitter } from "./publishers/twitter-publisher.ts";
 import { publishToLinkedIn } from "./publishers/linkedin-publisher.ts";
 import { publishToTikTok } from "./publishers/tiktok-publisher.ts";
@@ -67,6 +68,10 @@ async function publishPost(
   try {
     console.log(`\n=== Publishing Post ${post.id} to ${post.platform} ===`);
 
+    // Get user email for notifications
+    const { data: userData, error: userError } = await supabase.auth.admin.getUserById(post.user_id);
+    const userEmail = userData?.user?.email || "";
+
     // Check and refresh token if needed
     const tokenValid = await refreshTokenIfNeeded(account, post.user_id);
     if (!tokenValid) {
@@ -95,6 +100,11 @@ async function publishPost(
           // Create success notification
           await createSuccessNotification(post.user_id, post.id, "Twitter");
 
+          // Send success email
+          if (userEmail) {
+            await sendSuccessEmail(userEmail, "Twitter", post.content, post.id);
+          }
+
           return {
             success: true,
             postIdOnPlatform: result.tweetId,
@@ -121,6 +131,11 @@ async function publishPost(
           // Create success notification
           await createSuccessNotification(post.user_id, post.id, "LinkedIn");
 
+          // Send success email
+          if (userEmail) {
+            await sendSuccessEmail(userEmail, "LinkedIn", post.content, post.id);
+          }
+
           return {
             success: true,
             postIdOnPlatform: result.postUrn,
@@ -146,6 +161,11 @@ async function publishPost(
           // Create success notification
           await createSuccessNotification(post.user_id, post.id, "TikTok");
 
+          // Send success email
+          if (userEmail) {
+            await sendSuccessEmail(userEmail, "TikTok", post.content, post.id);
+          }
+
           return {
             success: true,
             postIdOnPlatform: result.tikTokPostId,
@@ -159,6 +179,15 @@ async function publishPost(
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
     console.error(`Failed to publish post ${post.id}:`, errorMessage);
+
+    // Get user email for notifications (if not already fetched)
+    let userEmail = "";
+    try {
+      const { data: userData } = await supabase.auth.admin.getUserById(post.user_id);
+      userEmail = userData?.user?.email || "";
+    } catch (e) {
+      console.error("Failed to get user email:", e);
+    }
 
     // Update post status to failed
     await supabase
@@ -174,6 +203,11 @@ async function publishPost(
 
     // Create error notification
     await createErrorNotification(post.user_id, post.id, post.platform, errorMessage);
+
+    // Send failure email
+    if (userEmail) {
+      await sendFailureEmail(userEmail, post.platform, post.content, errorMessage, post.id);
+    }
 
     return {
       success: false,
