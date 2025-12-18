@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { Breadcrumbs } from "./breadcrumbs";
-import { Notifications } from "./notifications";
+import { NotificationBell } from "@/components/notifications/notification-bell";
 import { UserMenu } from "./user-menu";
 import { MobileSidebar } from "../sidebar/sidebar-mobile";
 
@@ -24,7 +24,7 @@ export function TopBar({ user }: TopBarProps) {
         <MobileSidebar user={user} />
         <Breadcrumbs />
         <div className="ml-auto flex items-center gap-2">
-          <Notifications />
+          <NotificationBell />
           <UserMenu user={user} />
         </div>
       </div>
