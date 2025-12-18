@@ -470,7 +470,7 @@ export function PostForm({
               <Checkbox
                 id="add_timestamp"
                 checked={addTimestamp}
-                onCheckedChange={(checked) => setAddTimestamp(checked as boolean)}
+                onChange={(e) => setAddTimestamp(e.target.checked)}
               />
               <div className="space-y-1">
                 <Label
