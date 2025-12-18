@@ -14,7 +14,6 @@ import {
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Notification } from "@/lib/types/database.types";
-import { markAsRead, deleteNotification } from "@/lib/db/notifications";
 import { useRouter } from "next/navigation";
 
 export function NotificationBell() {
@@ -106,7 +105,11 @@ export function NotificationBell() {
       } = await supabase.auth.getUser();
       if (!user) return;
 
-      await markAsRead(notificationId, user.id);
+      await supabase
+        .from("notifications")
+        .update({ is_read: true })
+        .eq("id", notificationId)
+        .eq("user_id", user.id);
 
       setNotifications((prev) =>
         prev.map((n) =>
@@ -127,7 +130,11 @@ export function NotificationBell() {
       } = await supabase.auth.getUser();
       if (!user) return;
 
-      await deleteNotification(notificationId, user.id);
+      await supabase
+        .from("notifications")
+        .delete()
+        .eq("id", notificationId)
+        .eq("user_id", user.id);
 
       const notification = notifications.find((n) => n.id === notificationId);
       if (notification && !notification.is_read) {
