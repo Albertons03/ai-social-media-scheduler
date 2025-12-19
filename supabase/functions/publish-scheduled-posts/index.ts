@@ -273,6 +273,20 @@ async function publishScheduledPosts(): Promise<FunctionResponse> {
 
     // Process each post
     for (const post of postsToPublish) {
+      // Safety check: verify post is still scheduled (prevent race conditions)
+      const { data: currentPost } = await supabase
+        .from("posts")
+        .select("status")
+        .eq("id", post.id)
+        .single();
+
+      if (currentPost?.status !== "scheduled") {
+        console.log(
+          `Skipping post ${post.id} - status changed to ${currentPost?.status}`
+        );
+        continue;
+      }
+
       if (!post.social_accounts) {
         console.warn(`Post ${post.id} has no associated social account`);
         results.push({
