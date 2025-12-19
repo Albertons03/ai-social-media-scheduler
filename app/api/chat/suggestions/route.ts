@@ -10,43 +10,43 @@ interface Suggestion {
 
 // Platform-specific suggestion prompts
 const SUGGESTION_PROMPTS = {
-  twitter: `Generálj 3 engaging Twitter/X tartalom témát egy social media tartalomkészítő számára.
-Minden javaslat legyen:
-- 280 karakteres tweet-hez alkalmas
-- Időszerű és releváns a jelenlegi trendekhez
-- Konkrét és megvalósítható
+  twitter: `Generate 3 engaging Twitter/X content topics for a social media content creator.
+Each suggestion should be:
+- Suitable for a 280-character tweet
+- Timely and relevant to current trends
+- Specific and actionable
 
-Adj vissza CSAK egy JSON tömböt ezzel a pontos formátummal:
+Return ONLY a JSON array with this exact format:
 [
-  {"title": "Rövid, figyelemfelkeltő cím", "description": "Rövid leírás arról, mit posztoljon"},
-  {"title": "Rövid, figyelemfelkeltő cím", "description": "Rövid leírás arról, mit posztoljon"},
-  {"title": "Rövid, figyelemfelkeltő cím", "description": "Rövid leírás arról, mit posztoljon"}
+  {"title": "Short, attention-grabbing title", "description": "Brief description of what to post"},
+  {"title": "Short, attention-grabbing title", "description": "Brief description of what to post"},
+  {"title": "Short, attention-grabbing title", "description": "Brief description of what to post"}
 ]`,
 
-  linkedin: `Generálj 3 professzionális LinkedIn tartalom témát egy social media tartalomkészítő számára.
-Minden javaslat legyen:
-- Professzionális és értékalapú
-- Szakmai gondolatvezetéshez alkalmas
-- Értékes engagement-et ösztönző
+  linkedin: `Generate 3 professional LinkedIn content topics for a social media content creator.
+Each suggestion should be:
+- Professional and value-driven
+- Suitable for thought leadership
+- Encouraging valuable engagement
 
-Adj vissza CSAK egy JSON tömböt ezzel a pontos formátummal:
+Return ONLY a JSON array with this exact format:
 [
-  {"title": "Professzionális téma cím", "description": "Rövid leírás arról, mit osszon meg"},
-  {"title": "Professzionális téma cím", "description": "Rövid leírás arról, mit osszon meg"},
-  {"title": "Professzionális téma cím", "description": "Rövid leírás arról, mit osszon meg"}
+  {"title": "Professional topic title", "description": "Brief description of what to share"},
+  {"title": "Professional topic title", "description": "Brief description of what to share"},
+  {"title": "Professional topic title", "description": "Brief description of what to share"}
 ]`,
 
-  tiktok: `Generálj 3 kreatív TikTok tartalom témát egy social media tartalomkészítő számára.
-Minden javaslat legyen:
-- Szórakoztató, engaging és trend-tudatos
-- Videó tartalomhoz alkalmas
-- Jelenlegi TikTok trendekhez igazodó
+  tiktok: `Generate 3 creative TikTok content topics for a social media content creator.
+Each suggestion should be:
+- Entertaining, engaging, and trend-aware
+- Suitable for video content
+- Aligned with current TikTok trends
 
-Adj vissza CSAK egy JSON tömböt ezzel a pontos formátummal:
+Return ONLY a JSON array with this exact format:
 [
-  {"title": "Kreatív videó ötlet cím", "description": "Rövid leírás a videó koncepcióról"},
-  {"title": "Kreatív videó ötlet cím", "description": "Rövid leírás a videó koncepcióról"},
-  {"title": "Kreatív videó ötlet cím", "description": "Rövid leírás a videó koncepcióról"}
+  {"title": "Creative video idea title", "description": "Brief description of the video concept"},
+  {"title": "Creative video idea title", "description": "Brief description of the video concept"},
+  {"title": "Creative video idea title", "description": "Brief description of the video concept"}
 ]`,
 };
 
@@ -143,16 +143,16 @@ export async function POST(request: NextRequest) {
 
       suggestions = [
         {
-          title: 'Oszd meg a szakértődet',
-          description: `Oszd meg egy tippet vagy betekintést a szakmádból ${platformNames[platform as Platform]} platformon`,
+          title: 'Share Your Expertise',
+          description: `Share a tip or insight from your field on ${platformNames[platform as Platform]}`,
         },
         {
-          title: 'Kulisszák mögött',
-          description: 'Add a közönségednek egy pillantást a kreatív folyamatodba',
+          title: 'Behind the Scenes',
+          description: 'Give your audience a glimpse into your creative process',
         },
         {
-          title: 'Közönség bevonása',
-          description: 'Tegyél fel egy gondolatébresztő kérdést a beszélgetés élénkítésére',
+          title: 'Engage Your Audience',
+          description: 'Ask a thought-provoking question to spark conversation',
         },
       ];
     }
