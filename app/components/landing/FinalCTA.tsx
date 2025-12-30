@@ -1,45 +1,53 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import Link from 'next/link'
-import { translations, type Locale } from '@/lib/i18n'
+import { useState } from "react";
+import Link from "next/link";
+import { translations, type Locale } from "@/lib/i18n";
+import { trackEvent } from "@/lib/analytics";
 
 type Props = {
-  locale: Locale
-}
+  locale: Locale;
+};
 
 export default function FinalCTA({ locale }: Props) {
-  const t = translations[locale].finalCTA
-  const [email, setEmail] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [message, setMessage] = useState('')
+  const t = translations[locale].finalCTA;
+  const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setLoading(true)
-    setMessage('')
+    e.preventDefault();
+    setLoading(true);
+    setMessage("");
 
     try {
-      const res = await fetch('/api/waitlist', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, source: 'landing_final_cta' }),
-      })
+      const res = await fetch("/api/waitlist", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, source: "landing_final_cta" }),
+      });
 
-      const data = await res.json()
+      const data = await res.json();
 
       if (data.success) {
-        setMessage(data.message || t.emailSuccess)
-        setEmail('') // Clear input on success
+        setMessage(data.message || t.emailSuccess);
+        setEmail(""); // Clear input on success
+
+        // Track successful email capture
+        trackEvent("generate_lead", {
+          source: "landing_page",
+          location: "final_cta_section",
+          email_domain: email.split("@")[1] || "unknown",
+        });
       } else {
-        setMessage(data.error || t.emailError)
+        setMessage(data.error || t.emailError);
       }
     } catch (error) {
-      setMessage(t.emailError)
+      setMessage(t.emailError);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <section className="py-32 relative overflow-hidden bg-bg-dark">
@@ -50,9 +58,7 @@ export default function FinalCTA({ locale }: Props) {
         <h2 className="text-5xl md:text-6xl font-bold text-white mb-6">
           {t.heading}
         </h2>
-        <p className="text-xl text-slate-300 mb-12">
-          {t.subheading}
-        </p>
+        <p className="text-xl text-slate-300 mb-12">{t.subheading}</p>
 
         {/* Email Capture Form */}
         <form onSubmit={handleSubmit} className="max-w-lg mx-auto mb-8">
@@ -78,9 +84,11 @@ export default function FinalCTA({ locale }: Props) {
           {message && (
             <p
               className={`mt-4 text-sm ${
-                message.includes('success') || message.includes('Successfully') || message.includes('Already')
-                  ? 'text-green-400'
-                  : 'text-red-400'
+                message.includes("success") ||
+                message.includes("Successfully") ||
+                message.includes("Already")
+                  ? "text-green-400"
+                  : "text-red-400"
               }`}
             >
               {message}
@@ -90,14 +98,22 @@ export default function FinalCTA({ locale }: Props) {
 
         {/* Alternative CTA Link */}
         <div className="mb-6">
-          <Link href="/signup" className="text-primary-light hover:text-primary-dark underline transition-colors">
+          <Link
+            href="/signup"
+            className="text-primary-light hover:text-primary-dark underline transition-colors"
+            onClick={() =>
+              trackEvent("cta_click", {
+                source: "landing_page",
+                cta_text: t.cta,
+                cta_location: "final_cta_section",
+              })
+            }
+          >
             {t.cta}
           </Link>
         </div>
 
-        <div className="text-slate-400 text-sm">
-          {t.disclaimer}
-        </div>
+        <div className="text-slate-400 text-sm">{t.disclaimer}</div>
       </div>
     </section>
   );

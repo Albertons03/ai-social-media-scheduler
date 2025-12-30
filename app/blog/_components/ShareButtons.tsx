@@ -3,28 +3,45 @@
  * Social media share buttons for blog posts
  */
 
-'use client';
+"use client";
 
-import { generateShareUrls } from '@/lib/blog-utils';
-import { Twitter, Linkedin, Facebook, Link2 } from 'lucide-react';
-import { useState } from 'react';
+import { generateShareUrls } from "@/lib/blog-utils";
+import { trackBlogEvents } from "@/lib/analytics";
+import { Twitter, Linkedin, Facebook, Link2 } from "lucide-react";
+import { useState } from "react";
 
 interface ShareButtonsProps {
   url: string;
   title: string;
+  postSlug?: string;
 }
 
-export default function ShareButtons({ url, title }: ShareButtonsProps) {
+export default function ShareButtons({
+  url,
+  title,
+  postSlug,
+}: ShareButtonsProps) {
   const [copied, setCopied] = useState(false);
   const shareUrls = generateShareUrls(url, title);
+
+  const handleShare = (platform: string) => {
+    if (postSlug) {
+      trackBlogEvents.sharePost(postSlug, platform);
+    }
+  };
 
   const copyToClipboard = async () => {
     try {
       await navigator.clipboard.writeText(url);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
+
+      // Track link copy event
+      if (postSlug) {
+        trackBlogEvents.sharePost(postSlug, "copy_link");
+      }
     } catch (err) {
-      console.error('Failed to copy:', err);
+      console.error("Failed to copy:", err);
     }
   };
 
@@ -39,6 +56,7 @@ export default function ShareButtons({ url, title }: ShareButtonsProps) {
         href={shareUrls.twitter}
         target="_blank"
         rel="noopener noreferrer"
+        onClick={() => handleShare("twitter")}
         className="p-2 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-blue-100 dark:hover:bg-blue-900 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
         aria-label="Share on Twitter"
       >
@@ -50,6 +68,7 @@ export default function ShareButtons({ url, title }: ShareButtonsProps) {
         href={shareUrls.linkedin}
         target="_blank"
         rel="noopener noreferrer"
+        onClick={() => handleShare("linkedin")}
         className="p-2 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-blue-100 dark:hover:bg-blue-900 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
         aria-label="Share on LinkedIn"
       >
@@ -61,6 +80,7 @@ export default function ShareButtons({ url, title }: ShareButtonsProps) {
         href={shareUrls.facebook}
         target="_blank"
         rel="noopener noreferrer"
+        onClick={() => handleShare("facebook")}
         className="p-2 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-blue-100 dark:hover:bg-blue-900 text-gray-600 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
         aria-label="Share on Facebook"
       >

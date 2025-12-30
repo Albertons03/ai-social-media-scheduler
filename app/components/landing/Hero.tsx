@@ -1,47 +1,55 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { ChevronDown } from 'lucide-react'
-import Link from 'next/link'
-import { translations, type Locale } from '@/lib/i18n'
-import LanguageSwitcher from './LanguageSwitcher'
+import { useState } from "react";
+import { ChevronDown } from "lucide-react";
+import Link from "next/link";
+import { translations, type Locale } from "@/lib/i18n";
+import { trackEvent } from "@/lib/analytics";
+import LanguageSwitcher from "./LanguageSwitcher";
 
 type Props = {
-  locale: Locale
-}
+  locale: Locale;
+};
 
 export default function Hero({ locale }: Props) {
-  const t = translations[locale].hero
-  const [email, setEmail] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [message, setMessage] = useState('')
+  const t = translations[locale].hero;
+  const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setLoading(true)
-    setMessage('')
+    e.preventDefault();
+    setLoading(true);
+    setMessage("");
 
     try {
-      const res = await fetch('/api/waitlist', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, source: 'landing_hero' }),
-      })
+      const res = await fetch("/api/waitlist", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, source: "landing_hero" }),
+      });
 
-      const data = await res.json()
+      const data = await res.json();
 
       if (data.success) {
-        setMessage(data.message || t.emailSuccess)
-        setEmail('') // Clear input on success
+        setMessage(data.message || t.emailSuccess);
+        setEmail(""); // Clear input on success
+
+        // Track successful email capture in hero
+        trackEvent("generate_lead", {
+          source: "landing_page",
+          location: "hero_section",
+          email_domain: email.split("@")[1] || "unknown",
+        });
       } else {
-        setMessage(data.error || t.emailError)
+        setMessage(data.error || t.emailError);
       }
     } catch (error) {
-      setMessage(t.emailError)
+      setMessage(t.emailError);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-bg-dark">
@@ -107,9 +115,11 @@ export default function Hero({ locale }: Props) {
           {message && (
             <p
               className={`mt-3 text-sm text-center ${
-                message.includes('success') || message.includes('Successfully') || message.includes('Already')
-                  ? 'text-green-400'
-                  : 'text-red-400'
+                message.includes("success") ||
+                message.includes("Successfully") ||
+                message.includes("Already")
+                  ? "text-green-400"
+                  : "text-red-400"
               }`}
             >
               {message}
@@ -119,8 +129,11 @@ export default function Hero({ locale }: Props) {
 
         {/* Alternative signup link */}
         <p className="text-sm text-slate-400 mb-8">
-          Already have an account?{' '}
-          <Link href="/login" className="text-primary-light hover:text-cyan-400 underline">
+          Already have an account?{" "}
+          <Link
+            href="/login"
+            className="text-primary-light hover:text-cyan-400 underline"
+          >
             Sign in
           </Link>
         </p>
@@ -128,20 +141,44 @@ export default function Hero({ locale }: Props) {
         {/* Trust badges */}
         <div className="mt-8 mb-20 flex flex-wrap gap-4 sm:gap-6 justify-center text-sm text-slate-400">
           <span className="flex items-center gap-2">
-            <svg className="w-4 h-4 text-green-400" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+            <svg
+              className="w-4 h-4 text-green-400"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+            >
+              <path
+                fillRule="evenodd"
+                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                clipRule="evenodd"
+              />
             </svg>
             {t.trustBadge1}
           </span>
           <span className="flex items-center gap-2">
-            <svg className="w-4 h-4 text-green-400" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+            <svg
+              className="w-4 h-4 text-green-400"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+            >
+              <path
+                fillRule="evenodd"
+                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                clipRule="evenodd"
+              />
             </svg>
             {t.trustBadge2}
           </span>
           <span className="flex items-center gap-2">
-            <svg className="w-4 h-4 text-green-400" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+            <svg
+              className="w-4 h-4 text-green-400"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+            >
+              <path
+                fillRule="evenodd"
+                d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                clipRule="evenodd"
+              />
             </svg>
             {t.trustBadge3}
           </span>
@@ -153,5 +190,5 @@ export default function Hero({ locale }: Props) {
         <ChevronDown className="text-white/80" size={32} />
       </div>
     </section>
-  )
+  );
 }

@@ -15,10 +15,13 @@ import {
   generateFAQSchema,
   generateBreadcrumbSchema,
 } from "@/lib/blog-utils";
+import { trackBlogEvents } from "@/lib/analytics";
 import BlogHeader from "../_components/BlogHeader";
 import TableOfContents from "../_components/TableOfContents";
 import RelatedPosts from "../_components/RelatedPosts";
 import ShareButtons from "../_components/ShareButtons";
+import BlogTracking from "../_components/BlogTracking";
+import ClickableLink from "../_components/ClickableLink";
 import { ArrowLeft } from "lucide-react";
 import rehypeHighlight from "rehype-highlight";
 import rehypeSlug from "rehype-slug";
@@ -216,6 +219,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       />
 
       <div className="min-h-screen bg-white dark:bg-gray-900">
+        {/* Blog Analytics Tracking */}
+        <BlogTracking postSlug={post.slug} postTitle={post.title} />
+
         {/* Back to Blog Button */}
         <div className="border-b border-gray-200 dark:border-gray-800">
           <div className="container mx-auto px-4 py-4 max-w-7xl">
@@ -239,7 +245,11 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
               {/* Share Buttons */}
               <div className="my-8">
-                <ShareButtons url={postUrl} title={post.title} />
+                <ShareButtons
+                  url={postUrl}
+                  title={post.title}
+                  postSlug={post.slug}
+                />
               </div>
 
               {/* MDX Content */}
@@ -261,7 +271,11 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                 <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
                   Did you find this article helpful? Share it with your network!
                 </p>
-                <ShareButtons url={postUrl} title={post.title} />
+                <ShareButtons
+                  url={postUrl}
+                  title={post.title}
+                  postSlug={post.slug}
+                />
               </div>
 
               {/* Related Posts */}
@@ -284,12 +298,15 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             <p className="text-xl text-blue-100 mb-8">
               Start using LandingBits to automate your social media posting.
             </p>
-            <Link
+            <ClickableLink
               href="/signup"
+              postSlug={post.slug}
+              ctaText="Get Started Free"
+              ctaLocation="blog_post_bottom"
               className="inline-block px-8 py-4 bg-white text-blue-600 font-bold rounded-lg hover:bg-gray-100 transition-colors text-lg"
             >
               Get Started Free
-            </Link>
+            </ClickableLink>
           </div>
         </section>
       </div>
