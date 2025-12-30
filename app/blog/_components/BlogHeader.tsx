@@ -3,10 +3,10 @@
  * Displays blog post header with title, metadata, and cover image
  */
 
-import Image from 'next/image';
-import { BlogPost } from '@/lib/types/blog.types';
-import { formatDate } from '@/lib/blog-utils';
-import { Clock, Calendar, User } from 'lucide-react';
+import Image from "next/image";
+import { BlogPost } from "@/lib/types/blog.types";
+import { formatDate } from "@/lib/blog-utils";
+import { Clock, Calendar, User } from "lucide-react";
 
 interface BlogHeaderProps {
   post: BlogPost;
@@ -41,7 +41,7 @@ export default function BlogHeader({ post }: BlogHeaderProps) {
       {/* Colorful Metadata Bar */}
       <div className="flex flex-wrap items-center gap-6 pb-8 border-b-2 border-gradient-to-r from-blue-500 to-purple-500 relative">
         <div className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500"></div>
-        
+
         {/* Author with color */}
         <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 px-3 py-1.5 rounded-full">
           <User className="w-5 h-5 text-blue-500" />
@@ -67,15 +67,17 @@ export default function BlogHeader({ post }: BlogHeaderProps) {
           {post.tags.map((tag, index) => {
             const colors = [
               "bg-gradient-to-r from-pink-500 to-rose-500 text-white shadow-lg shadow-pink-500/25",
-              "bg-gradient-to-r from-blue-500 to-cyan-500 text-white shadow-lg shadow-blue-500/25", 
+              "bg-gradient-to-r from-blue-500 to-cyan-500 text-white shadow-lg shadow-blue-500/25",
               "bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-lg shadow-green-500/25",
               "bg-gradient-to-r from-purple-500 to-violet-500 text-white shadow-lg shadow-purple-500/25",
-              "bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-lg shadow-orange-500/25"
+              "bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-lg shadow-orange-500/25",
             ];
             return (
               <span
                 key={tag}
-                className={`px-4 py-2 text-sm font-semibold rounded-full hover:scale-105 transition-transform duration-200 ${colors[index % colors.length]}`}
+                className={`px-4 py-2 text-sm font-semibold rounded-full hover:scale-105 transition-transform duration-200 ${
+                  colors[index % colors.length]
+                }`}
               >
                 #{tag}
               </span>

@@ -3,11 +3,11 @@
  * Displays a blog post preview card with image, title, excerpt, and metadata
  */
 
-import Link from 'next/link';
-import Image from 'next/image';
-import { BlogPostPreview } from '@/lib/types/blog.types';
-import { formatDate } from '@/lib/blog-utils';
-import { Clock, Calendar } from 'lucide-react';
+import Link from "next/link";
+import Image from "next/image";
+import { BlogPostPreview } from "@/lib/types/blog.types";
+import { formatDate } from "@/lib/blog-utils";
+import { Clock, Calendar } from "lucide-react";
 
 interface BlogCardProps {
   post: BlogPostPreview;
@@ -17,16 +17,19 @@ export default function BlogCard({ post }: BlogCardProps) {
   // Colorful tag variations
   const tagColors = [
     "bg-gradient-to-r from-purple-500 to-pink-500 text-white",
-    "bg-gradient-to-r from-blue-500 to-cyan-500 text-white", 
+    "bg-gradient-to-r from-blue-500 to-cyan-500 text-white",
     "bg-gradient-to-r from-green-500 to-teal-500 text-white",
     "bg-gradient-to-r from-orange-500 to-red-500 text-white",
-    "bg-gradient-to-r from-indigo-500 to-purple-500 text-white"
+    "bg-gradient-to-r from-indigo-500 to-purple-500 text-white",
   ];
 
   return (
     <article className="group bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden border-0 ring-1 ring-gray-200 dark:ring-gray-700 hover:ring-2 hover:ring-blue-500/50 transform hover:-translate-y-2">
       {/* Cover Image with Gradient Overlay */}
-      <Link href={`/blog/${post.slug}`} className="block relative aspect-video overflow-hidden">
+      <Link
+        href={`/blog/${post.slug}`}
+        className="block relative aspect-video overflow-hidden"
+      >
         <Image
           src={post.coverImage}
           alt={post.title}
@@ -45,7 +48,9 @@ export default function BlogCard({ post }: BlogCardProps) {
             {post.tags.slice(0, 3).map((tag, index) => (
               <span
                 key={tag}
-                className={`inline-block px-3 py-1.5 text-xs font-semibold rounded-full shadow-sm ${tagColors[index % tagColors.length]} transform hover:scale-105 transition-transform duration-200`}
+                className={`inline-block px-3 py-1.5 text-xs font-semibold rounded-full shadow-sm ${
+                  tagColors[index % tagColors.length]
+                } transform hover:scale-105 transition-transform duration-200`}
               >
                 {tag}
               </span>
@@ -71,7 +76,7 @@ export default function BlogCard({ post }: BlogCardProps) {
             {/* Date */}
             <div className="flex items-center gap-1">
               <Calendar className="w-4 h-4" />
-              <time dateTime={post.date}>{formatDate(post.date, 'short')}</time>
+              <time dateTime={post.date}>{formatDate(post.date, "short")}</time>
             </div>
 
             {/* Reading Time */}
