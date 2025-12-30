@@ -14,28 +14,38 @@ interface BlogCardProps {
 }
 
 export default function BlogCard({ post }: BlogCardProps) {
+  // Colorful tag variations
+  const tagColors = [
+    "bg-gradient-to-r from-purple-500 to-pink-500 text-white",
+    "bg-gradient-to-r from-blue-500 to-cyan-500 text-white", 
+    "bg-gradient-to-r from-green-500 to-teal-500 text-white",
+    "bg-gradient-to-r from-orange-500 to-red-500 text-white",
+    "bg-gradient-to-r from-indigo-500 to-purple-500 text-white"
+  ];
+
   return (
-    <article className="group bg-white dark:bg-gray-800 rounded-lg shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-200 dark:border-gray-700">
-      {/* Cover Image */}
+    <article className="group bg-white dark:bg-gray-800 rounded-xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden border-0 ring-1 ring-gray-200 dark:ring-gray-700 hover:ring-2 hover:ring-blue-500/50 transform hover:-translate-y-2">
+      {/* Cover Image with Gradient Overlay */}
       <Link href={`/blog/${post.slug}`} className="block relative aspect-video overflow-hidden">
         <Image
           src={post.coverImage}
           alt={post.title}
           fill
-          className="object-cover group-hover:scale-105 transition-transform duration-300"
+          className="object-cover group-hover:scale-110 transition-transform duration-500"
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
         />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
       </Link>
 
-      {/* Content */}
-      <div className="p-6">
-        {/* Tags */}
+      {/* Content with subtle gradient background */}
+      <div className="p-6 bg-gradient-to-br from-white via-gray-50/50 to-white dark:from-gray-800 dark:via-gray-800 dark:to-gray-800">
+        {/* Colorful Tags */}
         {post.tags.length > 0 && (
-          <div className="flex flex-wrap gap-2 mb-3">
-            {post.tags.slice(0, 3).map((tag) => (
+          <div className="flex flex-wrap gap-2 mb-4">
+            {post.tags.slice(0, 3).map((tag, index) => (
               <span
                 key={tag}
-                className="inline-block px-3 py-1 text-xs font-medium bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full"
+                className={`inline-block px-3 py-1.5 text-xs font-semibold rounded-full shadow-sm ${tagColors[index % tagColors.length]} transform hover:scale-105 transition-transform duration-200`}
               >
                 {tag}
               </span>
@@ -43,9 +53,9 @@ export default function BlogCard({ post }: BlogCardProps) {
           </div>
         )}
 
-        {/* Title */}
+        {/* Title with gradient hover */}
         <Link href={`/blog/${post.slug}`}>
-          <h2 className="text-xl md:text-2xl font-bold mb-3 text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors line-clamp-2">
+          <h2 className="text-xl md:text-2xl font-bold mb-3 text-gray-900 dark:text-white group-hover:bg-gradient-to-r group-hover:from-blue-600 group-hover:to-purple-600 group-hover:bg-clip-text group-hover:text-transparent transition-all duration-300 line-clamp-2">
             {post.title}
           </h2>
         </Link>
