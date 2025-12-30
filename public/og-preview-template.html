@@ -1,204 +1,211 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LandingBits OG Image</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LandingBits OG Image</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
 
-    body {
-      width: 1200px;
-      height: 630px;
-      background: linear-gradient(135deg, #0A0A0A 0%, #0F766E 50%, #8B5CF6 100%);
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', sans-serif;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      overflow: hidden;
-    }
+      body {
+        width: 1200px;
+        height: 630px;
+        background: linear-gradient(
+          135deg,
+          #0a0a0a 0%,
+          #0f766e 50%,
+          #8b5cf6 100%
+        );
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
+          "Oxygen", "Ubuntu", sans-serif;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        overflow: hidden;
+      }
 
-    /* Animated blobs */
-    .blob {
-      position: absolute;
-      border-radius: 50%;
-      filter: blur(80px);
-      opacity: 0.4;
-    }
+      /* Animated blobs */
+      .blob {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(80px);
+        opacity: 0.4;
+      }
 
-    .blob1 {
-      width: 400px;
-      height: 400px;
-      background: #06B6D4;
-      top: -100px;
-      left: -100px;
-    }
+      .blob1 {
+        width: 400px;
+        height: 400px;
+        background: #06b6d4;
+        top: -100px;
+        left: -100px;
+      }
 
-    .blob2 {
-      width: 500px;
-      height: 500px;
-      background: #8B5CF6;
-      bottom: -150px;
-      right: -150px;
-    }
+      .blob2 {
+        width: 500px;
+        height: 500px;
+        background: #8b5cf6;
+        bottom: -150px;
+        right: -150px;
+      }
 
-    .blob3 {
-      width: 300px;
-      height: 300px;
-      background: #EC4899;
-      top: 100px;
-      right: 200px;
-    }
+      .blob3 {
+        width: 300px;
+        height: 300px;
+        background: #ec4899;
+        top: 100px;
+        right: 200px;
+      }
 
-    .container {
-      position: relative;
-      z-index: 10;
-      text-align: center;
-      padding: 60px;
-      max-width: 900px;
-    }
+      .container {
+        position: relative;
+        z-index: 10;
+        text-align: center;
+        padding: 60px;
+        max-width: 900px;
+      }
 
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 12px 24px;
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: 50px;
-      color: #94A3B8;
-      font-size: 16px;
-      margin-bottom: 32px;
-    }
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 24px;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 50px;
+        color: #94a3b8;
+        font-size: 16px;
+        margin-bottom: 32px;
+      }
 
-    .pulse-dot {
-      width: 10px;
-      height: 10px;
-      background: #10B981;
-      border-radius: 50%;
-      animation: pulse 2s infinite;
-    }
+      .pulse-dot {
+        width: 10px;
+        height: 10px;
+        background: #10b981;
+        border-radius: 50%;
+        animation: pulse 2s infinite;
+      }
 
-    @keyframes pulse {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.5; }
-    }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.5;
+        }
+      }
 
-    h1 {
-      font-size: 72px;
-      font-weight: 800;
-      line-height: 1.1;
-      margin-bottom: 24px;
-      letter-spacing: -2px;
-    }
+      h1 {
+        font-size: 72px;
+        font-weight: 800;
+        line-height: 1.1;
+        margin-bottom: 24px;
+        letter-spacing: -2px;
+      }
 
-    .gradient-text {
-      background: linear-gradient(to right, #06B6D4, #ffffff, #8B5CF6);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
+      .gradient-text {
+        background: linear-gradient(to right, #06b6d4, #ffffff, #8b5cf6);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
 
-    .white-text {
-      color: #ffffff;
-    }
+      .white-text {
+        color: #ffffff;
+      }
 
-    .subtitle {
-      font-size: 26px;
-      color: #CBD5E1;
-      line-height: 1.5;
-      margin-bottom: 50px;
-      font-weight: 400;
-    }
+      .subtitle {
+        font-size: 26px;
+        color: #cbd5e1;
+        line-height: 1.5;
+        margin-bottom: 50px;
+        font-weight: 400;
+      }
 
-    .tagline {
-      font-size: 22px;
-      color: #06B6D4;
-      font-weight: 600;
-      margin-bottom: 16px;
-    }
+      .tagline {
+        font-size: 22px;
+        color: #06b6d4;
+        font-weight: 600;
+        margin-bottom: 16px;
+      }
 
-    .footer {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: rgba(10, 10, 10, 0.8);
-      backdrop-filter: blur(10px);
-      padding: 24px 60px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
-    }
+      .footer {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: rgba(10, 10, 10, 0.8);
+        backdrop-filter: blur(10px);
+        padding: 24px 60px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+      }
 
-    .logo {
-      font-size: 28px;
-      font-weight: 800;
-      color: #ffffff;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
+      .logo {
+        font-size: 28px;
+        font-weight: 800;
+        color: #ffffff;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
 
-    .logo-icon {
-      width: 44px;
-      height: 44px;
-      background: linear-gradient(135deg, #06B6D4, #8B5CF6);
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 26px;
-    }
+      .logo-icon {
+        width: 44px;
+        height: 44px;
+        background: linear-gradient(135deg, #06b6d4, #8b5cf6);
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 26px;
+      }
 
-    .domain {
-      font-size: 20px;
-      color: #94A3B8;
-      font-weight: 500;
-    }
-  </style>
-</head>
-<body>
-  <div class="blob blob1"></div>
-  <div class="blob blob2"></div>
-  <div class="blob blob3"></div>
+      .domain {
+        font-size: 20px;
+        color: #94a3b8;
+        font-weight: 500;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="blob blob1"></div>
+    <div class="blob blob2"></div>
+    <div class="blob blob3"></div>
 
-  <div class="container">
-    <div class="badge">
-      <div class="pulse-dot"></div>
-      <span>Join 10,000+ creators automating their content</span>
+    <div class="container">
+      <div class="badge">
+        <div class="pulse-dot"></div>
+        <span>Join 10,000+ creators automating their content</span>
+      </div>
+
+      <h1>
+        <div class="gradient-text">AI-Powered Social Media</div>
+        <div class="white-text">Scheduling Made Simple</div>
+      </h1>
+
+      <p class="subtitle">
+        Schedule posts across TikTok, LinkedIn & Twitter<br />
+        with AI-generated content
+      </p>
+
+      <p class="tagline">Save 10 hours/week with AI-powered automation</p>
     </div>
 
-    <h1>
-      <div class="gradient-text">AI-Powered Social Media</div>
-      <div class="white-text">Scheduling Made Simple</div>
-    </h1>
-
-    <p class="subtitle">
-      Schedule posts across TikTok, LinkedIn & Twitter<br>
-      with AI-generated content
-    </p>
-
-    <p class="tagline">
-      Save 10 hours/week with AI-powered automation
-    </p>
-  </div>
-
-  <div class="footer">
-    <div class="logo">
-      <div class="logo-icon">🚀</div>
-      <span>LandingBits</span>
+    <div class="footer">
+      <div class="logo">
+        <div class="logo-icon">🚀</div>
+        <span>LandingBits</span>
+      </div>
+      <div class="domain">landingbits.net</div>
     </div>
-    <div class="domain">
-      landingbits.net
-    </div>
-  </div>
-</body>
+  </body>
 </html>

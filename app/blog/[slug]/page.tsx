@@ -191,7 +191,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const breadcrumbSchema = generateBreadcrumbSchema(post.slug, post.title);
 
   // Full URL for sharing
-  const postUrl = `https://landingbits.com/blog/${post.slug}`;
+  const postUrl = `https://landingbits.net/blog/${post.slug}`;
 
   return (
     <>

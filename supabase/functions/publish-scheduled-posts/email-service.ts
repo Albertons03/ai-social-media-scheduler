@@ -27,7 +27,7 @@ async function sendEmail(data: EmailData): Promise<boolean> {
     const response = await fetch(RESEND_API_URL, {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${RESEND_API_KEY}`,
+        Authorization: `Bearer ${RESEND_API_KEY}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
@@ -91,7 +91,10 @@ function generateSuccessEmailHTML(
 
       <div class="post-preview">
         <span class="platform-badge">${platform}</span>
-        <p style="margin: 10px 0 0 0; white-space: pre-wrap;">${postContent.substring(0, 200)}${postContent.length > 200 ? "..." : ""}</p>
+        <p style="margin: 10px 0 0 0; white-space: pre-wrap;">${postContent.substring(
+          0,
+          200
+        )}${postContent.length > 200 ? "..." : ""}</p>
       </div>
 
       <p>Your content is now live and reaching your audience! 🚀</p>
@@ -152,7 +155,10 @@ function generateFailureEmailHTML(
 
       <div class="post-preview">
         <span class="platform-badge">${platform}</span>
-        <p style="margin: 10px 0 0 0; white-space: pre-wrap;">${postContent.substring(0, 200)}${postContent.length > 200 ? "..." : ""}</p>
+        <p style="margin: 10px 0 0 0; white-space: pre-wrap;">${postContent.substring(
+          0,
+          200
+        )}${postContent.length > 200 ? "..." : ""}</p>
       </div>
 
       <div class="error-box">
@@ -201,7 +207,9 @@ export async function sendSuccessEmail(
     html,
   });
 
-  console.log(`Success email sent to ${userEmail} for ${platform} post ${postId}`);
+  console.log(
+    `Success email sent to ${userEmail} for ${platform} post ${postId}`
+  );
 }
 
 /**
@@ -214,7 +222,12 @@ export async function sendFailureEmail(
   errorMessage: string,
   postId: string
 ): Promise<void> {
-  const html = generateFailureEmailHTML(platform, postContent, errorMessage, postId);
+  const html = generateFailureEmailHTML(
+    platform,
+    postContent,
+    errorMessage,
+    postId
+  );
 
   await sendEmail({
     to: userEmail,
@@ -222,5 +235,7 @@ export async function sendFailureEmail(
     html,
   });
 
-  console.log(`Failure email sent to ${userEmail} for ${platform} post ${postId}`);
+  console.log(
+    `Failure email sent to ${userEmail} for ${platform} post ${postId}`
+  );
 }

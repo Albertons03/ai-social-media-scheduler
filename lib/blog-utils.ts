@@ -193,7 +193,7 @@ export function generateBreadcrumbSchema(
  */
 export function generateBlogJsonLd(
   post: BlogPost,
-  baseUrl: string = "https://landingbits.com"
+  baseUrl: string = "https://landingbits.net"
 ) {
   const canonical = `${baseUrl}/blog/${post.slug}`;
   const ogImage = post.coverImage.startsWith("http")
