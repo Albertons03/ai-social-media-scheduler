@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Blog Cover Image Generator</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+      }
+      canvas {
+        border: 1px solid #ddd;
+        margin: 10px 0;
+      }
+      .controls {
+        margin: 20px 0;
+      }
+      button {
+        padding: 10px 20px;
+        margin: 5px;
+        background: #007cba;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      h2 {
+        color: #333;
+        margin-top: 30px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>🎨 Blog Cover Image Generator</h1>
+    <p>Automatic placeholder images for your blog posts (1200x630px)</p>
+
+    <!-- Schedule TikTok Posts Tutorial -->
+    <h2>1. Schedule TikTok Posts Tutorial</h2>
+    <canvas id="canvas1" width="1200" height="630"></canvas>
+    <button
+      onclick="downloadImage('canvas1', 'schedule-tiktok-posts-tutorial.jpg')"
+    >
+      Download
+    </button>
+
+    <!-- Best TikTok Schedulers -->
+    <h2>2. Best TikTok Schedulers 2025</h2>
+    <canvas id="canvas2" width="1200" height="630"></canvas>
+    <button onclick="downloadImage('canvas2', 'tiktok-schedulers-2025.jpg')">
+      Download
+    </button>
+
+    <!-- AI Social Media Generator -->
+    <h2>3. AI Social Media Generator</h2>
+    <canvas id="canvas3" width="1200" height="630"></canvas>
+    <button onclick="downloadImage('canvas3', 'ai-social-media-generator.jpg')">
+      Download
+    </button>
+
+    <!-- Social Media Scheduling -->
+    <h2>4. Social Media Scheduling Best Practices</h2>
+    <canvas id="canvas4" width="1200" height="630"></canvas>
+    <button onclick="downloadImage('canvas4', 'social-media-scheduling.jpg')">
+      Download
+    </button>
+
+    <script>
+      const images = [
+        {
+          canvas: "canvas1",
+          title: "Schedule TikTok Posts Tutorial",
+          subtitle: "Complete Step-by-Step Guide",
+          gradient: ["#667eea", "#764ba2"],
+          icon: "📱",
+        },
+        {
+          canvas: "canvas2",
+          title: "Best TikTok Schedulers 2025",
+          subtitle: "Free & Paid Tools Compared",
+          gradient: ["#f093fb", "#f5576c"],
+          icon: "🚀",
+        },
+        {
+          canvas: "canvas3",
+          title: "AI Social Media Generator",
+          subtitle: "Automate Your Content Creation",
+          gradient: ["#4facfe", "#00f2fe"],
+          icon: "🤖",
+        },
+        {
+          canvas: "canvas4",
+          title: "Social Media Scheduling",
+          subtitle: "Best Practices & Tips",
+          gradient: ["#43e97b", "#38f9d7"],
+          icon: "📊",
+        },
+      ];
+
+      function createImage(config) {
+        const canvas = document.getElementById(config.canvas);
+        const ctx = canvas.getContext("2d");
+
+        // Gradient background
+        const gradient = ctx.createLinearGradient(
+          0,
+          0,
+          canvas.width,
+          canvas.height
+        );
+        gradient.addColorStop(0, config.gradient[0]);
+        gradient.addColorStop(1, config.gradient[1]);
+        ctx.fillStyle = gradient;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Icon
+        ctx.font = "120px Arial";
+        ctx.fillStyle = "rgba(255,255,255,0.2)";
+        ctx.fillText(config.icon, 1000, 200);
+
+        // Main title
+        ctx.font = "bold 72px Arial";
+        ctx.fillStyle = "white";
+        ctx.textAlign = "left";
+        ctx.fillText(config.title, 60, 280);
+
+        // Subtitle
+        ctx.font = "42px Arial";
+        ctx.fillStyle = "rgba(255,255,255,0.9)";
+        ctx.fillText(config.subtitle, 60, 350);
+
+        // Domain
+        ctx.font = "28px Arial";
+        ctx.fillStyle = "rgba(255,255,255,0.8)";
+        ctx.fillText("landingbits.net", 60, 550);
+      }
+
+      // Generate all images
+      images.forEach(createImage);
+
+      function downloadImage(canvasId, filename) {
+        const canvas = document.getElementById(canvasId);
+        const link = document.createElement("a");
+        link.download = filename;
+        link.href = canvas.toDataURL("image/jpeg", 0.9);
+        link.click();
+      }
+    </script>
+  </body>
+</html>
