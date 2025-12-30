@@ -1,23 +1,23 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { createClient } from '@/lib/supabase/client';
-import { Calendar, Mail, Lock, AlertCircle } from 'lucide-react';
+import { useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
+import { Calendar, Mail, Lock, AlertCircle } from "lucide-react";
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
+    setError("");
     setLoading(true);
 
     try {
@@ -30,11 +30,11 @@ export default function LoginPage() {
       if (error) throw error;
 
       if (data.user) {
-        router.push('/dashboard');
+        router.push("/dashboard");
         router.refresh();
       }
     } catch (err: any) {
-      setError(err.message || 'An error occurred during login');
+      setError(err.message || "An error occurred during login");
     } finally {
       setLoading(false);
     }
@@ -46,7 +46,7 @@ export default function LoginPage() {
         {/* Logo */}
         <div className="flex items-center justify-center gap-2 mb-8">
           <Calendar className="h-10 w-10 text-primary" />
-          <span className="text-3xl font-bold">SocialScheduler</span>
+          <span className="text-3xl font-bold">LandingBits</span>
         </div>
 
         {/* Login Card */}
@@ -120,13 +120,16 @@ export default function LoginPage() {
               disabled={loading}
               className="w-full bg-primary text-primary-foreground py-2.5 rounded-lg font-medium hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading ? 'Signing in...' : 'Sign in'}
+              {loading ? "Signing in..." : "Sign in"}
             </button>
           </form>
 
           <div className="text-center text-sm text-muted-foreground">
-            Don&apos;t have an account?{' '}
-            <Link href="/signup" className="text-primary font-medium hover:underline">
+            Don&apos;t have an account?{" "}
+            <Link
+              href="/signup"
+              className="text-primary font-medium hover:underline"
+            >
               Sign up
             </Link>
           </div>

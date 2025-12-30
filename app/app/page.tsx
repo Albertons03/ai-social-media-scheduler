@@ -9,7 +9,7 @@ export default function Home() {
         <nav className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Calendar className="h-8 w-8 text-primary" />
-            <span className="text-2xl font-bold">SocialScheduler</span>
+            <span className="text-2xl font-bold">LandingBits</span>
           </div>
           <div className="flex items-center gap-4">
             <Link

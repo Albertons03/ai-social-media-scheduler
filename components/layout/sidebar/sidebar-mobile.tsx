@@ -3,11 +3,7 @@
 import * as React from "react";
 import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  Sheet,
-  SheetContent,
-  SheetTrigger,
-} from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { SidebarNav } from "./sidebar-nav";
 import { SidebarFooter } from "./sidebar-footer";
 
@@ -44,9 +40,9 @@ export function MobileSidebar({ user }: MobileSidebarProps) {
           <div className="h-16 flex items-center justify-center border-b px-4">
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-primary-foreground font-bold text-sm">
-                AI
+                LB
               </div>
-              <span className="font-semibold text-lg">PostScheduler</span>
+              <span className="font-semibold text-lg">LandingBits</span>
             </div>
           </div>
 

@@ -25,9 +25,12 @@ export async function Header() {
     <header className="border-b border-border bg-white sticky top-0 z-50">
       <div className="container mx-auto px-4 py-4 flex items-center justify-between">
         {/* Logo and Title */}
-        <Link href="/dashboard" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+        <Link
+          href="/dashboard"
+          className="flex items-center gap-2 hover:opacity-80 transition-opacity"
+        >
           <Calendar className="h-8 w-8 text-primary" />
-          <span className="text-2xl font-bold">SocialScheduler</span>
+          <span className="text-2xl font-bold">LandingBits</span>
         </Link>
 
         {/* Center - Navigation Links */}

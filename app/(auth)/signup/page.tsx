@@ -1,37 +1,44 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { createClient } from '@/lib/supabase/client';
-import { Calendar, Mail, Lock, User, AlertCircle, CheckCircle } from 'lucide-react';
+import { useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
+import {
+  Calendar,
+  Mail,
+  Lock,
+  User,
+  AlertCircle,
+  CheckCircle,
+} from "lucide-react";
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 export default function SignupPage() {
-  const [fullName, setFullName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [error, setError] = useState('');
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
+    setError("");
     setLoading(true);
 
     // Validation
     if (password !== confirmPassword) {
-      setError('Passwords do not match');
+      setError("Passwords do not match");
       setLoading(false);
       return;
     }
 
     if (password.length < 6) {
-      setError('Password must be at least 6 characters');
+      setError("Password must be at least 6 characters");
       setLoading(false);
       return;
     }
@@ -53,12 +60,12 @@ export default function SignupPage() {
       if (data.user) {
         setSuccess(true);
         setTimeout(() => {
-          router.push('/dashboard');
+          router.push("/dashboard");
           router.refresh();
         }, 2000);
       }
     } catch (err: any) {
-      setError(err.message || 'An error occurred during signup');
+      setError(err.message || "An error occurred during signup");
     } finally {
       setLoading(false);
     }
@@ -70,7 +77,7 @@ export default function SignupPage() {
         {/* Logo */}
         <div className="flex items-center justify-center gap-2 mb-8">
           <Calendar className="h-10 w-10 text-primary" />
-          <span className="text-3xl font-bold">SocialScheduler</span>
+          <span className="text-3xl font-bold">LandingBits</span>
         </div>
 
         {/* Signup Card */}
@@ -92,7 +99,9 @@ export default function SignupPage() {
           {success && (
             <div className="bg-green-50 text-green-700 px-4 py-3 rounded-lg flex items-center gap-2">
               <CheckCircle className="h-5 w-5 flex-shrink-0" />
-              <p className="text-sm">Account created successfully! Redirecting...</p>
+              <p className="text-sm">
+                Account created successfully! Redirecting...
+              </p>
             </div>
           )}
 
@@ -153,7 +162,10 @@ export default function SignupPage() {
             </div>
 
             <div className="space-y-2">
-              <label htmlFor="confirmPassword" className="text-sm font-medium block">
+              <label
+                htmlFor="confirmPassword"
+                className="text-sm font-medium block"
+              >
                 Confirm Password
               </label>
               <div className="relative">
@@ -176,13 +188,16 @@ export default function SignupPage() {
               disabled={loading || success}
               className="w-full bg-primary text-primary-foreground py-2.5 rounded-lg font-medium hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading ? 'Creating account...' : 'Sign up'}
+              {loading ? "Creating account..." : "Sign up"}
             </button>
           </form>
 
           <div className="text-center text-sm text-muted-foreground">
-            Already have an account?{' '}
-            <Link href="/login" className="text-primary font-medium hover:underline">
+            Already have an account?{" "}
+            <Link
+              href="/login"
+              className="text-primary font-medium hover:underline"
+            >
               Sign in
             </Link>
           </div>

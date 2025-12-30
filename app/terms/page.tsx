@@ -21,10 +21,10 @@ export default function TermsPage() {
           <section>
             <h2 className="text-2xl font-bold mb-4">1. Acceptance of Terms</h2>
             <p>
-              By accessing and using SocialScheduler ("the Service"), you accept
-              and agree to be bound by the terms and provision of this
-              agreement. If you do not agree to abide by the above, please do
-              not use this service.
+              By accessing and using LandingBits ("the Service"), you accept and
+              agree to be bound by the terms and provision of this agreement. If
+              you do not agree to abide by the above, please do not use this
+              service.
             </p>
           </section>
 
@@ -32,10 +32,10 @@ export default function TermsPage() {
             <h2 className="text-2xl font-bold mb-4">2. Use License</h2>
             <p className="mb-3">
               Permission is granted to temporarily download one copy of the
-              materials (information or software) on SocialScheduler for
-              personal, non-commercial transitory viewing only. This is the
-              grant of a license, not a transfer of title, and under this
-              license you may not:
+              materials (information or software) on LandingBits for personal,
+              non-commercial transitory viewing only. This is the grant of a
+              license, not a transfer of title, and under this license you may
+              not:
             </p>
             <ul className="list-disc list-inside space-y-2 ml-4">
               <li>Modify or copy the materials</li>
@@ -66,13 +66,12 @@ export default function TermsPage() {
               3. Disclaimer of Warranties
             </h2>
             <p>
-              The materials on SocialScheduler are provided on an 'as is' basis.
-              SocialScheduler makes no warranties, expressed or implied, and
-              hereby disclaims and negates all other warranties including,
-              without limitation, implied warranties or conditions of
-              merchantability, fitness for a particular purpose, or
-              non-infringement of intellectual property or other violation of
-              rights.
+              The materials on LandingBits are provided on an 'as is' basis.
+              LandingBits makes no warranties, expressed or implied, and hereby
+              disclaims and negates all other warranties including, without
+              limitation, implied warranties or conditions of merchantability,
+              fitness for a particular purpose, or non-infringement of
+              intellectual property or other violation of rights.
             </p>
           </section>
 
@@ -81,12 +80,12 @@ export default function TermsPage() {
               4. Limitations of Liability
             </h2>
             <p>
-              In no event shall SocialScheduler or its suppliers be liable for
-              any damages (including, without limitation, damages for loss of
-              data or profit, or due to business interruption) arising out of
-              the use or inability to use the materials on SocialScheduler, even
-              if SocialScheduler or an authorized representative has been
-              notified orally or in writing of the possibility of such damage.
+              In no event shall Landingbits or its suppliers be liable for any
+              damages (including, without limitation, damages for loss of data
+              or profit, or due to business interruption) arising out of the use
+              or inability to use the materials on Landingbits, even if
+              Landingbits or an authorized representative has been notified
+              orally or in writing of the possibility of such damage.
             </p>
           </section>
 
@@ -95,33 +94,31 @@ export default function TermsPage() {
               5. Accuracy of Materials
             </h2>
             <p>
-              The materials appearing on SocialScheduler could include
-              technical, typographical, or photographic errors. SocialScheduler
-              does not warrant that any of the materials on SocialScheduler are
-              accurate, complete, or current. SocialScheduler may make changes
-              to the materials contained on SocialScheduler at any time without
-              notice.
+              The materials appearing on LandingBits could include technical,
+              typographical, or photographic errors. Landingbits does not
+              warrant that any of the materials on Landingbits are accurate,
+              complete, or current. Landingbits may make changes to the
+              materials contained on Landingbits at any time without notice.
             </p>
           </section>
 
           <section>
             <h2 className="text-2xl font-bold mb-4">6. Materials and Links</h2>
             <p>
-              SocialScheduler has not reviewed all of the sites linked to its
+              Landingbits has not reviewed all of the sites linked to its
               website and is not responsible for the contents of any such linked
               site. The inclusion of any link does not imply endorsement by
-              SocialScheduler of the site. Use of any such linked website is at
-              the user's own risk.
+              Landingbits of the site. Use of any such linked website is at the
+              user's own risk.
             </p>
           </section>
 
           <section>
             <h2 className="text-2xl font-bold mb-4">7. Modifications</h2>
             <p>
-              SocialScheduler may revise these terms of service for its website
-              at any time without notice. By using this website, you are
-              agreeing to be bound by the then current version of these terms of
-              service.
+              Landingbits may revise these terms of service for its website at
+              any time without notice. By using this website, you are agreeing
+              to be bound by the then current version of these terms of service.
             </p>
           </section>
 
@@ -129,9 +126,9 @@ export default function TermsPage() {
             <h2 className="text-2xl font-bold mb-4">8. Governing Law</h2>
             <p>
               These terms and conditions are governed by and construed in
-              accordance with the laws of the jurisdiction in which
-              SocialScheduler operates, and you irrevocably submit to the
-              exclusive jurisdiction of the courts in that location.
+              accordance with the laws of the jurisdiction in which LandingBits
+              operates, and you irrevocably submit to the exclusive jurisdiction
+              of the courts in that location.
             </p>
           </section>
 
@@ -147,8 +144,8 @@ export default function TermsPage() {
             </p>
             <ul className="list-disc list-inside space-y-2 ml-4">
               <li>
-                Notify SocialScheduler immediately of any unauthorized use of
-                your account
+                Notify LandingBits immediately of any unauthorized use of your
+                account
               </li>
               <li>
                 Never share your password or credentials with third parties
@@ -162,10 +159,10 @@ export default function TermsPage() {
               10. Third-Party Services
             </h2>
             <p>
-              SocialScheduler integrates with third-party social media platforms
+              Landingbits integrates with third-party social media platforms
               (TikTok, LinkedIn, Twitter/X). Your use of these platforms is
-              subject to their respective terms of service. SocialScheduler is
-              not responsible for the actions, policies, or content of these
+              subject to their respective terms of service. Landingbits is not
+              responsible for the actions, policies, or content of these
               third-party platforms.
             </p>
           </section>

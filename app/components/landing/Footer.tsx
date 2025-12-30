@@ -78,12 +78,12 @@ export default function Footer({ locale }: Props) {
             <h4 className="text-white font-semibold mb-4">{t.legalTitle}</h4>
             <ul className="space-y-2 text-slate-400 text-sm">
               <li>
-                <a href="#" className="hover:text-white transition-colors">
+                <a href="/policy" className="hover:text-white transition-colors">
                   {t.legalPrivacy}
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-white transition-colors">
+                <a href="/terms" className="hover:text-white transition-colors">
                   {t.legalTerms}
                 </a>
               </li>

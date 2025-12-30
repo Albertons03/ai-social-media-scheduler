@@ -21,7 +21,7 @@ export default function PrivacyPage() {
           <section>
             <h2 className="text-2xl font-bold mb-4">1. Introduction</h2>
             <p>
-              SocialScheduler ("we," "us," "our," or "Company") is committed to
+              LandingBits ("we," "us," "our," or "Company") is committed to
               protecting your privacy. This Privacy Policy explains how we
               collect, use, disclose, and safeguard your information when you
               use our website and services.
@@ -91,8 +91,8 @@ export default function PrivacyPage() {
               4. Social Media Authentication
             </h2>
             <p>
-              SocialScheduler uses OAuth authentication with TikTok, LinkedIn,
-              and Twitter/X. When you authorize SocialScheduler to access these
+              Landingbits uses OAuth authentication with TikTok, LinkedIn, and
+              Twitter/X. When you authorize Landingbits to access these
               platforms:
             </p>
             <ul className="list-disc list-inside space-y-2 ml-4 mt-3">
@@ -115,7 +115,7 @@ export default function PrivacyPage() {
           <section>
             <h2 className="text-2xl font-bold mb-4">5. AI-Generated Content</h2>
             <p>
-              SocialScheduler uses OpenAI's API to generate content suggestions.
+              Landingbits uses OpenAI's API to generate content suggestions.
               When you use our AI generation feature:
             </p>
             <ul className="list-disc list-inside space-y-2 ml-4 mt-3">

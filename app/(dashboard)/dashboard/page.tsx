@@ -1,10 +1,10 @@
-import { createClient } from '@/lib/supabase/server';
-import { getPostAnalytics } from '@/lib/db/posts';
-import { StatsCard } from '@/components/dashboard/stats-card';
-import { QuickActions } from '@/components/dashboard/quick-actions';
-import { RecentPosts } from '@/components/dashboard/recent-posts';
-import { PlatformStats } from '@/components/dashboard/platform-stats';
-import UsageCounter from '@/app/components/UsageCounter';
+import { createClient } from "@/lib/supabase/server";
+import { getPostAnalytics } from "@/lib/db/posts";
+import { StatsCard } from "@/components/dashboard/stats-card";
+import { QuickActions } from "@/components/dashboard/quick-actions";
+import { RecentPosts } from "@/components/dashboard/recent-posts";
+import PiePlatformStats from "@/components/dashboard/pie-platform-stats";
+import UsageCounter from "@/app/components/UsageCounter";
 
 export default async function DashboardPage() {
   const supabase = await createClient();
@@ -21,17 +21,19 @@ export default async function DashboardPage() {
   const analytics = await getPostAnalytics(user.id);
 
   // Calculate engagement rate
-  const totalEngagements = analytics.total_likes + analytics.total_comments + analytics.total_shares;
-  const engagementRate = analytics.total_views > 0
-    ? ((totalEngagements / analytics.total_views) * 100).toFixed(2)
-    : '0.00';
+  const totalEngagements =
+    analytics.total_likes + analytics.total_comments + analytics.total_shares;
+  const engagementRate =
+    analytics.total_views > 0
+      ? ((totalEngagements / analytics.total_views) * 100).toFixed(2)
+      : "0.00";
 
   // Fetch recent posts
   const { data: recentPosts } = await supabase
-    .from('posts')
-    .select('*')
-    .eq('user_id', user.id)
-    .order('created_at', { ascending: false })
+    .from("posts")
+    .select("*")
+    .eq("user_id", user.id)
+    .order("created_at", { ascending: false })
     .limit(5);
 
   return (
@@ -87,7 +89,7 @@ export default async function DashboardPage() {
       {/* Grid for Recent Posts and Platform Stats */}
       <div className="grid gap-4 md:grid-cols-2">
         <RecentPosts posts={recentPosts || []} />
-        <PlatformStats
+        <PiePlatformStats
           stats={{
             tiktok: analytics.by_platform.tiktok,
             linkedin: analytics.by_platform.linkedin,
