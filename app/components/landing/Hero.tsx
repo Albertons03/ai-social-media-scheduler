@@ -91,21 +91,60 @@ export default function Hero({ locale }: Props) {
           {t.subheadline}
         </p>
 
-        {/* Email Capture Form - Main CTA */}
-        <form onSubmit={handleSubmit} className="max-w-lg mx-auto mb-6">
-          <div className="flex gap-3">
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder={t.emailPlaceholder}
-              required
-              disabled={loading}
-              className="flex-1 px-6 py-4 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full text-white text-base placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-light disabled:opacity-50"
-            />
-            <button
-              type="submit"
-              disabled={loading}
+        {/* Direct Signup CTA */}
+        <div className="max-w-lg mx-auto mb-6">
+          <Link
+            href="/signup"
+            className="inline-flex items-center justify-center w-full px-8 py-4 text-lg font-semibold text-white bg-gradient-to-r from-primary-light to-secondary hover:from-primary-light/90 hover:to-secondary/90 rounded-2xl transition-all transform hover:scale-105 shadow-2xl shadow-primary-light/25"
+            onClick={() => trackEvent('cta_click', { 
+              source: 'landing_page', 
+              cta_text: 'Get Started Free', 
+              cta_location: 'hero_main_cta' 
+            })}
+          >
+            {t.cta}
+            <span className="ml-2 text-xl">→</span>
+          </Link>
+        </div>
+
+        {/* Secondary Email Capture (Optional) */}
+        <div className="max-w-lg mx-auto mb-6">
+          <details className="group">
+            <summary className="text-sm text-slate-400 hover:text-white cursor-pointer list-none">
+              <span className="group-open:hidden">Or join our waitlist for updates</span>
+              <span className="hidden group-open:inline">✕ Close</span>
+            </summary>
+            <form onSubmit={handleSubmit} className="mt-4">
+              <div className="flex gap-3">
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder={t.emailPlaceholder}
+                  required
+                  disabled={loading}
+                  className="flex-1 px-4 py-3 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full text-white text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-primary-light disabled:opacity-50"
+                />
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="px-6 py-3 bg-gradient-to-r from-primary-light to-secondary hover:from-primary-light/90 hover:to-secondary/90 rounded-full text-white font-semibold disabled:opacity-50 transition-all text-sm"
+                >
+                  {loading ? "..." : "Join"}
+                </button>
+              </div>
+              {message && (
+                <p className={`mt-2 text-sm ${
+                  message.includes('success') || message.includes('Successfully') 
+                    ? 'text-green-400' 
+                    : 'text-red-400'
+                }`}>
+                  {message}
+                </p>
+              )}
+            </form>
+          </details>
+        </div>
               className="px-8 py-4 bg-primary-light hover:bg-cyan-400 text-bg-dark text-base font-bold rounded-full transition-all hover:scale-105 disabled:opacity-50 whitespace-nowrap shadow-lg shadow-primary-light/30"
             >
               {loading ? t.emailLoading : t.emailCTA}
