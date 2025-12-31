@@ -4,7 +4,6 @@
  */
 
 import { NextRequest, NextResponse } from "next/server";
-import { Resend } from "resend";
 
 export async function POST(request: NextRequest) {
   try {
@@ -17,6 +16,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Dynamic import to avoid build-time initialization
+    const { Resend } = await import("resend");
     const resend = new Resend(resendApiKey);
     const { name, email, subject, message } = await request.json();
 

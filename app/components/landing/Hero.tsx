@@ -102,7 +102,7 @@ export default function Hero({ locale }: Props) {
               cta_location: 'hero_main_cta' 
             })}
           >
-            {t.cta}
+            {t.cta1}
             <span className="ml-2 text-xl">→</span>
           </Link>
         </div>
@@ -145,26 +145,6 @@ export default function Hero({ locale }: Props) {
             </form>
           </details>
         </div>
-              className="px-8 py-4 bg-primary-light hover:bg-cyan-400 text-bg-dark text-base font-bold rounded-full transition-all hover:scale-105 disabled:opacity-50 whitespace-nowrap shadow-lg shadow-primary-light/30"
-            >
-              {loading ? t.emailLoading : t.emailCTA}
-            </button>
-          </div>
-
-          {message && (
-            <p
-              className={`mt-3 text-sm text-center ${
-                message.includes("success") ||
-                message.includes("Successfully") ||
-                message.includes("Already")
-                  ? "text-green-400"
-                  : "text-red-400"
-              }`}
-            >
-              {message}
-            </p>
-          )}
-        </form>
 
         {/* Alternative signup link */}
         <p className="text-sm text-slate-400 mb-8">
