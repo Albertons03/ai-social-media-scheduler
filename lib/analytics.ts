@@ -22,16 +22,10 @@ export const trackEvent = (eventName: string, params?: Record<string, any>) => {
       ...params,
     });
 
-    // Log to console for debugging (both dev and prod temporarily)
-    console.log("📊 Analytics Event:", eventName, params);
-  } else {
-    // Debug: why is gtag not available?
-    console.log("🚨 Analytics Debug:", {
-      hasWindow: typeof window !== "undefined",
-      hasGtag: typeof window !== "undefined" && !!window.gtag,
-      eventName,
-      params
-    });
+    // Log to console in development only
+    if (process.env.NODE_ENV === "development") {
+      console.log("📊 Analytics Event:", eventName, params);
+    }
   }
 };
 

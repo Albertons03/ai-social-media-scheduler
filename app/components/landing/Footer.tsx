@@ -1,22 +1,20 @@
-import { translations, type Locale } from '@/lib/i18n'
+import { translations, type Locale } from "@/lib/i18n";
 
 type Props = {
-  locale: Locale
-}
+  locale: Locale;
+};
 
 export default function Footer({ locale }: Props) {
-  const t = translations[locale].footer
+  const t = translations[locale].footer;
 
   return (
     <footer className="border-t border-white/10 py-12 bg-bg-dark">
       <div className="max-w-6xl mx-auto px-6">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-8 mb-8">
           {/* Brand */}
           <div>
             <h3 className="text-xl font-bold text-white mb-4">{t.brandName}</h3>
-            <p className="text-slate-400 text-sm">
-              {t.brandDescription}
-            </p>
+            <p className="text-slate-400 text-sm">{t.brandDescription}</p>
           </div>
 
           {/* Product */}
@@ -73,12 +71,46 @@ export default function Footer({ locale }: Props) {
             </ul>
           </div>
 
+          {/* Support */}
+          <div>
+            <h4 className="text-white font-semibold mb-4">{t.supportTitle}</h4>
+            <ul className="space-y-2 text-slate-400 text-sm">
+              <li>
+                <a
+                  href="/contact"
+                  className="hover:text-white transition-colors"
+                >
+                  {t.supportHelp}
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/contact"
+                  className="hover:text-white transition-colors"
+                >
+                  {t.supportContact}
+                </a>
+              </li>
+              <li>
+                <a
+                  href="mailto:albertons@landingbits.com"
+                  className="text-slate-500 text-xs hover:text-slate-400 transition-colors"
+                >
+                  albertons@landingbits.com
+                </a>
+              </li>
+            </ul>
+          </div>
+
           {/* Legal */}
           <div>
             <h4 className="text-white font-semibold mb-4">{t.legalTitle}</h4>
             <ul className="space-y-2 text-slate-400 text-sm">
               <li>
-                <a href="/policy" className="hover:text-white transition-colors">
+                <a
+                  href="/policy"
+                  className="hover:text-white transition-colors"
+                >
                   {t.legalPrivacy}
                 </a>
               </li>
