@@ -22,10 +22,16 @@ export const trackEvent = (eventName: string, params?: Record<string, any>) => {
       ...params,
     });
 
-    // Also log to console in development
-    if (process.env.NODE_ENV === "development") {
-      console.log("📊 Analytics Event:", eventName, params);
-    }
+    // Log to console for debugging (both dev and prod temporarily)
+    console.log("📊 Analytics Event:", eventName, params);
+  } else {
+    // Debug: why is gtag not available?
+    console.log("🚨 Analytics Debug:", {
+      hasWindow: typeof window !== "undefined",
+      hasGtag: typeof window !== "undefined" && !!window.gtag,
+      eventName,
+      params
+    });
   }
 };
 
@@ -267,9 +273,7 @@ export const initializeAnalytics = (userId?: string, userPlan?: string) => {
     }
 
     if (userPlan) {
-      window.gtag("set", {
-        user_plan: userPlan,
-      });
+      window.gtag("set", "user_plan", userPlan);
     }
   }
 };
