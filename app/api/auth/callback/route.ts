@@ -4,7 +4,8 @@ import { NextResponse } from 'next/server';
 export async function GET(request: Request) {
   const requestUrl = new URL(request.url);
   const code = requestUrl.searchParams.get('code');
-  const origin = requestUrl.origin;
+  // Always use non-WWW domain for consistency
+  const origin = 'https://landingbits.net';
 
   if (code) {
     const supabase = await createClient();
