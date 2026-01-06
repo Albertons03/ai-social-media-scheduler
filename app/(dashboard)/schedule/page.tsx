@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { CalendarView } from "@/components/calendar/calendar-view";
 import { CalendarGrid } from "@/components/calendar/calendar-grid";
@@ -28,6 +29,7 @@ import { triggerConfetti } from "@/lib/utils/confetti";
 import { toast } from "sonner";
 
 export default function SchedulePage() {
+  const searchParams = useSearchParams();
   const [posts, setPosts] = useState<Post[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -40,7 +42,13 @@ export default function SchedulePage() {
 
   useEffect(() => {
     fetchPosts();
-  }, []);
+    
+    // Auto-open AI Chat if URL parameter is present
+    const shouldOpenAI = searchParams.get('openAI');
+    if (shouldOpenAI === 'true') {
+      setIsAIChatModalOpen(true);
+    }
+  }, [searchParams]);
 
   const fetchPosts = async () => {
     try {

@@ -20,7 +20,8 @@ export function QuickActions() {
     setRipple({ x, y, key: Date.now() });
     setTimeout(() => setRipple(null), 600);
     triggerConfetti();
-    router.push("/schedule"); // Fixed: Go to schedule page to create post
+    // Go to schedule page with AI chat open
+    router.push("/schedule?openAI=true");
   };
 
   return (
@@ -105,7 +106,7 @@ export function QuickActions() {
               "hover:border-primary/50 hover:bg-primary/5",
               "transition-all duration-300 hover:scale-105"
             )}
-            onClick={() => router.push("/schedule")} // Fixed: Go to schedule page for AI Chat
+            onClick={() => router.push("/schedule?openAI=true")} // Fixed: Go to schedule with AI chat open
           >
             <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-pink-500/10 opacity-0 group-hover:opacity-100 transition-opacity" />
             <Sparkles className="mr-2 h-4 w-4 relative z-10 group-hover:text-purple-500 transition-colors" />
