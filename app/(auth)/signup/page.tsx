@@ -60,7 +60,7 @@ export default function SignupPage() {
       if (data.user) {
         setSuccess(true);
         setTimeout(() => {
-          router.push("/dashboard");
+          router.push("/login?message=signup-success");
           router.refresh();
         }, 2000);
       }
@@ -100,7 +100,7 @@ export default function SignupPage() {
             <div className="bg-green-50 text-green-700 px-4 py-3 rounded-lg flex items-center gap-2">
               <CheckCircle className="h-5 w-5 flex-shrink-0" />
               <p className="text-sm">
-                Account created successfully! Redirecting...
+                Account created! Please check your email for confirmation, then login.
               </p>
             </div>
           )}

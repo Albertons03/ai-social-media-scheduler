@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
-import { Calendar, Mail, Lock, AlertCircle } from "lucide-react";
+import { Calendar, Mail, Lock, AlertCircle, CheckCircle } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
@@ -12,8 +12,17 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const message = searchParams.get("message");
+    if (message === "signup-success") {
+      setSuccess("Account created successfully! Please check your email for confirmation, then login below.");
+    }
+  }, [searchParams]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -62,6 +71,13 @@ export default function LoginPage() {
             <div className="bg-destructive/10 text-destructive px-4 py-3 rounded-lg flex items-center gap-2">
               <AlertCircle className="h-5 w-5 flex-shrink-0" />
               <p className="text-sm">{error}</p>
+            </div>
+          )}
+
+          {success && (
+            <div className="bg-green-50 text-green-700 px-4 py-3 rounded-lg flex items-center gap-2">
+              <CheckCircle className="h-5 w-5 flex-shrink-0" />
+              <p className="text-sm">{success}</p>
             </div>
           )}
 
