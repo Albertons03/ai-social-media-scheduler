@@ -10,16 +10,27 @@ const nextConfig = {
   },
   async redirects() {
     return [
-      // WWW to non-WWW redirect for SEO
+      // WWW to non-WWW redirect for SEO - more specific to avoid loops
       {
-        source: '/:path*',
+        source: '/',
         has: [
           {
             type: 'host',
             value: 'www.landingbits.net',
           },
         ],
-        destination: 'https://landingbits.net/:path*',
+        destination: 'https://landingbits.net/',
+        permanent: true,
+      },
+      {
+        source: '/:path+', // Only for paths with content, not root
+        has: [
+          {
+            type: 'host', 
+            value: 'www.landingbits.net',
+          },
+        ],
+        destination: 'https://landingbits.net/:path+',
         permanent: true,
       },
     ];
