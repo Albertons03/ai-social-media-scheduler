@@ -358,7 +358,7 @@ export function AIChat({ platform, onGeneratePost, onPlatformChange }: AIChatPro
             ))}
             {isLoading && (
               <div className="flex justify-start">
-                <div className="bg-gray-100 text-gray-900 rounded-lg px-4 py-2">
+                <div className="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white rounded-lg px-4 py-2">
                   <div className="flex items-center gap-2">
                     <Loader2 className="h-4 w-4 animate-spin" />
                     <span className="text-sm">Typing...</span>
@@ -379,7 +379,7 @@ export function AIChat({ platform, onGeneratePost, onPlatformChange }: AIChatPro
               onKeyPress={handleKeyPress}
               placeholder="Type a message..."
               disabled={isLoading}
-              className="flex-1"
+              className="flex-1 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:placeholder-gray-400 dark:focus:border-primary"
             />
             <Button
               type="button"
