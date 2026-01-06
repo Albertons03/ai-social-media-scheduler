@@ -6,7 +6,18 @@ import { updateSession } from '@/lib/supabase/middleware';
 const publicRoutes = ['/', '/en', '/de', '/hu', '/login', '/signup', '/pricing', '/terms', '/policy', '/api/webhook'];
 
 export async function middleware(request: NextRequest) {
-  const path = request.nextUrl.pathname;
+  const url = request.nextUrl;
+  const hostname = request.headers.get('host') || url.hostname;
+
+  // Handle WWW redirect first - before any other logic
+  if (hostname === 'www.landingbits.net') {
+    return NextResponse.redirect(
+      new URL(url.pathname + url.search, 'https://landingbits.net'),
+      301
+    );
+  }
+
+  const path = url.pathname;
 
   // Ha public route → NEM hívjuk az updateSession-t (bypass auth check)
   if (publicRoutes.some(route => path === route || path.startsWith(route))) {

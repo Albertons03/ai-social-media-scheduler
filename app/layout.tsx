@@ -17,6 +17,7 @@ const sora = Sora({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://landingbits.net'),
   title: "LandingBits - AI Social Media Scheduler | Automate Your Content",
   description:
     "AI-powered social media scheduling for Twitter, LinkedIn & TikTok. Save 10 hours/week with conversational AI content creation. Start free trial today!",
