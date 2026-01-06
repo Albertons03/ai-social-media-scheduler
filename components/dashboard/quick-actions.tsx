@@ -3,15 +3,24 @@
 import * as React from "react";
 import { Plus, Calendar, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
-import { triggerConfetti } from "@/lib/utils/confetti";
 
 export function QuickActions() {
   const router = useRouter();
-  const [ripple, setRipple] = React.useState<{ x: number; y: number; key: number } | null>(null);
+  const [ripple, setRipple] = React.useState<{
+    x: number;
+    y: number;
+    key: number;
+  } | null>(null);
 
   const handleCreateClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
@@ -19,7 +28,6 @@ export function QuickActions() {
     const y = e.clientY - rect.top;
     setRipple({ x, y, key: Date.now() });
     setTimeout(() => setRipple(null), 600);
-    triggerConfetti();
     // Go to schedule page with AI chat open
     router.push("/schedule?openAI=true");
   };
