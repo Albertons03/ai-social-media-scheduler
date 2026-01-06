@@ -1,26 +1,26 @@
 // middleware.ts
-import { type NextRequest, NextResponse } from 'next/server';
-import { updateSession } from '@/lib/supabase/middleware';
+import { type NextRequest, NextResponse } from "next/server";
+import { updateSession } from "@/lib/supabase/middleware";
 
 // Public routes (nem kell auth)
-const publicRoutes = ['/', '/en', '/de', '/hu', '/login', '/signup', '/pricing', '/terms', '/policy', '/api/webhook'];
+const publicRoutes = [
+  "/",
+  "/en",
+  "/de",
+  "/hu",
+  "/login",
+  "/signup",
+  "/pricing",
+  "/terms",
+  "/policy",
+  "/api/webhook",
+];
 
 export async function middleware(request: NextRequest) {
-  const url = request.nextUrl;
-  const hostname = request.headers.get('host') || url.hostname;
-
-  // Handle WWW redirect first - before any other logic
-  if (hostname === 'www.landingbits.net') {
-    return NextResponse.redirect(
-      new URL(url.pathname + url.search, 'https://landingbits.net'),
-      301
-    );
-  }
-
-  const path = url.pathname;
+  const path = request.nextUrl.pathname;
 
   // Ha public route → NEM hívjuk az updateSession-t (bypass auth check)
-  if (publicRoutes.some(route => path === route || path.startsWith(route))) {
+  if (publicRoutes.some((route) => path === route || path.startsWith(route))) {
     return NextResponse.next();
   }
 
@@ -37,6 +37,6 @@ export const config = {
      * - favicon.ico (favicon file)
      * - Static assets (svg, png, jpg, etc.)
      */
-    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
   ],
 };
