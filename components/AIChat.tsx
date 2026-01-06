@@ -30,7 +30,11 @@ interface AIChatProps {
   onPlatformChange?: (platform: Platform) => void;
 }
 
-export function AIChat({ platform, onGeneratePost, onPlatformChange }: AIChatProps) {
+export function AIChat({
+  platform,
+  onGeneratePost,
+  onPlatformChange,
+}: AIChatProps) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -41,14 +45,18 @@ export function AIChat({ platform, onGeneratePost, onPlatformChange }: AIChatPro
   // Initialize conversation
   useEffect(() => {
     // Generate a unique conversation ID
-    const newConversationId = `conv_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    const newConversationId = `conv_${Date.now()}_${Math.random()
+      .toString(36)
+      .substr(2, 9)}`;
     setConversationId(newConversationId);
 
     // Add welcome message
     const welcomeMessage: Message = {
       id: `msg_${Date.now()}`,
       role: "assistant",
-      content: `Hi! I'll help you create content for ${getPlatformName(platform)}. What would you like to post?`,
+      content: `Hi! I'll help you create content for ${getPlatformName(
+        platform
+      )}. What would you like to post?`,
       timestamp: new Date(),
     };
     setMessages([welcomeMessage]);
@@ -71,11 +79,14 @@ export function AIChat({ platform, onGeneratePost, onPlatformChange }: AIChatPro
 
     const loadHistory = async () => {
       try {
-        const response = await fetch(`/api/chat?conversationId=${conversationId}`);
+        const response = await fetch(
+          `/api/chat?conversationId=${conversationId}`
+        );
         if (response.ok) {
           const data = await response.json();
           // Only replace messages if server has data (existing conversation)
-          if (data.messages && data.messages.length > 1) {  // > 1 to keep welcome message
+          if (data.messages && data.messages.length > 1) {
+            // > 1 to keep welcome message
             setMessages(data.messages);
           }
         }
@@ -90,7 +101,11 @@ export function AIChat({ platform, onGeneratePost, onPlatformChange }: AIChatPro
   }, [conversationId]);
 
   const getPlatformName = (p: Platform): string => {
-    const names = { tiktok: "TikTok", linkedin: "LinkedIn", twitter: "Twitter" };
+    const names = {
+      tiktok: "TikTok",
+      linkedin: "LinkedIn",
+      twitter: "Twitter",
+    };
     return names[p] || p;
   };
 
@@ -132,7 +147,8 @@ export function AIChat({ platform, onGeneratePost, onPlatformChange }: AIChatPro
 
       if (!response.ok) {
         const errorData = await response.json();
-        const errorMsg = errorData.details || errorData.error || "Failed to get response";
+        const errorMsg =
+          errorData.details || errorData.error || "Failed to get response";
         console.error("API Error:", errorMsg);
         throw new Error(errorMsg);
       }
@@ -142,7 +158,10 @@ export function AIChat({ platform, onGeneratePost, onPlatformChange }: AIChatPro
       const assistantMessage: Message = {
         id: `msg_${Date.now() + 1}`,
         role: "assistant",
-        content: data.message || data.content || "Sorry, I couldn't generate a response.",
+        content:
+          data.message ||
+          data.content ||
+          "Sorry, I couldn't generate a response.",
         timestamp: new Date(),
       };
 
@@ -155,7 +174,11 @@ export function AIChat({ platform, onGeneratePost, onPlatformChange }: AIChatPro
       const errorMessage: Message = {
         id: `msg_${Date.now() + 1}`,
         role: "assistant",
-        content: `Sorry, an error occurred: ${errorMsg}\n\n${errorMsg.includes('ai_conversations') ? '⚠️ Please run the Supabase migration SQL!' : 'Please try again!'}`,
+        content: `Sorry, an error occurred: ${errorMsg}\n\n${
+          errorMsg.includes("ai_conversations")
+            ? "⚠️ Please run the Supabase migration SQL!"
+            : "Please try again!"
+        }`,
         timestamp: new Date(),
       };
       setMessages((prev) => [...prev, errorMessage]);
@@ -192,14 +215,19 @@ export function AIChat({ platform, onGeneratePost, onPlatformChange }: AIChatPro
       const data = await response.json();
 
       // Format suggestions into a readable message
-      let suggestionText = `Here are some topic ideas for ${getPlatformName(platform)}:\n\n`;
+      let suggestionText = `Here are some topic ideas for ${getPlatformName(
+        platform
+      )}:\n\n`;
 
       if (data.suggestions && Array.isArray(data.suggestions)) {
-        suggestionText += data.suggestions.map((s: any, i: number) =>
-          `${i + 1}. **${s.title}** - ${s.description}`
-        ).join('\n\n');
+        suggestionText += data.suggestions
+          .map(
+            (s: any, i: number) => `${i + 1}. **${s.title}** - ${s.description}`
+          )
+          .join("\n\n");
       } else {
-        suggestionText = data.suggestions || data.message || "Failed to generate topics.";
+        suggestionText =
+          data.suggestions || data.message || "Failed to generate topics.";
       }
 
       const suggestionMessage: Message = {
@@ -219,7 +247,9 @@ export function AIChat({ platform, onGeneratePost, onPlatformChange }: AIChatPro
       const fallbackMessage: Message = {
         id: `msg_${Date.now()}`,
         role: "assistant",
-        content: `Here are some topic ideas for ${getPlatformName(platform)}:\n\n${
+        content: `Here are some topic ideas for ${getPlatformName(
+          platform
+        )}:\n\n${
           platform === "tiktok"
             ? "1. Trends and challenges\n2. Behind the scenes content\n3. Educational videos\n4. Entertainment content"
             : platform === "linkedin"
@@ -245,7 +275,9 @@ export function AIChat({ platform, onGeneratePost, onPlatformChange }: AIChatPro
       return;
     }
 
-    const optimizePrompt = `Optimize the following content for ${getPlatformName(platform)}: "${lastAssistantMessage.content}"`;
+    const optimizePrompt = `Optimize the following content for ${getPlatformName(
+      platform
+    )}: "${lastAssistantMessage.content}"`;
     await handleSendMessage(optimizePrompt);
   };
 
@@ -340,7 +372,9 @@ export function AIChat({ platform, onGeneratePost, onPlatformChange }: AIChatPro
                       : "bg-gray-100 text-gray-900"
                   }`}
                 >
-                  <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+                  <p className="text-sm whitespace-pre-wrap">
+                    {message.content}
+                  </p>
                   <p
                     className={`text-xs mt-1 ${
                       message.role === "user"

@@ -22,40 +22,50 @@ export async function Header() {
     .single();
 
   return (
-    <header className="border-b border-border bg-white sticky top-0 z-50">
+    <header
+      style={{
+        background: "linear-gradient(to right, #0077B5, #005885)",
+        backgroundColor: "#0077B5",
+        backgroundImage: "linear-gradient(to right, #0077B5, #005885)",
+        borderBottom: "1px solid rgba(255,255,255,0.2)",
+        position: "sticky",
+        top: "0",
+        zIndex: "50",
+      }}
+    >
       <div className="container mx-auto px-4 py-4 flex items-center justify-between">
         {/* Logo and Title */}
         <Link
           href="/dashboard"
           className="flex items-center gap-2 hover:opacity-80 transition-opacity"
         >
-          <Calendar className="h-8 w-8 text-primary" />
-          <span className="text-2xl font-bold">LandingBits</span>
+          <Calendar className="h-8 w-8 text-white" />
+          <span className="text-2xl font-bold text-white">LandingBits</span>
         </Link>
 
         {/* Center - Navigation Links */}
         <nav className="hidden md:flex items-center gap-6">
           <Link
             href="/dashboard"
-            className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+            className="text-sm font-medium text-white/80 hover:text-white transition-colors"
           >
             Dashboard
           </Link>
           <Link
             href="/schedule"
-            className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+            className="text-sm font-medium text-white/80 hover:text-white transition-colors"
           >
             Schedule
           </Link>
           <Link
             href="/analytics"
-            className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+            className="text-sm font-medium text-white/80 hover:text-white transition-colors"
           >
             Analytics
           </Link>
           <Link
             href="/settings"
-            className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+            className="text-sm font-medium text-white/80 hover:text-white transition-colors"
           >
             Settings
           </Link>
@@ -66,15 +76,15 @@ export async function Header() {
           {/* Settings Button */}
           <Link
             href="/settings"
-            className="p-2 hover:bg-accent rounded-lg transition-colors"
+            className="p-2 hover:bg-white/10 rounded-lg transition-colors"
             title="Settings"
           >
-            <Settings className="h-5 w-5 text-muted-foreground" />
+            <Settings className="h-5 w-5 text-white/80" />
           </Link>
 
           {/* User Info */}
           <div className="hidden sm:flex items-center gap-2">
-            <span className="text-sm font-medium">
+            <span className="text-sm font-medium text-white">
               {profile?.full_name?.split(" ")[0] || "User"}
             </span>
           </div>
@@ -83,7 +93,7 @@ export async function Header() {
           <form action="/api/auth/signout" method="post">
             <button
               type="submit"
-              className="flex items-center gap-2 px-3 py-2 text-sm rounded-lg hover:bg-accent transition-colors text-muted-foreground hover:text-foreground"
+              className="flex items-center gap-2 px-3 py-2 text-sm rounded-lg hover:bg-white/10 transition-colors text-white/80 hover:text-white"
               title="Sign Out"
             >
               <LogOut className="h-4 w-4" />

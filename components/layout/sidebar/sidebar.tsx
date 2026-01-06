@@ -26,22 +26,25 @@ export function Sidebar({ user }: SidebarProps) {
   return (
     <aside
       className={cn(
-        "hidden md:flex flex-col border-r bg-card transition-all duration-300 ease-in-out relative",
+        "hidden md:flex flex-col border-r transition-all duration-300 ease-in-out relative",
         isCollapsed ? "w-16" : "w-64"
       )}
+      style={{ background: "linear-gradient(to bottom, #FFE1E6, #FFCDD6)" }}
     >
       {/* Logo */}
-      <div className="h-16 flex items-center justify-center border-b px-4">
+      <div className="h-16 flex items-center justify-center border-b border-gray-200 px-4 bg-white">
         {isCollapsed ? (
-          <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-primary-foreground font-bold text-sm">
+          <div className="w-8 h-8 rounded-lg bg-[#0077B5] flex items-center justify-center text-white font-bold text-sm">
             AI
           </div>
         ) : (
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-primary-foreground font-bold text-sm">
+            <div className="w-8 h-8 rounded-lg bg-[#0077B5] flex items-center justify-center text-white font-bold text-sm">
               LB
             </div>
-            <span className="font-semibold text-lg">LandingBits</span>
+            <span className="font-semibold text-lg text-[#0077B5]">
+              LandingBits
+            </span>
           </div>
         )}
       </div>
@@ -59,7 +62,7 @@ export function Sidebar({ user }: SidebarProps) {
         variant="ghost"
         size="icon"
         className={cn(
-          "absolute -right-3 top-20 h-6 w-6 rounded-full border bg-background shadow-md hover:bg-accent",
+          "absolute -right-3 top-20 h-6 w-6 rounded-full border border-gray-300 bg-white text-[#FF8FA3] shadow-md hover:bg-gray-50",
           "hidden md:flex items-center justify-center"
         )}
         onClick={toggle}

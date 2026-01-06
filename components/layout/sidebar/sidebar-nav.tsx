@@ -81,11 +81,11 @@ export function SidebarNav({ isCollapsed, user }: SidebarNavProps) {
             href={item.href}
             className={cn(
               "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all",
-              "hover:bg-accent hover:text-accent-foreground",
-              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+              "hover:bg-[#0077B5]/10 hover:text-[#0077B5]",
+              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#0077B5]/20",
               isActive
-                ? "bg-primary text-primary-foreground hover:bg-primary/90"
-                : "text-muted-foreground",
+                ? "bg-[#0077B5] text-white hover:bg-[#005885]"
+                : "text-[#0077B5]",
               isCollapsed && "justify-center px-2"
             )}
             title={isCollapsed ? item.title : undefined}

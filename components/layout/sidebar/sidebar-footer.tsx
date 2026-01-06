@@ -36,7 +36,8 @@ export function SidebarFooter({ user, isCollapsed }: SidebarFooterProps) {
     router.refresh();
   };
 
-  const displayName = user.profile?.full_name || user.email?.split("@")[0] || "User";
+  const displayName =
+    user.profile?.full_name || user.email?.split("@")[0] || "User";
   const initials = displayName
     .split(" ")
     .map((n) => n[0])
@@ -46,7 +47,7 @@ export function SidebarFooter({ user, isCollapsed }: SidebarFooterProps) {
 
   if (isCollapsed) {
     return (
-      <div className="border-t p-2 space-y-2">
+      <div className="mt-auto border-t border-gray-200 bg-white p-3 space-y-3">
         <div className="flex justify-center">
           <ThemeToggle />
         </div>
@@ -54,7 +55,7 @@ export function SidebarFooter({ user, isCollapsed }: SidebarFooterProps) {
           <DropdownMenuTrigger asChild>
             <Button
               variant="ghost"
-              className="h-10 w-10 rounded-full"
+              className="h-10 w-10 rounded-full hover:bg-gray-100 text-gray-700"
               aria-label="User menu"
             >
               <Avatar className="h-8 w-8">
@@ -66,7 +67,9 @@ export function SidebarFooter({ user, isCollapsed }: SidebarFooterProps) {
           <DropdownMenuContent align="end" className="w-56">
             <DropdownMenuLabel>
               <div className="flex flex-col space-y-1">
-                <p className="text-sm font-medium leading-none">{displayName}</p>
+                <p className="text-sm font-medium leading-none">
+                  {displayName}
+                </p>
                 <p className="text-xs leading-none text-muted-foreground">
                   {user.email}
                 </p>
@@ -89,9 +92,9 @@ export function SidebarFooter({ user, isCollapsed }: SidebarFooterProps) {
   }
 
   return (
-    <div className="border-t p-4 space-y-3">
+    <div className="border-t border-gray-200 bg-white p-4 space-y-3">
       <div className="flex items-center justify-between">
-        <span className="text-xs font-medium text-muted-foreground">Theme</span>
+        <span className="text-xs font-medium text-gray-600">Theme</span>
         <ThemeToggle />
       </div>
 
@@ -99,7 +102,7 @@ export function SidebarFooter({ user, isCollapsed }: SidebarFooterProps) {
         <DropdownMenuTrigger asChild>
           <Button
             variant="ghost"
-            className="w-full justify-start h-auto p-2 hover:bg-accent"
+            className="w-full justify-start h-auto p-2 hover:bg-gray-100 text-gray-700"
           >
             <div className="flex items-center gap-3 w-full">
               <Avatar className="h-8 w-8">
@@ -107,10 +110,10 @@ export function SidebarFooter({ user, isCollapsed }: SidebarFooterProps) {
                 <AvatarFallback className="text-xs">{initials}</AvatarFallback>
               </Avatar>
               <div className="flex flex-col items-start flex-1 min-w-0">
-                <p className="text-sm font-medium leading-none truncate w-full">
+                <p className="text-sm font-medium leading-none truncate w-full text-gray-800">
                   {displayName}
                 </p>
-                <p className="text-xs text-muted-foreground truncate w-full">
+                <p className="text-xs text-gray-500 truncate w-full">
                   {user.email}
                 </p>
               </div>

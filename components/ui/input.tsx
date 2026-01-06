@@ -1,5 +1,5 @@
-import * as React from 'react';
-import { cn } from '@/lib/utils';
+import * as React from "react";
+import { cn } from "@/lib/utils";
 
 export interface InputProps
   extends React.InputHTMLAttributes<HTMLInputElement> {}
@@ -10,14 +10,14 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
       <input
         type={type}
         className={cn(
-          'flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground ring-offset-background',
-          'placeholder:text-muted-foreground',
-          'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
-          'disabled:cursor-not-allowed disabled:opacity-50',
-          'hover:border-primary/50 transition-colors',
-          'dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:placeholder-gray-400 dark:focus:border-primary',
+          "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground ring-offset-background",
+          "placeholder:text-muted-foreground",
+          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+          "disabled:cursor-not-allowed disabled:opacity-50",
+          "hover:border-primary/50 transition-colors",
+          "dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:placeholder-gray-400 dark:focus:border-primary",
           // File input styling
-          'file:border-0 file:bg-primary file:text-primary-foreground file:text-sm file:font-medium file:px-4 file:py-2 file:rounded-md file:mr-4 file:cursor-pointer hover:file:bg-primary/90',
+          "file:border-0 file:bg-primary file:text-primary-foreground file:text-sm file:font-medium file:px-4 file:py-2 file:rounded-md file:mr-4 file:cursor-pointer hover:file:bg-primary/90",
           className
         )}
         ref={ref}
@@ -26,6 +26,6 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     );
   }
 );
-Input.displayName = 'Input';
+Input.displayName = "Input";
 
 export { Input };

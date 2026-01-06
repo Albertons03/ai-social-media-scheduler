@@ -33,13 +33,15 @@ export function QuickActions() {
   };
 
   return (
-    <Card className="overflow-hidden border-2 hover:border-primary/30 transition-all duration-300">
+    <Card className="overflow-hidden border-2 hover:border-primary/30 transition-all duration-300 bg-gradient-to-br from-[#FFB3C1]/20 to-[#FF8FA3]/20">
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
+        <CardTitle className="flex items-center gap-2 text-gray-800">
           Quick Actions
           <span>⚡</span>
         </CardTitle>
-        <CardDescription>Get started with common tasks</CardDescription>
+        <CardDescription className="text-gray-600">
+          Get started with common tasks
+        </CardDescription>
       </CardHeader>
       <CardContent className="grid gap-3 sm:grid-cols-3">
         <motion.div
@@ -88,16 +90,16 @@ export function QuickActions() {
           transition={{ delay: 0.2 }}
         >
           <Button
-            variant="outline"
+            variant="default"
             className={cn(
               "w-full justify-start group relative overflow-hidden",
-              "hover:border-primary/50 hover:bg-primary/5",
-              "transition-all duration-300 hover:scale-105"
+              "bg-gradient-to-r from-[#0077B5] to-[#005885]",
+              "hover:from-[#005885] hover:to-[#004466]",
+              "transition-all duration-300 hover:scale-105 hover:shadow-lg text-white"
             )}
             onClick={() => router.push("/schedule")}
           >
-            <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-            <Calendar className="mr-2 h-4 w-4 relative z-10 group-hover:text-primary transition-colors" />
+            <Calendar className="mr-2 h-4 w-4 relative z-10" />
             <span className="relative z-10">View Calendar</span>
           </Button>
         </motion.div>
@@ -108,16 +110,16 @@ export function QuickActions() {
           transition={{ delay: 0.3 }}
         >
           <Button
-            variant="outline"
+            variant="default"
             className={cn(
               "w-full justify-start group relative overflow-hidden",
-              "hover:border-primary/50 hover:bg-primary/5",
-              "transition-all duration-300 hover:scale-105"
+              "bg-gradient-to-r from-[#0077B5] to-[#005885]",
+              "hover:from-[#005885] hover:to-[#004466]",
+              "transition-all duration-300 hover:scale-105 hover:shadow-lg text-white"
             )}
-            onClick={() => router.push("/schedule?openAI=true")} // Fixed: Go to schedule with AI chat open
+            onClick={() => router.push("/schedule?openAI=true")}
           >
-            <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-pink-500/10 opacity-0 group-hover:opacity-100 transition-opacity" />
-            <Sparkles className="mr-2 h-4 w-4 relative z-10 group-hover:text-purple-500 transition-colors" />
+            <Sparkles className="mr-2 h-4 w-4 relative z-10" />
             <span className="relative z-10">AI Generator</span>
           </Button>
         </motion.div>

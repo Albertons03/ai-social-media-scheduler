@@ -8,16 +8,16 @@ import { getAllPosts } from "@/lib/blog";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = "https://landingbits.net";
-  const locales = ['en', 'de', 'hu'];
+  const locales = ["en", "de", "hu"];
 
   // Static pages for each locale
-  const localePages: MetadataRoute.Sitemap = locales.flatMap(locale => [
+  const localePages: MetadataRoute.Sitemap = locales.flatMap((locale) => [
     {
       url: `${baseUrl}/${locale}`,
       lastModified: new Date(),
       changeFrequency: "daily",
       priority: 1,
-    }
+    },
   ]);
 
   // Static pages (non-locale specific)

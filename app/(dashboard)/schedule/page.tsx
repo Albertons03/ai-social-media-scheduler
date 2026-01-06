@@ -16,7 +16,13 @@ import {
   DialogTitle,
   DialogClose,
 } from "@/components/ui/dialog";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Plus, Clock, Sparkles } from "lucide-react";
 import { Post, Platform } from "@/lib/types/database.types";
 import {
@@ -24,7 +30,15 @@ import {
   getRelativeTime,
   getUserTimezone,
 } from "@/lib/utils";
-import { addDays, addWeeks, addMonths, subDays, subWeeks, subMonths, startOfToday } from "date-fns";
+import {
+  addDays,
+  addWeeks,
+  addMonths,
+  subDays,
+  subWeeks,
+  subMonths,
+  startOfToday,
+} from "date-fns";
 import { triggerConfetti } from "@/lib/utils/confetti";
 import { toast } from "sonner";
 
@@ -38,14 +52,15 @@ export default function SchedulePage() {
   const [currentDate, setCurrentDate] = useState<Date>(startOfToday());
   const [view, setView] = useState<"day" | "week" | "month">("week");
   const [aiGeneratedContent, setAIGeneratedContent] = useState("");
-  const [selectedPlatformForAI, setSelectedPlatformForAI] = useState<Platform>("twitter");
+  const [selectedPlatformForAI, setSelectedPlatformForAI] =
+    useState<Platform>("twitter");
 
   useEffect(() => {
     fetchPosts();
-    
+
     // Auto-open AI Chat if URL parameter is present
-    const shouldOpenAI = searchParams.get('openAI');
-    if (shouldOpenAI === 'true') {
+    const shouldOpenAI = searchParams.get("openAI");
+    if (shouldOpenAI === "true") {
       setIsAIChatModalOpen(true);
     }
   }, [searchParams]);
@@ -180,7 +195,9 @@ export default function SchedulePage() {
           <div className="flex items-center justify-between">
             <div>
               <CardTitle>Calendar View</CardTitle>
-              <CardDescription>Drag and drop to reschedule posts</CardDescription>
+              <CardDescription>
+                Drag and drop to reschedule posts
+              </CardDescription>
             </div>
           </div>
           <CalendarToolbar
@@ -233,10 +250,14 @@ export default function SchedulePage() {
           </DialogHeader>
           <PostForm
             onSubmit={handleCreatePost}
-            initialData={aiGeneratedContent ? {
-              content: aiGeneratedContent,
-              platform: selectedPlatformForAI
-            } : undefined}
+            initialData={
+              aiGeneratedContent
+                ? {
+                    content: aiGeneratedContent,
+                    platform: selectedPlatformForAI,
+                  }
+                : undefined
+            }
           />
         </DialogContent>
       </Dialog>
@@ -274,7 +295,9 @@ export default function SchedulePage() {
               {/* Scheduled/Published Time */}
               <div>
                 <h3 className="font-semibold mb-2">Time</h3>
-                <p className="text-muted-foreground">{formatPostTime(selectedPost)}</p>
+                <p className="text-muted-foreground">
+                  {formatPostTime(selectedPost)}
+                </p>
               </div>
               <div className="grid grid-cols-3 gap-4">
                 <div>
