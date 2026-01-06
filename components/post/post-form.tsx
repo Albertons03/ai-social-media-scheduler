@@ -16,8 +16,9 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Sparkles, Calendar, Loader2, AlertCircle } from "lucide-react";
+import { Sparkles, Calendar, Loader2, AlertCircle, Clock, TrendingUp } from "lucide-react";
 import { Platform, PrivacyLevel } from "@/lib/types/database.types";
+import { getOptimalTimes, getNextOptimalTime, formatOptimalTime } from "@/lib/utils/optimal-posting-times";
 
 interface SocialAccount {
   id: string;
@@ -447,12 +448,50 @@ export function PostForm({
             </div>
           )}
 
-          {/* Schedule Date - with timezone info */}
+          {/* Schedule Date - with timezone info and recommendations */}
           <div>
             <Label htmlFor="scheduled_for">
               <Calendar className="inline h-4 w-4 mr-2" />
               Schedule For (Optional)
             </Label>
+            
+            {/* Recommended Times */}
+            {platform && (
+              <div className="mb-3 p-3 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg">
+                <div className="flex items-center gap-2 mb-2">
+                  <TrendingUp className="h-4 w-4 text-blue-600" />
+                  <span className="text-sm font-medium text-blue-800">Recommended Times for {platform.charAt(0).toUpperCase() + platform.slice(1)}</span>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {getOptimalTimes(platform as 'twitter' | 'linkedin' | 'tiktok').slice(0, 3).map((optimalTime, index) => {
+                    const nextDate = new Date();
+                    const targetDay = optimalTime.dayOfWeek;
+                    const currentDay = nextDate.getDay();
+                    const daysToAdd = (targetDay - currentDay + 7) % 7 || (optimalTime.hour > nextDate.getHours() ? 0 : 7);
+                    nextDate.setDate(nextDate.getDate() + daysToAdd);
+                    nextDate.setHours(optimalTime.hour, 0, 0, 0);
+                    
+                    const dateTimeString = nextDate.toISOString().slice(0, 16);
+                    
+                    return (
+                      <Button
+                        key={index}
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        className="text-xs hover:bg-blue-100 border-blue-300"
+                        onClick={() => setScheduledFor(dateTimeString)}
+                      >
+                        <Clock className="h-3 w-3 mr-1" />
+                        {formatOptimalTime(nextDate).split(',')[0]} {optimalTime.hour}:00
+                      </Button>
+                    );
+                  })}
+                </div>
+                <p className="text-xs text-blue-600 mt-2">Click to auto-fill optimal posting times</p>
+              </div>
+            )}
+            
             <Input
               id="scheduled_for"
               type="datetime-local"

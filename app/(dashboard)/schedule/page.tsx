@@ -54,6 +54,7 @@ export default function SchedulePage() {
   const [aiGeneratedContent, setAIGeneratedContent] = useState("");
   const [selectedPlatformForAI, setSelectedPlatformForAI] =
     useState<Platform>("twitter");
+  const [initialData, setInitialData] = useState<any>(null);
 
   useEffect(() => {
     fetchPosts();
@@ -62,6 +63,35 @@ export default function SchedulePage() {
     const shouldOpenAI = searchParams.get("openAI");
     if (shouldOpenAI === "true") {
       setIsAIChatModalOpen(true);
+    }
+
+    // Pre-fill form data from URL parameters
+    const platform = searchParams.get("platform");
+    const time = searchParams.get("time");
+    
+    if (platform || time) {
+      const prefillData: any = {};
+      
+      if (platform && ["twitter", "linkedin", "tiktok"].includes(platform)) {
+        prefillData.platform = platform as Platform;
+        setSelectedPlatformForAI(platform as Platform);
+      }
+      
+      if (time) {
+        // Convert ISO time to datetime-local format
+        try {
+          const date = new Date(time);
+          const localDateTimeString = date.toISOString().slice(0, 16);
+          prefillData.scheduled_for = localDateTimeString;
+        } catch (error) {
+          console.warn("Invalid time parameter:", time);
+        }
+      }
+      
+      if (Object.keys(prefillData).length > 0) {
+        setInitialData(prefillData);
+        setIsCreateModalOpen(true);
+      }
     }
   }, [searchParams]);
 
@@ -251,12 +281,12 @@ export default function SchedulePage() {
           <PostForm
             onSubmit={handleCreatePost}
             initialData={
-              aiGeneratedContent
+              initialData || (aiGeneratedContent
                 ? {
                     content: aiGeneratedContent,
                     platform: selectedPlatformForAI,
                   }
-                : undefined
+                : undefined)
             }
           />
         </DialogContent>

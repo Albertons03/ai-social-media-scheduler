@@ -4,6 +4,7 @@ import { StatsCard } from "@/components/dashboard/stats-card";
 import { QuickActions } from "@/components/dashboard/quick-actions";
 import { RecentPosts } from "@/components/dashboard/recent-posts";
 import PiePlatformStats from "@/components/dashboard/pie-platform-stats";
+import { BestPostingTimes } from "@/components/dashboard/best-posting-times";
 import UsageCounter from "@/app/components/UsageCounter";
 
 export default async function DashboardPage() {
@@ -82,6 +83,9 @@ export default async function DashboardPage() {
 
       {/* Quick Actions */}
       <QuickActions />
+
+      {/* Best Posting Times */}
+      <BestPostingTimes />
 
       {/* Usage Counter */}
       <UsageCounter />
