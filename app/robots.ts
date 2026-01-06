@@ -12,8 +12,12 @@ export default function robots(): MetadataRoute.Robots {
     rules: [
       {
         userAgent: "*",
-        allow: "/",
-        disallow: ["/api/", "/dashboard/", "/(auth)/"],
+        allow: ["/en", "/de", "/hu", "/blog/", "/login", "/signup"],
+        disallow: ["/api/", "/dashboard/", "/(auth)/", "/admin/", "/app/"],
+      },
+      {
+        userAgent: "*",
+        disallow: "/", // Disallow root redirect page
       },
     ],
     sitemap: `${baseUrl}/sitemap.xml`,

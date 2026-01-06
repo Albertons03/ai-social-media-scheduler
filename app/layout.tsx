@@ -23,6 +23,14 @@ export const metadata: Metadata = {
   keywords:
     "AI social media scheduler, automated posting, content creation AI, Twitter scheduler, LinkedIn automation, social media management",
   authors: [{ name: "LandingBits" }],
+  alternates: {
+    canonical: "https://landingbits.net/en",
+    languages: {
+      'en': "https://landingbits.net/en",
+      'de': "https://landingbits.net/de", 
+      'hu': "https://landingbits.net/hu"
+    }
+  },
   openGraph: {
     title: "LandingBits - AI Social Media Scheduler",
     description: "Save 10 hours/week with AI-powered social media scheduling",
