@@ -1,81 +1,110 @@
 # Automatic Post Publishing Setup
 
-This guide explains how to set up automatic publishing for scheduled posts.
+This guide explains how to set up automatic publishing for scheduled posts using **Supabase Edge Functions**.
 
 ## How It Works
 
-The application uses **Vercel Cron Jobs** to automatically publish scheduled posts every 5 minutes.
+The application uses **Supabase Edge Functions + pg_cron** to automatically publish scheduled posts **every 5 minutes**.
 
 ### Architecture
 
-1. **Vercel Cron** triggers `/api/cron/publish` every 5 minutes
-2. The API endpoint queries the database for posts where:
+1. **pg_cron** triggers Supabase Edge Function every 5 minutes
+2. The Edge Function queries the database for posts where:
    - `status = 'scheduled'`
    - `scheduled_for <= current_time`
 3. For each post, it:
    - Checks if the social account token is valid
    - Refreshes the token if needed
-   - Publishes to the platform (Twitter, LinkedIn, TikTok)
+   - Publishes to the platform (Twitter, LinkedIn, **TikTok**)
    - Updates the post status to `published` or `failed`
+   - Creates success/failure notifications
+   - Sends email notifications
+
+## Why Supabase Edge Functions?
+
+**Advantages over Vercel Cron:**
+- ✅ **Frequent runs**: Every 5 minutes vs daily
+- ✅ **Free**: Supabase Free tier (1M invocations/month)  
+- ✅ **TikTok included**: Full video upload implementation
+- ✅ **Retry logic**: Exponential backoff on failures
+- ✅ **Notifications**: Auto-created user notifications
+- ✅ **Media support**: Twitter image/video upload
 
 ## Setup Instructions
 
-### 1. Environment Variables
+### 1. Deploy Supabase Edge Function
 
-Add these to your Vercel environment variables:
+**Quick Deploy:**
+```bash
+# Install Supabase CLI (if not installed)
+npm install -g supabase
+
+# Login and link project
+supabase login  
+supabase link --project-ref zthibjgjsuyovieipddd
+
+# Deploy the function
+supabase functions deploy publish-scheduled-posts
+```
+
+### 2. Environment Variables
+
+Set these in **Supabase Dashboard** (not Vercel):
+
+Go to: https://supabase.com/dashboard/project/zthibjgjsuyovieipddd/functions → publish-scheduled-posts → Settings
 
 ```env
-# Twitter API Credentials (required for Twitter publishing)
-TWITTER_CLIENT_ID=your_twitter_client_id
-TWITTER_CLIENT_SECRET=your_twitter_client_secret
+# TikTok API Configuration (required for TikTok publishing)  
+TIKTOK_CLIENT_KEY=your_tiktok_client_key
+TIKTOK_CLIENT_SECRET=your_tiktok_client_secret
 
 # LinkedIn API Credentials (required for LinkedIn publishing)
 LINKEDIN_CLIENT_ID=your_linkedin_client_id
 LINKEDIN_CLIENT_SECRET=your_linkedin_client_secret
 
-# Cron Job Security
-CRON_SECRET=your_random_secret_string
+# Twitter API Credentials (required for Twitter publishing)
+TWITTER_CLIENT_ID=your_twitter_client_id
+TWITTER_CLIENT_SECRET=your_twitter_client_secret
+
+# OpenAI (for AI features)
+OPENAI_API_KEY=your_openai_api_key
 ```
 
-**Generate CRON_SECRET:**
+### 3. Setup pg_cron (Database)
 
-```bash
-# Use this command to generate a random secret:
-node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+Run this in **Supabase SQL Editor**:
+
+```sql
+-- Enable pg_cron extension
+CREATE EXTENSION IF NOT EXISTS pg_cron;
+
+-- Schedule every 5 minutes
+SELECT cron.schedule(
+  'publish-scheduled-posts-job',
+  '*/5 * * * *',
+  $$
+  SELECT net.http_post(
+    url := 'https://zthibjgjsuyovieipddd.supabase.co/functions/v1/publish-scheduled-posts',
+    headers := '{"Content-Type": "application/json", "Authorization": "Bearer sb_publishable_1z3BFJskSeBF8EfbXfHo1Q_8lPu5Qj6"}'::jsonb,
+    body := '{}'::jsonb
+  ) AS request_id;
+  $$
+);
 ```
 
-### 2. Vercel Cron Configuration
+### 4. Verify Setup
 
-The `vercel.json` file is already configured:
+Check if everything is working:
 
-```json
-{
-  "crons": [
-    {
-      "path": "/api/cron/publish",
-      "schedule": "*/5 * * * *"
-    }
-  ]
-}
+```sql
+-- Verify cron job exists
+SELECT * FROM cron.job WHERE jobname = 'publish-scheduled-posts-job';
+
+-- Check recent runs  
+SELECT * FROM cron.job_run_details 
+WHERE jobid = (SELECT jobid FROM cron.job WHERE jobname = 'publish-scheduled-posts-job')
+ORDER BY start_time DESC LIMIT 5;
 ```
-
-This runs every 5 minutes: `*/5 * * * *`
-
-### 3. Deploy to Vercel
-
-```bash
-git add .
-git commit -m "feat: Add automatic post publishing with Vercel Cron"
-git push origin master
-```
-
-Vercel will automatically detect the cron configuration and set it up.
-
-### 4. Verify Cron is Running
-
-1. Go to your Vercel project dashboard
-2. Navigate to **Settings** → **Cron Jobs**
-3. You should see: `POST /api/cron/publish` running every 5 minutes
 
 ## Testing
 
@@ -142,19 +171,21 @@ Check the database or view in the app's schedule page.
 | -------- | -------------- | --------------------------------------- |
 | Twitter  | ✅ Implemented | Text-only tweets (OAuth 2.0 limitation) |
 | LinkedIn | ✅ Implemented | Text posts, public visibility           |
-| TikTok   | ⏳ Planned     | Not yet implemented                     |
+| TikTok   | ✅ Implemented | Video posts with chunked upload         |
 
-## Rate Limits
+## Rate Limits & Performance
 
-- **Vercel Cron:** 50 executions per month on Hobby plan, unlimited on Pro
-- **Twitter API:** 1,500 tweets per month (Free tier), check your plan
-- **Processing:** Max 50 posts per cron run
+- **Supabase Edge Functions:** 1M invocations/month (Free tier)
+- **pg_cron:** Runs every 5 minutes (288 times/day)
+- **Twitter API:** 1,500 tweets per month (Free tier)
+- **Processing:** Unlimited posts per run with retry logic
 
 ## Security
 
-- The cron endpoint requires `CRON_SECRET` in the Authorization header
-- Only Vercel can trigger the cron job automatically
-- Manual triggers require the secret
+- **Edge Function Authentication**: Uses Supabase service role key
+- **pg_cron Security**: Runs within Supabase's secure environment  
+- **Token Management**: Automatic refresh with secure storage
+- **API Rate Limiting**: Built-in Supabase protections
 
 ## Monitoring
 
@@ -162,13 +193,35 @@ Check the database or view in the app's schedule page.
 
 - Post status changes from `scheduled` → `published`
 - `published_at` timestamp is set
-- Platform post ID is stored (e.g., `twitter_post_id`)
+- Platform post ID is stored (e.g., `twitter_post_id`, `tiktok_post_id`)
+- Success notification created in `notifications` table
+- Success email sent (if configured)
 
 ### Failure Indicators
 
 - Post status changes to `failed`
-- `error_message` contains details
-- `retry_count` increments
+- `error_message` contains details  
+- `retry_count` increments (with exponential backoff)
+- Error notification created in `notifications` table
+- Failure email sent (if configured)
+
+### Monitoring Queries
+
+```sql
+-- Check recent publishing activity
+SELECT * FROM posts 
+WHERE status IN ('published', 'failed')
+ORDER BY updated_at DESC LIMIT 10;
+
+-- View notifications
+SELECT * FROM notifications
+ORDER BY created_at DESC LIMIT 10;
+
+-- Check cron job health
+SELECT * FROM cron.job_run_details 
+WHERE jobid = (SELECT jobid FROM cron.job WHERE jobname = 'publish-scheduled-posts-job')
+ORDER BY start_time DESC LIMIT 5;
+```
 
 ## Next Steps
 

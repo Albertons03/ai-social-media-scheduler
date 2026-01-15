@@ -16,9 +16,20 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Sparkles, Calendar, Loader2, AlertCircle, Clock, TrendingUp } from "lucide-react";
+import {
+  Sparkles,
+  Calendar,
+  Loader2,
+  AlertCircle,
+  Clock,
+  TrendingUp,
+} from "lucide-react";
 import { Platform, PrivacyLevel } from "@/lib/types/database.types";
-import { getOptimalTimes, getNextOptimalTime, formatOptimalTime } from "@/lib/utils/optimal-posting-times";
+import {
+  getOptimalTimes,
+  getNextOptimalTime,
+  formatOptimalTime,
+} from "@/lib/utils/optimal-posting-times";
 
 interface SocialAccount {
   id: string;
@@ -146,16 +157,26 @@ export function PostForm({
 
     if (file) {
       // Validate file size
-      const maxSize = file.type.startsWith('video/') ? 50 * 1024 * 1024 : 10 * 1024 * 1024;
+      const maxSize = file.type.startsWith("video/")
+        ? 50 * 1024 * 1024
+        : 10 * 1024 * 1024;
       if (file.size > maxSize) {
         toast.error(`File too large. Max: ${maxSize / (1024 * 1024)}MB`);
         return;
       }
 
       // Validate file type
-      const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'video/mp4', 'video/quicktime'];
+      const allowedTypes = [
+        "image/jpeg",
+        "image/png",
+        "image/webp",
+        "video/mp4",
+        "video/quicktime",
+      ];
       if (!allowedTypes.includes(file.type)) {
-        toast.error('Only images (JPEG, PNG, WebP) and videos (MP4, MOV) are supported');
+        toast.error(
+          "Only images (JPEG, PNG, WebP) and videos (MP4, MOV) are supported"
+        );
         return;
       }
 
@@ -267,7 +288,10 @@ export function PostForm({
       let finalContent = content;
       if (addTimestamp && platform === "twitter") {
         const now = new Date();
-        const timestamp = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        const timestamp = now.toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        });
         finalContent = `${content.trim()} ⚡ ${timestamp}`;
       }
 
@@ -417,7 +441,8 @@ export function PostForm({
             />
             {mediaPreviewUrl && (
               <div className="mt-4 rounded-lg overflow-hidden bg-accent">
-                {mediaFile?.type.startsWith("video/") || initialData?.media_type === "video" ? (
+                {mediaFile?.type.startsWith("video/") ||
+                initialData?.media_type === "video" ? (
                   <video
                     src={mediaPreviewUrl}
                     controls
@@ -454,44 +479,58 @@ export function PostForm({
               <Calendar className="inline h-4 w-4 mr-2" />
               Schedule For (Optional)
             </Label>
-            
+
             {/* Recommended Times */}
             {platform && (
               <div className="mb-3 p-3 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg">
                 <div className="flex items-center gap-2 mb-2">
                   <TrendingUp className="h-4 w-4 text-blue-600" />
-                  <span className="text-sm font-medium text-blue-800">Recommended Times for {platform.charAt(0).toUpperCase() + platform.slice(1)}</span>
+                  <span className="text-sm font-medium text-blue-800">
+                    Recommended Times for{" "}
+                    {platform.charAt(0).toUpperCase() + platform.slice(1)}
+                  </span>
                 </div>
                 <div className="flex flex-wrap gap-2">
-                  {getOptimalTimes(platform as 'twitter' | 'linkedin' | 'tiktok').slice(0, 3).map((optimalTime, index) => {
-                    const nextDate = new Date();
-                    const targetDay = optimalTime.dayOfWeek;
-                    const currentDay = nextDate.getDay();
-                    const daysToAdd = (targetDay - currentDay + 7) % 7 || (optimalTime.hour > nextDate.getHours() ? 0 : 7);
-                    nextDate.setDate(nextDate.getDate() + daysToAdd);
-                    nextDate.setHours(optimalTime.hour, 0, 0, 0);
-                    
-                    const dateTimeString = nextDate.toISOString().slice(0, 16);
-                    
-                    return (
-                      <Button
-                        key={index}
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        className="text-xs hover:bg-blue-100 border-blue-300"
-                        onClick={() => setScheduledFor(dateTimeString)}
-                      >
-                        <Clock className="h-3 w-3 mr-1" />
-                        {formatOptimalTime(nextDate).split(',')[0]} {optimalTime.hour}:00
-                      </Button>
-                    );
-                  })}
+                  {getOptimalTimes(
+                    platform as "twitter" | "linkedin" | "tiktok"
+                  )
+                    .slice(0, 3)
+                    .map((optimalTime, index) => {
+                      const nextDate = new Date();
+                      const targetDay = optimalTime.dayOfWeek;
+                      const currentDay = nextDate.getDay();
+                      const daysToAdd =
+                        (targetDay - currentDay + 7) % 7 ||
+                        (optimalTime.hour > nextDate.getHours() ? 0 : 7);
+                      nextDate.setDate(nextDate.getDate() + daysToAdd);
+                      nextDate.setHours(optimalTime.hour, 0, 0, 0);
+
+                      const dateTimeString = nextDate
+                        .toISOString()
+                        .slice(0, 16);
+
+                      return (
+                        <Button
+                          key={index}
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          className="text-xs hover:bg-blue-100 border-blue-300"
+                          onClick={() => setScheduledFor(dateTimeString)}
+                        >
+                          <Clock className="h-3 w-3 mr-1" />
+                          {formatOptimalTime(nextDate).split(",")[0]}{" "}
+                          {optimalTime.hour}:00
+                        </Button>
+                      );
+                    })}
                 </div>
-                <p className="text-xs text-blue-600 mt-2">Click to auto-fill optimal posting times</p>
+                <p className="text-xs text-blue-600 mt-2">
+                  Click to auto-fill optimal posting times
+                </p>
               </div>
             )}
-            
+
             <Input
               id="scheduled_for"
               type="datetime-local"
@@ -519,7 +558,8 @@ export function PostForm({
                   Add unique timestamp ⚡
                 </Label>
                 <p className="text-xs text-muted-foreground">
-                  Prevents Twitter duplicate content errors by adding a timestamp to your tweet
+                  Prevents Twitter duplicate content errors by adding a
+                  timestamp to your tweet
                 </p>
               </div>
             </div>
@@ -532,7 +572,9 @@ export function PostForm({
                 <Label htmlFor="privacy">Privacy Level</Label>
                 <Select
                   value={privacyLevel}
-                  onValueChange={(value) => setPrivacyLevel(value as PrivacyLevel)}
+                  onValueChange={(value) =>
+                    setPrivacyLevel(value as PrivacyLevel)
+                  }
                 >
                   <SelectTrigger id="privacy">
                     <SelectValue placeholder="Select privacy level" />

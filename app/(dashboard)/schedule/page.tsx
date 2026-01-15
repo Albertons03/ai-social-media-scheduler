@@ -68,15 +68,15 @@ export default function SchedulePage() {
     // Pre-fill form data from URL parameters
     const platform = searchParams.get("platform");
     const time = searchParams.get("time");
-    
+
     if (platform || time) {
       const prefillData: any = {};
-      
+
       if (platform && ["twitter", "linkedin", "tiktok"].includes(platform)) {
         prefillData.platform = platform as Platform;
         setSelectedPlatformForAI(platform as Platform);
       }
-      
+
       if (time) {
         // Convert ISO time to datetime-local format
         try {
@@ -87,7 +87,7 @@ export default function SchedulePage() {
           console.warn("Invalid time parameter:", time);
         }
       }
-      
+
       if (Object.keys(prefillData).length > 0) {
         setInitialData(prefillData);
         setIsCreateModalOpen(true);
@@ -281,7 +281,8 @@ export default function SchedulePage() {
           <PostForm
             onSubmit={handleCreatePost}
             initialData={
-              initialData || (aiGeneratedContent
+              initialData ||
+              (aiGeneratedContent
                 ? {
                     content: aiGeneratedContent,
                     platform: selectedPlatformForAI,

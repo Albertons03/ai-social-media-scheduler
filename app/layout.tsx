@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, Sora } from "next/font/google";
 import { Toaster } from "sonner";
 import { ThemeProvider } from "@/components/layout/theme-provider";
+import AuthErrorHandler from "@/components/auth-error-handler";
 import "./globals.css";
 
 const inter = Inter({
@@ -101,6 +102,7 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
+          <AuthErrorHandler />
           {children}
           <Toaster position="top-right" richColors />
         </ThemeProvider>

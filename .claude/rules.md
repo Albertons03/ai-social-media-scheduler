@@ -3,7 +3,7 @@
 ## Project Overview
 This is a **Next.js + Supabase + OpenAI** application for scheduling posts across TikTok, LinkedIn, and Twitter with AI-powered content generation.
 
-**Current Status**: MVP v1.0 - Core scheduling and AI generation working. Platform integrations (TikTok/LinkedIn/Twitter API) and auto-publishing not yet implemented.
+**Current Status**: MVP v1.0 - Core scheduling and AI generation working. Platform integrations (TikTok/LinkedIn/Twitter API) and auto-publishing via Supabase Edge Functions (every 5min) implemented and working.
 
 ---
 

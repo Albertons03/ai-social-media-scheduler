@@ -1,0 +1,12 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Test Supabase Edge Functions locally",
+			"type": "shell",
+			"command": "powershell -ExecutionPolicy Bypass -File .\\scripts\\test-local-supabase.ps1",
+			"isBackground": false,
+			"group": "test"
+		}
+	]
+}

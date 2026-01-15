@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { publishToTikTok } from "@/lib/publishers/tiktok-publisher";
 
 interface PublishResult {
   success: boolean;
@@ -159,6 +160,47 @@ async function refreshLinkedInToken(account: any): Promise<string> {
 }
 
 /**
+ * Refresh TikTok access token if expired
+ */
+async function refreshTikTokToken(account: any): Promise<string> {
+  const clientKey = process.env.TIKTOK_CLIENT_KEY;
+  const clientSecret = process.env.TIKTOK_CLIENT_SECRET;
+
+  const body = new URLSearchParams({
+    grant_type: "refresh_token",
+    client_key: clientKey!,
+    client_secret: clientSecret!,
+    refresh_token: account.refresh_token,
+  });
+
+  const response = await fetch(
+    "https://open.tiktokapis.com/v2/oauth/token/",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: body.toString(),
+    }
+  );
+
+  if (!response.ok) {
+    const error = await response.text();
+    throw new Error(
+      `TikTok token refresh failed: ${response.status} - ${error}`
+    );
+  }
+
+  const data = await response.json();
+
+  if (!data.access_token) {
+    throw new Error("No access token returned from TikTok token refresh");
+  }
+
+  return data.access_token;
+}
+
+/**
  * Publish a single post
  */
 async function publishPost(
@@ -188,6 +230,8 @@ async function publishPost(
         accessToken = await refreshTwitterToken(account);
       } else if (post.platform === "linkedin") {
         accessToken = await refreshLinkedInToken(account);
+      } else if (post.platform === "tiktok") {
+        accessToken = await refreshTikTokToken(account);
       }
 
       // Update token in database
@@ -245,8 +289,22 @@ async function publishPost(
         };
 
       case "tiktok":
-        // Not implemented yet
-        throw new Error(`${post.platform} publishing not yet implemented`);
+        result = await publishToTikTok(post, account);
+
+        // Update post status to published
+        await supabase
+          .from("posts")
+          .update({
+            status: "published",
+            published_at: new Date().toISOString(),
+            tiktok_post_id: result.tikTokPostId,
+          })
+          .eq("id", post.id);
+
+        return {
+          success: true,
+          ...baseResult,
+        };
 
       default:
         throw new Error(`Unknown platform: ${post.platform}`);

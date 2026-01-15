@@ -2,9 +2,19 @@
 
 import * as React from "react";
 import { Clock, TrendingUp, Calendar } from "lucide-react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { getOptimalTimes, getNextOptimalTime, formatOptimalTime } from "@/lib/utils/optimal-posting-times";
+import {
+  getOptimalTimes,
+  getNextOptimalTime,
+  formatOptimalTime,
+} from "@/lib/utils/optimal-posting-times";
 import { useRouter } from "next/navigation";
 
 interface BestPostingTimesProps {
@@ -13,19 +23,24 @@ interface BestPostingTimesProps {
 
 export function BestPostingTimes({ className }: BestPostingTimesProps) {
   const router = useRouter();
-  
-  const platforms = ['twitter', 'linkedin', 'tiktok'] as const;
-  const nextOptimalTimes = platforms.map(platform => ({
+
+  const platforms = ["twitter", "linkedin", "tiktok"] as const;
+  const nextOptimalTimes = platforms.map((platform) => ({
     platform,
     nextTime: getNextOptimalTime(platform),
-    color: platform === 'twitter' ? 'text-blue-600' : 
-           platform === 'linkedin' ? 'text-blue-700' : 
-           'text-pink-600'
+    color:
+      platform === "twitter"
+        ? "text-blue-600"
+        : platform === "linkedin"
+        ? "text-blue-700"
+        : "text-pink-600",
   }));
 
   const handleScheduleForTime = (platform: string, date: Date) => {
     const dateTimeString = date.toISOString().slice(0, 16);
-    router.push(`/schedule?platform=${platform}&time=${dateTimeString}&openAI=true`);
+    router.push(
+      `/schedule?platform=${platform}&time=${dateTimeString}&openAI=true`
+    );
   };
 
   return (
@@ -41,7 +56,7 @@ export function BestPostingTimes({ className }: BestPostingTimesProps) {
       </CardHeader>
       <CardContent className="space-y-3">
         {nextOptimalTimes.map(({ platform, nextTime, color }) => (
-          <div 
+          <div
             key={platform}
             className="flex items-center justify-between p-3 bg-gradient-to-r from-gray-50 to-gray-100 rounded-lg border"
           >

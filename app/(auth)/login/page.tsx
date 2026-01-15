@@ -20,7 +20,9 @@ function LoginForm() {
   useEffect(() => {
     const message = searchParams.get("message");
     if (message === "signup-success") {
-      setSuccess("Account created successfully! Please check your email for confirmation, then login below.");
+      setSuccess(
+        "Account created successfully! Please check your email for confirmation, then login below."
+      );
     }
   }, [searchParams]);
 
@@ -157,19 +159,21 @@ function LoginForm() {
 
 export default function LoginPage() {
   return (
-    <Suspense fallback={
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center p-4">
-        <div className="w-full max-w-md">
-          <div className="flex items-center justify-center gap-2 mb-8">
-            <Calendar className="h-10 w-10 text-primary" />
-            <span className="text-3xl font-bold">LandingBits</span>
-          </div>
-          <div className="bg-white rounded-2xl shadow-xl border border-border p-8">
-            <div className="text-center">Loading...</div>
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center p-4">
+          <div className="w-full max-w-md">
+            <div className="flex items-center justify-center gap-2 mb-8">
+              <Calendar className="h-10 w-10 text-primary" />
+              <span className="text-3xl font-bold">LandingBits</span>
+            </div>
+            <div className="bg-white rounded-2xl shadow-xl border border-border p-8">
+              <div className="text-center">Loading...</div>
+            </div>
           </div>
         </div>
-      </div>
-    }>
+      }
+    >
       <LoginForm />
     </Suspense>
   );

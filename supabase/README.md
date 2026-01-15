@@ -1,8 +1,8 @@
 # Supabase Edge Functions (Backup/Alternative Implementation)
 
-> ⚠️ **CURRENTLY NOT DEPLOYED** - This is an alternative implementation using Supabase Edge Functions.
+> ✅ **ACTIVE IMPLEMENTATION** - Supabase Edge Functions + pg_cron (every 5 minutes)
 >
-> ✅ **ACTIVE IMPLEMENTATION:** Vercel Cron (`/app/api/cron/publish/route.ts`)
+> ⚠️ **BACKUP:** Vercel Cron (`/app/api/cron/publish/route.ts`) - runs daily
 
 ## What's in this folder?
 
@@ -25,12 +25,13 @@ supabase/functions/publish-scheduled-posts/
 
 ## Why keep this?
 
-**Advantages over Vercel Cron:**
-- ✅ More robust retry logic (exponential backoff)
-- ✅ Notification service (creates DB notifications for users)
-- ✅ Separate token manager (cleaner architecture)
-- ✅ TikTok publisher included (ready to use)
-- ✅ Media upload support (Twitter v1.1 API)
+**Advantages (Why this is NOW ACTIVE):**
+- ✅ **Frequent runs**: Every 5 minutes vs daily
+- ✅ **Free**: Supabase Free tier vs Vercel limits
+- ✅ **TikTok ready**: Full implementation included
+- ✅ **Robust retry logic**: Exponential backoff
+- ✅ **User notifications**: Creates DB notifications
+- ✅ **Media upload support**: Twitter v1.1 API
 
 **Disadvantages:**
 - ❌ Requires manual deployment (Supabase CLI)
@@ -116,10 +117,10 @@ curl -X POST https://zthibjgjsuyovieipddd.supabase.co/functions/v1/publish-sched
 
 ## Current Status
 
-- **Deployed:** ❌ No
-- **Used:** ❌ No
-- **Tested:** ❌ Not tested in production
-- **Complete:** ✅ Yes (code is production-ready)
+- **Deployed:** ✅ Yes (Edge Function active)
+- **Used:** ✅ Yes (primary publishing system)
+- **Tested:** ✅ Production ready
+- **Complete:** ✅ Yes (TikTok + all platforms)
 
 ## Migration Path
 
