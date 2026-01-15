@@ -86,7 +86,7 @@ export async function updateSession(request: NextRequest) {
       const url = request.nextUrl.clone();
       const isProtectedRoute = !request.nextUrl.pathname.startsWith('/login') && 
                               !request.nextUrl.pathname.startsWith('/signup') &&
-                              !request.nextUrl.pathname === '/';
+                              request.nextUrl.pathname !== '/';
       
       if (isProtectedRoute) {
         url.pathname = '/login';
