@@ -116,7 +116,23 @@ export default function SchedulePage() {
         body: JSON.stringify(postData),
       });
 
-      if (!response.ok) throw new Error("Failed to create post");
+      if (!response.ok) {
+        let errorMessage = "Failed to create post";
+        try {
+          const errorData = await response.json();
+          errorMessage = errorData.error || errorMessage;
+        } catch (parseError) {
+          // If JSON parsing fails, try to get text error
+          try {
+            const textError = await response.text();
+            console.error("API returned non-JSON error:", textError);
+            errorMessage = `Server error (${response.status})`;
+          } catch {
+            errorMessage = `Server error (${response.status})`;
+          }
+        }
+        throw new Error(errorMessage);
+      }
 
       await fetchPosts();
       setIsCreateModalOpen(false);
@@ -127,7 +143,9 @@ export default function SchedulePage() {
       toast.success("Post scheduled successfully! 🎉");
     } catch (error) {
       console.error("Error creating post:", error);
-      toast.error("Failed to create post");
+      const errorMessage =
+        error instanceof Error ? error.message : "Failed to create post";
+      toast.error(errorMessage);
       throw error;
     }
   };

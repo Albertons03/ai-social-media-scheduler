@@ -209,14 +209,34 @@ export function PostForm({
         }),
       });
 
-      if (!response.ok) throw new Error("Failed to generate content");
+      if (!response.ok) {
+        let errorMessage = "Failed to generate content";
+        try {
+          const errorData = await response.json();
+          errorMessage = errorData.error || errorMessage;
+        } catch (parseError) {
+          // If JSON parsing fails, try to get text error
+          try {
+            const textError = await response.text();
+            console.error("API returned non-JSON error:", textError);
+            errorMessage = `Server error (${response.status})`;
+          } catch {
+            errorMessage = `Server error (${response.status})`;
+          }
+        }
+        throw new Error(errorMessage);
+      }
 
       const data = await response.json();
       setContent(data.content);
       toast.success("Content generated successfully!", { id: "ai-generate" });
     } catch (error) {
       console.error("Error generating content:", error);
-      toast.error("Failed to generate content. Please try again.", {
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "Failed to generate content. Please try again.";
+      toast.error(errorMessage, {
         id: "ai-generate",
       });
     } finally {
@@ -255,8 +275,21 @@ export function PostForm({
         });
 
         if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.error || "Failed to upload media");
+          let errorMessage = "Failed to upload media";
+          try {
+            const errorData = await response.json();
+            errorMessage = errorData.error || errorMessage;
+          } catch (parseError) {
+            // If JSON parsing fails, try to get text error
+            try {
+              const textError = await response.text();
+              console.error("Upload API returned non-JSON error:", textError);
+              errorMessage = `Upload failed (${response.status})`;
+            } catch {
+              errorMessage = `Upload failed (${response.status})`;
+            }
+          }
+          throw new Error(errorMessage);
         }
         const data = await response.json();
         mediaUrl = data.url;
@@ -274,7 +307,26 @@ export function PostForm({
           body: formData,
         });
 
-        if (!response.ok) throw new Error("Failed to upload thumbnail");
+        if (!response.ok) {
+          let errorMessage = "Failed to upload thumbnail";
+          try {
+            const errorData = await response.json();
+            errorMessage = errorData.error || errorMessage;
+          } catch (parseError) {
+            // If JSON parsing fails, try to get text error
+            try {
+              const textError = await response.text();
+              console.error(
+                "Thumbnail upload API returned non-JSON error:",
+                textError
+              );
+              errorMessage = `Thumbnail upload failed (${response.status})`;
+            } catch {
+              errorMessage = `Thumbnail upload failed (${response.status})`;
+            }
+          }
+          throw new Error(errorMessage);
+        }
         const data = await response.json();
         thumbnailUrl = data.url;
       }
@@ -321,7 +373,11 @@ export function PostForm({
       );
     } catch (error) {
       console.error("Error submitting post:", error);
-      toast.error("Failed to save post. Please try again.", {
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "Failed to save post. Please try again.";
+      toast.error(errorMessage, {
         id: "post-save",
       });
     } finally {
@@ -548,7 +604,7 @@ export function PostForm({
               <Checkbox
                 id="add_timestamp"
                 checked={addTimestamp}
-                onChange={(e) => setAddTimestamp(e.target.checked)}
+                onCheckedChange={setAddTimestamp}
               />
               <div className="space-y-1">
                 <Label
@@ -588,24 +644,30 @@ export function PostForm({
               </div>
 
               <div className="space-y-2">
-                <Checkbox
-                  id="allow_comments"
-                  checked={allowComments}
-                  onChange={(e) => setAllowComments(e.target.checked)}
-                  label="Allow Comments"
-                />
-                <Checkbox
-                  id="allow_duet"
-                  checked={allowDuet}
-                  onChange={(e) => setAllowDuet(e.target.checked)}
-                  label="Allow Duet"
-                />
-                <Checkbox
-                  id="allow_stitch"
-                  checked={allowStitch}
-                  onChange={(e) => setAllowStitch(e.target.checked)}
-                  label="Allow Stitch"
-                />
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    id="allow_comments"
+                    checked={allowComments}
+                    onCheckedChange={setAllowComments}
+                  />
+                  <Label htmlFor="allow_comments">Allow Comments</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    id="allow_duet"
+                    checked={allowDuet}
+                    onCheckedChange={setAllowDuet}
+                  />
+                  <Label htmlFor="allow_duet">Allow Duet</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    id="allow_stitch"
+                    checked={allowStitch}
+                    onCheckedChange={setAllowStitch}
+                  />
+                  <Label htmlFor="allow_stitch">Allow Stitch</Label>
+                </div>
               </div>
             </>
           )}
