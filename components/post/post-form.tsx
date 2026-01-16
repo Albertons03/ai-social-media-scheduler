@@ -604,7 +604,7 @@ export function PostForm({
               <Checkbox
                 id="add_timestamp"
                 checked={addTimestamp}
-                onCheckedChange={setAddTimestamp}
+                onChange={(e) => setAddTimestamp(e.target.checked)}
               />
               <div className="space-y-1">
                 <Label
@@ -644,30 +644,24 @@ export function PostForm({
               </div>
 
               <div className="space-y-2">
-                <div className="flex items-center space-x-2">
-                  <Checkbox
-                    id="allow_comments"
-                    checked={allowComments}
-                    onCheckedChange={setAllowComments}
-                  />
-                  <Label htmlFor="allow_comments">Allow Comments</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Checkbox
-                    id="allow_duet"
-                    checked={allowDuet}
-                    onCheckedChange={setAllowDuet}
-                  />
-                  <Label htmlFor="allow_duet">Allow Duet</Label>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Checkbox
-                    id="allow_stitch"
-                    checked={allowStitch}
-                    onCheckedChange={setAllowStitch}
-                  />
-                  <Label htmlFor="allow_stitch">Allow Stitch</Label>
-                </div>
+                <Checkbox
+                  id="allow_comments"
+                  checked={allowComments}
+                  onChange={(e) => setAllowComments(e.target.checked)}
+                  label="Allow Comments"
+                />
+                <Checkbox
+                  id="allow_duet"
+                  checked={allowDuet}
+                  onChange={(e) => setAllowDuet(e.target.checked)}
+                  label="Allow Duet"
+                />
+                <Checkbox
+                  id="allow_stitch"
+                  checked={allowStitch}
+                  onChange={(e) => setAllowStitch(e.target.checked)}
+                  label="Allow Stitch"
+                />
               </div>
             </>
           )}
