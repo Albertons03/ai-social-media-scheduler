@@ -8,6 +8,12 @@ A Vercel ingyenes (Hobby) terve **2 cron job-ot tartalmaz ingyen**. Használjuk 
 
 The Vercel free (Hobby) plan includes **2 cron jobs for FREE**. We'll use this instead of Supabase!
 
+⚠️ **Fontos:** Vercel Hobby plan csak **óránkénti** vagy **napi** cron-okat támogat (nem 5 percenként).
+⚠️ **Important:** Vercel Hobby plan only supports **hourly** or **daily** crons (not every 5 minutes).
+
+💡 **5 perces publikáláshoz:** Lásd `SUPABASE_CRON_SETUP.md` (ingyenes megoldás).
+💡 **For 5-minute publishing:** See `SUPABASE_CRON_SETUP.md` (free solution).
+
 ---
 
 ## 🚀 Setup Lépések / Setup Steps
@@ -89,8 +95,8 @@ Ha működik, ezt kell látnod / If it works, you should see:
 
 ## 📊 Hogyan működik? / How does it work?
 
-1. **Vercel Cron** automatikusan meghívja a `/api/cron/publish` endpoint-ot **5 percenként**
-   **Vercel Cron** automatically calls the `/api/cron/publish` endpoint **every 5 minutes**
+1. **Vercel Cron** automatikusan meghívja a `/api/cron/publish` endpoint-ot **óránként**
+   **Vercel Cron** automatically calls the `/api/cron/publish` endpoint **every hour**
 
 2. Az endpoint:
    The endpoint:
