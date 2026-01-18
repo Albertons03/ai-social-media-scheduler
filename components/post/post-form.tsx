@@ -3,6 +3,7 @@
 import * as React from "react";
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
+import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -262,73 +263,84 @@ export function PostForm({
       let mediaUrl = initialData?.media_url;
       let thumbnailUrl = initialData?.thumbnail_url;
 
-      // Upload media file if provided
+      // Upload media file directly to Supabase Storage if provided
       if (mediaFile) {
         toast.loading("Uploading media...", { id: "post-save" });
-        const formData = new FormData();
-        formData.append("file", mediaFile);
-        formData.append("type", "media");
 
-        const response = await fetch("/api/upload", {
-          method: "POST",
-          body: formData,
-        });
+        const supabase = createClient();
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
 
-        if (!response.ok) {
-          let errorMessage = "Failed to upload media";
-          try {
-            const errorData = await response.json();
-            errorMessage = errorData.error || errorMessage;
-          } catch (parseError) {
-            // If JSON parsing fails, try to get text error
-            try {
-              const textError = await response.text();
-              console.error("Upload API returned non-JSON error:", textError);
-              errorMessage = `Upload failed (${response.status})`;
-            } catch {
-              errorMessage = `Upload failed (${response.status})`;
-            }
-          }
-          throw new Error(errorMessage);
+        if (!user) throw new Error("User not authenticated");
+
+        // Generate unique filename
+        const timestamp = Date.now();
+        const randomString = Math.random().toString(36).substring(7);
+        const extension = mediaFile.name.split(".").pop();
+        const filename = `${user.id}/${timestamp}-${randomString}.${extension}`;
+
+        // Upload to Supabase Storage
+        const { data: uploadData, error: uploadError } = await supabase.storage
+          .from("media")
+          .upload(filename, mediaFile, {
+            contentType: mediaFile.type,
+            cacheControl: "3600",
+            upsert: false,
+          });
+
+        if (uploadError) {
+          console.error("Upload error:", uploadError);
+          throw new Error(`Failed to upload media: ${uploadError.message}`);
         }
-        const data = await response.json();
-        mediaUrl = data.url;
+
+        // Get public URL
+        const {
+          data: { publicUrl },
+        } = supabase.storage.from("media").getPublicUrl(filename);
+
+        mediaUrl = publicUrl;
       }
 
-      // Upload thumbnail if provided
+      // Upload thumbnail directly to Supabase Storage if provided
       if (thumbnailFile) {
         toast.loading("Uploading thumbnail...", { id: "post-save" });
-        const formData = new FormData();
-        formData.append("file", thumbnailFile);
-        formData.append("type", "thumbnail");
 
-        const response = await fetch("/api/upload", {
-          method: "POST",
-          body: formData,
-        });
+        const supabase = createClient();
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
 
-        if (!response.ok) {
-          let errorMessage = "Failed to upload thumbnail";
-          try {
-            const errorData = await response.json();
-            errorMessage = errorData.error || errorMessage;
-          } catch (parseError) {
-            // If JSON parsing fails, try to get text error
-            try {
-              const textError = await response.text();
-              console.error(
-                "Thumbnail upload API returned non-JSON error:",
-                textError
-              );
-              errorMessage = `Thumbnail upload failed (${response.status})`;
-            } catch {
-              errorMessage = `Thumbnail upload failed (${response.status})`;
-            }
-          }
-          throw new Error(errorMessage);
+        if (!user) throw new Error("User not authenticated");
+
+        // Generate unique filename
+        const timestamp = Date.now();
+        const randomString = Math.random().toString(36).substring(7);
+        const extension = thumbnailFile.name.split(".").pop();
+        const filename = `${user.id}/${timestamp}-${randomString}.${extension}`;
+
+        // Upload to Supabase Storage
+        const { data: uploadData, error: uploadError } = await supabase.storage
+          .from("thumbnails")
+          .upload(filename, thumbnailFile, {
+            contentType: thumbnailFile.type,
+            cacheControl: "3600",
+            upsert: false,
+          });
+
+        if (uploadError) {
+          console.error("Thumbnail upload error:", uploadError);
+          throw new Error(
+            `Failed to upload thumbnail: ${uploadError.message}`
+          );
         }
-        const data = await response.json();
-        thumbnailUrl = data.url;
+
+        // Get public URL
+        const {
+          data: { publicUrl },
+        } = supabase.storage.from("thumbnails").getPublicUrl(filename);
+
+        thumbnailUrl = publicUrl;
       }
 
       // Convert local time to UTC for the database
