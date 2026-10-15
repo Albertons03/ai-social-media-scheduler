@@ -7,6 +7,7 @@ import { sendSuccessEmail, sendFailureEmail } from "./email-service.ts";
 import { publishToTwitter } from "./publishers/twitter-publisher.ts";
 import { publishToLinkedIn } from "./publishers/linkedin-publisher.ts";
 import { publishToTikTok } from "./publishers/tiktok-publisher.ts";
+import { authenticateCronRequest } from "./cron-auth.ts";
 
 const supabaseUrl = Deno.env.get("SUPABASE_URL");
 const supabaseServiceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
@@ -351,6 +352,29 @@ serve(async (req: Request) => {
   }
 
   try {
+    const authentication = authenticateCronRequest(
+      Deno.env.get("CRON_PUBLISH_SECRET"),
+      req.headers.get("authorization")
+    );
+
+    if (!authentication.authenticated) {
+      const configurationError = authentication.reason === "configuration_error";
+      return new Response(
+        JSON.stringify({
+          error: configurationError
+            ? "Cron authentication is not configured"
+            : "Unauthorized",
+        }),
+        {
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+          },
+          status: configurationError ? 500 : 401,
+        }
+      );
+    }
+
     console.log("Received publishing request");
     console.log("Headers:", req.headers);
 
