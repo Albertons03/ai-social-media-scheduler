@@ -376,7 +376,6 @@ serve(async (req: Request) => {
     }
 
     console.log("Received publishing request");
-    console.log("Headers:", req.headers);
 
     const result = await publishScheduledPosts();
 
