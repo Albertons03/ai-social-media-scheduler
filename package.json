@@ -12,9 +12,7 @@
     "supabase:start": "supabase start",
     "supabase:stop": "supabase stop",
     "supabase:serve": "supabase functions serve publish-scheduled-posts --debug",
-    "test:edge": "powershell -ExecutionPolicy Bypass -File .\\scripts\\test-quick-edge.ps1 simple",
-    "test:edge-detailed": "powershell -ExecutionPolicy Bypass -File .\\scripts\\test-quick-edge.ps1 detailed",
-    "test:local-full": "powershell -ExecutionPolicy Bypass -File .\\scripts\\test-local-supabase.ps1"
+    "test:cron-auth": "deno test ./supabase/functions/publish-scheduled-posts/cron-auth.test.ts"
   },
   "keywords": [
     "social-media",
