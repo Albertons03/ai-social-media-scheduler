@@ -1,296 +1,163 @@
-# 🎬 AI Social Media Scheduler
+# AI Social Media Scheduler
 
-> **AI-powered social media management platform** with intelligent content generation and multi-platform scheduling for TikTok, LinkedIn, and Twitter.
+A portfolio project for drafting, scheduling, and managing social media posts
+from one Next.js application. It combines a calendar-based scheduler, platform
+accounts, AI-assisted writing, and a Supabase-backed publishing workflow.
 
-![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=next.js)
-![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue?logo=typescript)
-![Supabase](https://img.shields.io/badge/Supabase-PostgreSQL-green?logo=supabase)
-![OpenAI](https://img.shields.io/badge/OpenAI-GPT--4-orange?logo=openai)
+The project is under active development. The implementation and validation
+status below distinguish shipped code from platform behavior that has not yet
+been verified.
 
----
+## Technology
 
-## 🚀 Why I Built This
+- Next.js 16.4.2 (App Router), React 19, and TypeScript 5
+- Tailwind CSS 3 and reusable UI components
+- Supabase Auth, Postgres, Storage, and Edge Functions
+- OpenAI and Anthropic SDKs for AI features
+- Deno for Supabase Edge Function tests
+- Zod, React Hook Form, and date-fns
 
-As a content creator managing multiple social media platforms, I was spending **10+ hours per week** manually creating and posting content across TikTok, LinkedIn, and Twitter. This tool automates that entire workflow.
+Versions and integrations are based on the dependencies and code in this
+repository.
 
 ## Features
 
-### Core Features (MVP)
-- **AI Post Generator** - Generate engaging captions and content using OpenAI GPT-4
-- **Calendar Scheduler** - Schedule posts in advance with visual calendar interface
-- **Multi-Platform Support**:
-  - TikTok (OAuth + Upload)
-  - LinkedIn Integration
-  - Twitter/X Integration
-- **Analytics Dashboard** - Track views, likes, engagement, and more
-- **Mobile Responsive Design** - Works seamlessly on all devices
+- Dashboard, schedule calendar, post composer, and analytics views
+- Draft and schedule posts for TikTok, LinkedIn, and X/Twitter
+- Connect social accounts through platform OAuth routes
+- Generate post text with AI; AI-backed chat and suggestions are also present
+- Upload post media through the application API
+- Platform-specific composer options, including TikTok privacy settings
+- Supabase Edge Function for processing due scheduled posts, with cron-request
+  authentication and retry/notification helpers
 
-### TikTok-Specific Features
-- Video file upload (MP4, MOV)
-- Caption with hashtags
-- Cover image selection
-- Privacy settings (Public/Friends/Private)
-- Comment/Duet/Stitch settings
-- Schedule publish time
-- AI-generated captions from video analysis (GPT-4 Vision)
+Analytics are based on data available to the application; live synchronization
+of analytics from every platform is not verified.
 
-## Tech Stack
+## Scheduling and publishing flow
 
-### Frontend
-- **Next.js 16** (App Router with Turbopack)
-- **TypeScript 5.9** - Full type safety
-- **Tailwind CSS v3** - Utility-first styling
-- **shadcn/ui** - Beautiful, accessible components
-- **Lucide React** - Modern icon library
-- **Sonner** - Toast notifications
+1. Sign in and connect an eligible social account.
+2. Create a post, optionally use AI assistance, select its platform, and set a
+   schedule time.
+3. The post is stored with its scheduled status and time in Supabase.
+4. Supabase Cron invokes the authenticated `publish-scheduled-posts` Edge
+   Function. The function finds due posts, checks their current status, and
+   dispatches them to platform-specific publisher modules.
+5. The function records outcomes and uses retry/notification helpers for
+   failures.
 
-### Backend
-- **Supabase** (Database + Auth + Storage)
-- **Supabase Edge Functions** (AI + Scheduling)
-- **Supabase Cron Jobs** (auto-publish)
+Production LinkedIn scheduled publishing has passed an end-to-end test on the
+owner's account only. That test does not establish general reliability or
+exactly-once delivery.
 
-### APIs
-- **OpenAI GPT-4** (content generation)
-- **TikTok Content Posting API**
-- **LinkedIn API**
-- **Twitter API v2**
+## Architecture
 
-### File Storage
-- **Supabase Storage** (videos, images)
+| Path | Responsibility |
+| --- | --- |
+| `app/` | Next.js routes, dashboard pages, and API handlers |
+| `components/` | Calendar, composer, layout, dashboard, and UI components |
+| `lib/db/` | Typed Supabase database operations |
+| `lib/supabase/` | Browser, server, and middleware Supabase clients |
+| `lib/publishers/` | Application-side TikTok publishing helper |
+| `supabase/functions/publish-scheduled-posts/` | Scheduled-post Edge Function, platform publishers, auth, retry, and notifications |
+| `supabase/migrations/` | Database migrations |
+| `docs/PROJECT_STATE.md` | Verified project state, risks, and worktree/release notes |
 
-## Project Structure
-
-```
-ai-personal-tiktok-scheduler/
-├── app/
-│   ├── (auth)/
-│   │   ├── login/
-│   │   └── signup/
-│   ├── (dashboard)/
-│   │   ├── dashboard/
-│   │   ├── schedule/
-│   │   ├── analytics/
-│   │   └── settings/
-│   ├── api/
-│   │   ├── auth/
-│   │   ├── posts/
-│   │   ├── ai/
-│   │   └── upload/
-│   ├── globals.css
-│   ├── layout.tsx
-│   └── page.tsx
-├── components/
-│   ├── ui/
-│   ├── layout/
-│   ├── calendar/
-│   └── post/
-├── lib/
-│   ├── supabase/
-│   │   ├── client.ts
-│   │   ├── server.ts
-│   │   └── middleware.ts
-│   ├── types/
-│   │   └── database.types.ts
-│   └── utils.ts
-├── public/
-├── middleware.ts
-├── supabase-schema.sql
-├── .env.local
-├── .env.example
-├── package.json
-├── tsconfig.json
-├── tailwind.config.ts
-└── next.config.js
-```
-
-## Getting Started
+## Local development
 
 ### Prerequisites
-- Node.js 18+ installed
-- A Supabase account
-- OpenAI API key
-- API credentials for TikTok, LinkedIn, and Twitter
 
-### Installation
+- Node.js 20.9 or later
+- npm
+- Deno to run the offline cron-auth test
+- A Supabase project and provider credentials for the features you want to
+  exercise
 
-1. **Clone the repository** (or navigate to the project folder)
-   ```bash
-   cd ai-personal-tiktok-scheduler
+Local development features that call Supabase or AI/platform APIs need
+developer-owned credentials. Do not commit credentials or use production
+credentials for local testing. Keep service-role and cron secrets server-side;
+never place them in client-side code.
+
+### Setup
+
+1. Clone the repository and enter its directory.
+2. Install the committed dependency versions:
+
+   ```powershell
+   npm ci
    ```
 
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
+3. Copy `.env.example` to `.env.local` and fill in only the values needed for
+   your own development environment. Obtain credentials from the relevant
+   provider dashboards; do not paste them into issues, screenshots, or commits.
+4. Start the app:
 
-3. **Set up Supabase**
-   - Create a new Supabase project at [supabase.com](https://supabase.com)
-   - Copy your project URL and anon key
-   - Run the SQL schema in the Supabase SQL Editor:
-     ```bash
-     # Copy contents of supabase-schema.sql and run in Supabase SQL Editor
-     ```
-
-4. **Configure environment variables**
-   - Copy `.env.example` to `.env.local`
-   - Fill in your API keys and credentials:
-     ```env
-     NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
-     NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-     SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
-     OPENAI_API_KEY=your_openai_key
-     # ... add other API keys
-     ```
-
-5. **Run the development server**
-   ```bash
+   ```powershell
    npm run dev
    ```
 
-6. **Open your browser**
-   - Navigate to [http://localhost:3000](http://localhost:3000)
+5. Open `http://localhost:3000`.
 
-## Database Schema
+To run validation commands:
 
-The application uses the following main tables:
-
-- **profiles** - User profile information (extends Supabase auth.users)
-- **social_accounts** - Connected social media accounts
-- **posts** - Scheduled and published posts
-- **ai_generations** - AI content generation history
-- **analytics_snapshots** - Historical analytics data
-
-See `supabase-schema.sql` for the complete schema with Row Level Security (RLS) policies.
-
-## Current Implementation Status
-
-### ✅ Completed
-- [x] Project setup and configuration
-- [x] TypeScript + Next.js 14 with App Router
-- [x] Tailwind CSS styling
-- [x] Supabase integration (client, server, middleware)
-- [x] Database schema and types
-- [x] Authentication system (login, signup, signout)
-- [x] Landing page
-- [x] Basic dashboard page
-- [x] Utility functions (date formatting, file handling)
-- [x] Responsive design foundation
-
-### ✅ Recently Completed (Week 2 - MVP)
-- [x] AI content generator integration (OpenAI GPT-4)
-- [x] Calendar scheduler component with visual interface
-- [x] Post creation form with platform-specific settings
-- [x] Toast notifications for user feedback
-- [x] Loading states with spinners
-- [x] Empty states with call-to-action
-- [x] Responsive mobile design
-- [x] File upload handling (media + thumbnails)
-
-### 🚧 Planned Features (v1.1)
-- [ ] TikTok OAuth and video upload
-- [ ] LinkedIn API integration
-- [ ] Twitter/X API integration
-- [ ] Real-time analytics sync
-- [ ] Scheduled post publishing (cron jobs)
-- [ ] Bulk post scheduling
-
-## API Integrations
-
-### OpenAI GPT-4
-Used for generating post captions, content ideas, and analyzing video content for automatic caption generation.
-
-### TikTok API
-- OAuth authentication
-- Video upload
-- Post publishing with metadata (caption, privacy, settings)
-- Analytics retrieval
-
-### LinkedIn API
-- OAuth authentication
-- Post creation
-- Analytics tracking
-
-### Twitter/X API v2
-- OAuth authentication
-- Tweet posting
-- Media upload
-- Analytics retrieval
-
-## Development
-
-### Available Scripts
-
-```bash
-npm run dev      # Start development server
-npm run build    # Build for production
-npm run start    # Start production server
-npm run lint     # Run ESLint
-npm run type-check # Run TypeScript type checking
+```powershell
+npm run type-check
+npm run test:cron-auth
 ```
 
-### Code Style
-- TypeScript for type safety
-- ESLint for code quality
-- Functional components with hooks
-- Server components by default (Next.js 14)
-- Client components only when needed
+The cron-auth test is offline and does not publish posts. Local Supabase Edge
+Function development additionally requires the Supabase CLI and Docker; see
+`LOCAL_TESTING_README.md`.
 
-## Deployment
+## Screenshots
 
-### Recommended: Vercel
-1. Push your code to GitHub
-2. Connect your repository to Vercel
-3. Configure environment variables in Vercel dashboard
-4. Deploy
+Screenshots have not been added to this repository yet. These are placeholders
+for future, sanitized captures:
 
-### Environment Variables for Production
-Make sure to set all environment variables from `.env.example` in your production environment.
+- `docs/screenshots/dashboard.png`
+- `docs/screenshots/schedule.png`
+- `docs/screenshots/post-composer.png`
 
-## Security
+Do not add screenshots containing account details, tokens, or private post
+content.
 
-- Row Level Security (RLS) enabled on all Supabase tables
-- Authentication handled by Supabase Auth
-- API keys stored as environment variables
-- HTTPS enforced in production
-- OAuth flows for social media integrations
+## Verification status and limitations
 
-## Contributing
+- **LinkedIn:** Scheduled publishing E2E verified on the owner's account.
+  Third-party LinkedIn publishing has not been validated.
+- **TikTok:** Public third-party publishing awaits platform approval. Do not
+  treat public publishing as generally available.
+- **X/Twitter:** Integration code exists; production scheduled-publishing E2E
+  is not verified here.
+- **Security update:** Next.js 16.4.2 is on the isolated security integration
+  branch. It has not been merged into development `master` or the cron-release
+  branch, pushed, or deployed.
+- **Dependency audit:** The latest recorded production audit reported 15
+  findings (0 critical, 7 high, 8 moderate). Remediation remains open; these
+  findings must not be considered fixed by the Next.js update.
+- **Build validation:** A production build passed on the separate security
+  source branch using temporary fake Supabase configuration. The integration
+  branch build has not been run because outbound-network isolation could not be
+  verified in the available environment.
+- **Development WIP:** The development worktree contains protected,
+  uncommitted changes, including a `next-mdx-remote` 6 upgrade. That upgrade
+  has not been reconciled with the security integration.
 
-This is a personal project, but suggestions and improvements are welcome!
+## Roadmap
 
-## License
+- Complete security integration and validate a clean release candidate.
+- Triage and resolve the remaining dependency findings in separate changes.
+- Reconcile the MDX 6 upgrade deliberately, without overwriting development WIP.
+- Add sanitized screenshots and a short product demo for the portfolio release.
+- Validate platform behavior and obtain required TikTok approval before making
+  broader publishing claims.
 
-MIT License
+## Engineering decisions
 
-## 📊 Project Status
-
-**Current Version:** v1.0 (MVP Complete)
-**Demo Status:** Fully functional with AI content generation and scheduling
-**Portfolio Ready:** ✅ Yes
-
-### What's Working Right Now
-- ✨ AI content generation with GPT-4
-- 📅 Visual calendar scheduler
-- 📝 Post creation with TikTok-specific settings
-- 🔔 Professional toast notifications
-- 💾 Database integration with Supabase
-- 🔐 Authentication and user management
-
----
-
-## 📧 Contact
-
-For questions or collaboration opportunities, feel free to reach out!
-
-**Project Link:** [GitHub Repository](#)
-**Live Demo:** [Coming Soon](#)
-
----
-
-<div align="center">
-
-**Built with ❤️ using Next.js, Supabase, and OpenAI**
-
-[⭐ Star this repo](#) if you find it helpful!
-
-</div>
+- Keep platform OAuth and publishing work behind server-side routes or the
+  authenticated Edge Function.
+- Keep Supabase row-level security as a database boundary in addition to
+  application authentication.
+- Use cron authentication for the scheduled publishing function.
+- Keep security remediation, dependency reconciliation, and cron-release
+  changes reviewable as separate work.
