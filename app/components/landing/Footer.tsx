@@ -22,18 +22,13 @@ export default function Footer({ locale }: Props) {
             <h4 className="text-white font-semibold mb-4">{t.productTitle}</h4>
             <ul className="space-y-2 text-slate-400 text-sm">
               <li>
-                <a href="#" className="hover:text-white transition-colors">
+                <a href="#features" className="hover:text-white transition-colors">
                   {t.productFeatures}
                 </a>
               </li>
               <li>
-                <a href="#" className="hover:text-white transition-colors">
+                <a href="#pricing" className="hover:text-white transition-colors">
                   {t.productPricing}
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:text-white transition-colors">
-                  {t.productRoadmap}
                 </a>
               </li>
             </ul>
@@ -44,18 +39,8 @@ export default function Footer({ locale }: Props) {
             <h4 className="text-white font-semibold mb-4">{t.companyTitle}</h4>
             <ul className="space-y-2 text-slate-400 text-sm">
               <li>
-                <a href="#" className="hover:text-white transition-colors">
-                  {t.companyAbout}
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:text-white transition-colors">
+                <a href="/blog" className="hover:text-white transition-colors">
                   {t.companyBlog}
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:text-white transition-colors">
-                  {t.companyContact}
                 </a>
               </li>
             </ul>
@@ -101,29 +86,13 @@ export default function Footer({ locale }: Props) {
                   {t.legalTerms}
                 </a>
               </li>
-              <li>
-                <a href="#" className="hover:text-white transition-colors">
-                  {t.legalCookie}
-                </a>
-              </li>
             </ul>
           </div>
         </div>
 
         {/* Bottom bar */}
-        <div className="pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4 text-slate-400 text-sm">
+        <div className="pt-8 border-t border-white/10 text-slate-400 text-sm text-center md:text-left">
           <p>{t.copyright}</p>
-          <div className="flex gap-6">
-            <a href="#" className="hover:text-white transition-colors">
-              {t.socialTwitter}
-            </a>
-            <a href="#" className="hover:text-white transition-colors">
-              {t.socialLinkedIn}
-            </a>
-            <a href="#" className="hover:text-white transition-colors">
-              {t.socialGitHub}
-            </a>
-          </div>
         </div>
       </div>
     </footer>

@@ -1,6 +1,3 @@
-"use client";
-
-import { useState } from "react";
 import Link from "next/link";
 import { Check, DollarSign } from "lucide-react";
 import { translations, type Locale } from '@/lib/i18n'
@@ -10,13 +7,12 @@ type Props = {
 }
 
 export default function Pricing({ locale }: Props) {
-  const [isAnnual, setIsAnnual] = useState(true);
   const t = translations[locale].pricing
 
   const tiers = [
     {
       name: t.tier1Name,
-      price: { monthly: 0, annual: 0 },
+      price: 0,
       description: t.tier1Description,
       features: [
         t.tier1Feature1,
@@ -30,7 +26,7 @@ export default function Pricing({ locale }: Props) {
     },
     {
       name: t.tier2Name,
-      price: { monthly: 29, annual: 24 },
+      price: 29,
       description: t.tier2Description,
       features: [
         t.tier2Feature1,
@@ -46,7 +42,7 @@ export default function Pricing({ locale }: Props) {
     },
     {
       name: t.tier3Name,
-      price: { monthly: 99, annual: 79 },
+      price: 99,
       description: t.tier3Description,
       features: [
         t.tier3Feature1,
@@ -62,7 +58,7 @@ export default function Pricing({ locale }: Props) {
   ];
 
   return (
-    <section className="py-24 bg-bg-dark">
+    <section id="pricing" className="py-24 bg-bg-dark scroll-mt-8">
       <div className="max-w-6xl mx-auto px-6">
         {/* Section badge */}
         <div className="inline-flex items-center gap-2 px-4 py-2 bg-secondary/10 border border-secondary/20 rounded-full mb-6">
@@ -74,40 +70,7 @@ export default function Pricing({ locale }: Props) {
         <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
           {t.heading}
         </h2>
-        <p className="text-slate-400 mb-8 max-w-2xl">{t.previewNotice}</p>
-
-        {/* Annual toggle */}
-        <div className="flex items-center justify-center gap-3 mb-16">
-          <span
-            className={`text-sm ${
-              !isAnnual ? "text-white font-medium" : "text-slate-400"
-            }`}
-          >
-            {t.toggleMonthly}
-          </span>
-          <button
-            onClick={() => setIsAnnual(!isAnnual)}
-            className="relative w-14 h-7 rounded-full transition-colors"
-            style={{ backgroundColor: isAnnual ? "#06B6D4" : "#334155" }}
-          >
-            <div
-              className="absolute top-1 w-5 h-5 bg-white rounded-full transition-all"
-              style={{ left: isAnnual ? "32px" : "4px" }}
-            />
-          </button>
-          <span
-            className={`text-sm ${
-              isAnnual ? "text-white font-medium" : "text-slate-400"
-            }`}
-          >
-            {t.toggleYearly}
-          </span>
-          {isAnnual && (
-            <span className="px-3 py-1 bg-metric-green/20 text-metric-green text-sm font-medium rounded-full">
-              {t.saveText}
-            </span>
-          )}
-        </div>
+        <p className="text-slate-400 mb-16 max-w-2xl">{t.previewNotice}</p>
 
         {/* Pricing cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -138,15 +101,18 @@ export default function Pricing({ locale }: Props) {
 
               {/* Price */}
               <div className="text-4xl font-bold text-white mb-1">
-                {tier.price.monthly === 0 ? (
+                {tier.price === 0 ? (
                   t.tier1Price
                 ) : (
                   <>
-                    ${isAnnual ? tier.price.annual : tier.price.monthly}
+                    ${tier.price}
                     <span className="text-lg text-slate-400">{t.priceMonth}</span>
                   </>
                 )}
               </div>
+              {tier.price !== 0 && (
+                <div className="text-xs text-slate-500 mb-2">{t.hypotheticalPrice}</div>
+              )}
 
               <div className="text-slate-400 mb-8">{tier.description}</div>
 
@@ -174,15 +140,12 @@ export default function Pricing({ locale }: Props) {
 
               {/* CTA */}
               {index !== 0 ? (
-                <button
-                  type="button"
-                  disabled
-                  aria-label={`${tier.name}: ${t.plannedCTA}`}
+                <div
                   title={t.plannedCTA}
-                  className="w-full py-3 font-semibold rounded-full bg-white/[0.04] border border-white/[0.1] text-slate-400 cursor-not-allowed"
+                  className="w-full py-3 font-semibold rounded-full bg-white/[0.04] border border-dashed border-white/[0.1] text-slate-400 text-center"
                 >
-                  {tier.cta}
-                </button>
+                  {t.plannedCTA}
+                </div>
               ) : (
                 <Link
                   href="/signup"

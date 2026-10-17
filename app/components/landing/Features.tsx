@@ -42,7 +42,7 @@ export default function Features({ locale }: Props) {
   ];
 
   return (
-    <section className="py-24 bg-bg-dark">
+    <section id="features" className="py-24 bg-bg-dark scroll-mt-8">
       <div className="max-w-6xl mx-auto px-6">
         {/* Section badge */}
         <div className="inline-flex items-center gap-2 px-4 py-2 bg-slate-800/50 border border-slate-700/30 rounded-full mb-6">
