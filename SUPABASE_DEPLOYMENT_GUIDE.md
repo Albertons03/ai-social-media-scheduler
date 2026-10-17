@@ -80,7 +80,7 @@ SELECT cron.schedule(
 ### Check Edge Function:
 ```bash
 curl -X POST https://zthibjgjsuyovieipddd.supabase.co/functions/v1/publish-scheduled-posts \
-  -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
   -H "Content-Type: application/json"
 ```
 
