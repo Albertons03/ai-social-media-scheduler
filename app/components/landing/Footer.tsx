@@ -33,11 +33,6 @@ export default function Footer({ locale }: Props) {
               </li>
               <li>
                 <a href="#" className="hover:text-white transition-colors">
-                  {t.productChangelog}
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:text-white transition-colors">
                   {t.productRoadmap}
                 </a>
               </li>
@@ -60,11 +55,6 @@ export default function Footer({ locale }: Props) {
               </li>
               <li>
                 <a href="#" className="hover:text-white transition-colors">
-                  {t.companyCareers}
-                </a>
-              </li>
-              <li>
-                <a href="#" className="hover:text-white transition-colors">
                   {t.companyContact}
                 </a>
               </li>
@@ -75,14 +65,6 @@ export default function Footer({ locale }: Props) {
           <div>
             <h4 className="text-white font-semibold mb-4">{t.supportTitle}</h4>
             <ul className="space-y-2 text-slate-400 text-sm">
-              <li>
-                <a
-                  href="/contact"
-                  className="hover:text-white transition-colors"
-                >
-                  {t.supportHelp}
-                </a>
-              </li>
               <li>
                 <a
                   href="/contact"

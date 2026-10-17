@@ -21,7 +21,7 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://landingbits.net"),
   title: "LandingBits - AI Social Media Scheduler | Automate Your Content",
   description:
-    "AI-powered social media scheduling for Twitter, LinkedIn & TikTok. Save 10 hours/week with conversational AI content creation. Start free trial today!",
+    "AI-assisted social media scheduling for X/Twitter, LinkedIn & TikTok. A portfolio project in active development.",
   keywords:
     "AI social media scheduler, automated posting, content creation AI, Twitter scheduler, LinkedIn automation, social media management",
   authors: [{ name: "LandingBits" }],
@@ -35,7 +35,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: "LandingBits - AI Social Media Scheduler",
-    description: "Save 10 hours/week with AI-powered social media scheduling",
+    description: "AI-assisted social media scheduling (portfolio preview)",
     url: "https://landingbits.net",
     siteName: "LandingBits",
     images: [
@@ -52,7 +52,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "LandingBits - AI Social Media Scheduler",
-    description: "Save 10 hours/week with AI-powered scheduling",
+    description: "AI-assisted scheduling (portfolio preview)",
     images: ["/og-image.png"],
   },
   robots: {

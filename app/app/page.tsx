@@ -36,15 +36,15 @@ export default function Home() {
             <span className="text-primary">Scheduling</span>
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Schedule posts across TikTok, LinkedIn, and Twitter with
-            AI-generated content. Save time and boost engagement.
+            Schedule posts for TikTok, LinkedIn, and X/Twitter with
+            AI-assisted drafting. A portfolio project in active development.
           </p>
           <div className="flex items-center justify-center gap-4 pt-4">
             <Link
               href="/signup"
               className="bg-primary text-primary-foreground px-8 py-3 rounded-lg font-medium hover:bg-primary/90 transition-colors flex items-center gap-2"
             >
-              Start Free Trial
+              Create an Account
               <ArrowRight className="h-4 w-4" />
             </Link>
             <Link
@@ -88,10 +88,11 @@ export default function Home() {
             <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center">
               <Calendar className="h-6 w-6 text-primary" />
             </div>
-            <h3 className="text-xl font-semibold">Smart Scheduling</h3>
+            <h3 className="text-xl font-semibold">Calendar Scheduling</h3>
             <p className="text-muted-foreground">
-              Schedule posts in advance across multiple platforms. Set it and
-              forget it with automated publishing.
+              Schedule posts in advance across platforms. LinkedIn scheduled
+              publishing is tested on the owner&apos;s account only; TikTok
+              public publishing awaits platform approval.
             </p>
           </div>
 
@@ -101,8 +102,8 @@ export default function Home() {
             </div>
             <h3 className="text-xl font-semibold">Analytics Dashboard</h3>
             <p className="text-muted-foreground">
-              Track views, likes, and engagement across all your social accounts
-              in one place.
+              Track post status and platform breakdowns from your own data in
+              one place.
             </p>
           </div>
         </div>

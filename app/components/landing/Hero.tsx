@@ -16,11 +16,13 @@ export default function Hero({ locale }: Props) {
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+  const [isSuccess, setIsSuccess] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setMessage("");
+    setIsSuccess(false);
 
     try {
       const res = await fetch("/api/waitlist", {
@@ -33,6 +35,7 @@ export default function Hero({ locale }: Props) {
 
       if (data.success) {
         setMessage(data.message || t.emailSuccess);
+        setIsSuccess(true);
         setEmail(""); // Clear input on success
 
         // Track successful email capture in hero
@@ -98,7 +101,7 @@ export default function Hero({ locale }: Props) {
             className="inline-flex items-center justify-center w-full px-8 py-4 text-lg font-semibold text-white bg-gradient-to-r from-primary-light to-secondary hover:from-primary-light/90 hover:to-secondary/90 rounded-2xl transition-all transform hover:scale-105 shadow-2xl shadow-primary-light/25"
             onClick={() => trackEvent('cta_click', { 
               source: 'landing_page', 
-              cta_text: 'Get Started Free', 
+              cta_text: 'Create an Account',
               cta_location: 'hero_main_cta' 
             })}
           >
@@ -111,8 +114,8 @@ export default function Hero({ locale }: Props) {
         <div className="max-w-lg mx-auto mb-6">
           <details className="group">
             <summary className="text-sm text-slate-400 hover:text-white cursor-pointer list-none">
-              <span className="group-open:hidden">Or join our waitlist for updates</span>
-              <span className="hidden group-open:inline">✕ Close</span>
+              <span className="group-open:hidden">{t.waitlistPrompt}</span>
+              <span className="hidden group-open:inline">{t.waitlistClose}</span>
             </summary>
             <form onSubmit={handleSubmit} className="mt-4">
               <div className="flex gap-3">
@@ -130,12 +133,12 @@ export default function Hero({ locale }: Props) {
                   disabled={loading}
                   className="px-6 py-3 bg-gradient-to-r from-primary-light to-secondary hover:from-primary-light/90 hover:to-secondary/90 rounded-full text-white font-semibold disabled:opacity-50 transition-all text-sm"
                 >
-                  {loading ? "..." : "Join"}
+                  {loading ? "..." : t.waitlistButton}
                 </button>
               </div>
               {message && (
                 <p className={`mt-2 text-sm ${
-                  message.includes('success') || message.includes('Successfully') 
+                  isSuccess
                     ? 'text-green-400' 
                     : 'text-red-400'
                 }`}>
@@ -148,12 +151,12 @@ export default function Hero({ locale }: Props) {
 
         {/* Alternative signup link */}
         <p className="text-sm text-slate-400 mb-8">
-          Already have an account?{" "}
+          {t.haveAccount}{" "}
           <Link
             href="/login"
             className="text-primary-light hover:text-cyan-400 underline"
           >
-            Sign in
+            {t.signIn}
           </Link>
         </p>
 

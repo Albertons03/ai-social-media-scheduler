@@ -71,9 +71,10 @@ export default function Pricing({ locale }: Props) {
         </div>
 
         {/* Heading */}
-        <h2 className="text-4xl md:text-5xl font-bold text-white mb-8">
+        <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
           {t.heading}
         </h2>
+        <p className="text-slate-400 mb-8 max-w-2xl">{t.previewNotice}</p>
 
         {/* Annual toggle */}
         <div className="flex items-center justify-center gap-3 mb-16">
@@ -172,16 +173,15 @@ export default function Pricing({ locale }: Props) {
               </ul>
 
               {/* CTA */}
-              {index === 2 ? (
+              {index !== 0 ? (
                 <button
-                  className={`w-full py-3 font-semibold rounded-full transition-all ${
-                    tier.highlighted
-                      ? "bg-gradient-to-r from-primary-light/90 to-secondary/90 hover:from-primary-light hover:to-secondary text-white shadow-lg"
-                      : "bg-white/[0.08] hover:bg-white/[0.15] border border-white/[0.15] text-white"
-                  }`}
+                  type="button"
+                  disabled
+                  aria-label={`${tier.name}: ${t.plannedCTA}`}
+                  title={t.plannedCTA}
+                  className="w-full py-3 font-semibold rounded-full bg-white/[0.04] border border-white/[0.1] text-slate-400 cursor-not-allowed"
                 >
                   {tier.cta}
-                  {tier.highlighted && " →"}
                 </button>
               ) : (
                 <Link

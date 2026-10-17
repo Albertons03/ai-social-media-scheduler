@@ -3,7 +3,7 @@ import Hero from "../components/landing/Hero";
 import Stats from "../components/landing/Stats";
 import Features from "../components/landing/Features";
 import Pricing from "../components/landing/Pricing";
-import Testimonials from "../components/landing/Testimonials";
+import HowItWorks from "../components/landing/HowItWorks";
 import FinalCTA from "../components/landing/FinalCTA";
 import Footer from "../components/landing/Footer";
 import { translations, type Locale } from "@/lib/i18n";
@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: "LandingBits - AI Social Media Scheduler | Automate Your Content",
     description:
-      "AI-powered social media scheduling for Twitter, LinkedIn & TikTok. Save 10 hours/week with conversational AI content creation.",
+      "AI-assisted social media scheduling for X/Twitter, LinkedIn & TikTok. A portfolio project in active development.",
     alternates: {
       canonical: `${baseUrl}/${locale}`,
       languages: {
@@ -31,7 +31,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     },
     openGraph: {
       title: "LandingBits - AI Social Media Scheduler",
-      description: "Save 10 hours/week with AI-powered social media scheduling",
+      description: "AI-assisted social media scheduling (portfolio preview)",
       url: `${baseUrl}/${locale}`,
       siteName: "LandingBits",
       locale: locale === "en" ? "en_US" : locale === "de" ? "de_DE" : "hu_HU",
@@ -62,7 +62,7 @@ export default async function LandingPage({ params }: Props) {
         <Stats locale={locale} />
         <Features locale={locale} />
         <Pricing locale={locale} />
-        <Testimonials locale={locale} />
+        <HowItWorks locale={locale} />
         <FinalCTA locale={locale} />
         <Footer locale={locale} />
       </main>
@@ -77,16 +77,6 @@ export default async function LandingPage({ params }: Props) {
             name: "LandingBits",
             applicationCategory: "BusinessApplication",
             operatingSystem: "Web",
-            offers: {
-              "@type": "Offer",
-              price: "0",
-              priceCurrency: "USD",
-            },
-            aggregateRating: {
-              "@type": "AggregateRating",
-              ratingValue: "4.9",
-              ratingCount: "340",
-            },
           }),
         }}
       />
