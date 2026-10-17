@@ -1,7 +1,8 @@
 # Project State
 
-Status recorded on 2026-10-16. This handoff distinguishes completed and
-verified results from work that is still pending.
+Status recorded on 2026-10-16 and updated on 2026-10-17 (SCH-021). This
+handoff distinguishes completed and verified results from work that is still
+pending.
 
 ## Current verified state
 
@@ -21,11 +22,19 @@ verified results from work that is still pending.
   - Security source: `D:\scheduler-next-security`,
     `sch-012-next-security`, `cb1ce57`, clean.
   - Security integration: `D:\scheduler-security-integration`,
-    `integration/next-security-20261016`, `4433d19`, clean.
+    `integration/next-security-20261016`, latest commit `5afcb4d`
+    (`fix: polish scheduler UI and remove portfolio quota`), clean when
+    SCH-021 started. The security commit `4433d19` is an ancestor of it.
   - Disposable build validation: `D:\scheduler-security-build-check`,
     detached at `4433d19`, clean.
 - The security commit is on the integration branch but has not been merged
   into development `master` or the cron-release branch, pushed, or deployed.
+  The same applies to the SCH-020 UI and quota changes in `5afcb4d`.
+- The application-level 10-post monthly limit has been removed on the
+  integration branch. The quota-removal changes have **not** been
+  production-tested; LinkedIn owner-account publishing was verified earlier,
+  before these changes.
+- A production build of the integration worktree has **not** been verified.
 
 ## Completed tickets
 
@@ -58,9 +67,40 @@ verified results from work that is still pending.
   isolation could not be verified in the available environment.
 - **SCH-014:** Consolidated this project-state handoff and the remaining
   portfolio-release work.
+- **SCH-020 through SCH-020F** (completed and committed as `5afcb4d`):
+  - Dashboard and Analytics now distinguish real post data (post counts,
+    platform breakdowns, publication statuses) from unavailable platform
+    engagement analytics (views, likes, comments, engagement rate), which show
+    "N/A" instead of a verified zero. Hardcoded growth badges were removed.
+  - The application-level 10-post monthly limit and its upgrade messaging were
+    removed from the API route and the UI. Usage counters and database records
+    were preserved, and authentication and validation are unchanged.
+  - Light/dark theme consistency was improved for the calendar, Quick Actions,
+    Best Times cards, post composer (including a sticky header without a
+    duplicate heading), and the pie chart. An accessible English file picker
+    replaced the browser-localized one, and the date field has English
+    guidance.
+  - Fixed the Dashboard-to-Schedule double UTC conversion: the link now carries
+    a full ISO timestamp with `Z`, it is converted to local time once, invalid
+    or zone-less `time` values are ignored, consumed query parameters are
+    removed, and `initialData` is cleared when the modal closes.
+  - Validation: TypeScript PASS; schedule prefill tests 8/8; posts API tests
+    4/4; cron-auth tests 8/8; `git diff --check` PASS.
+  - Browser checks: a normal Create Post starts with an empty date: PASS.
+    Reopening Create Post resets the date: PASS. Suggested Time displayed hour
+    inside the composer: **FAIL** (see known issues).
+- **SCH-021:** Updated this project-state document.
 
 ## Known limitations and risks
 
+- **Open issue (not fixed):** in browser testing, clicking a Suggested Time
+  inside the post composer still displays a time two hours earlier than the
+  suggestion in the user's timezone. The cause is not yet confirmed or fixed;
+  the SCH-020F changes cover only the Dashboard-to-Schedule link. Manual
+  date/time selection is the recommended workaround until this is verified.
+- The quota-removal changes are untested in production, and no production
+  build has been verified for the integration worktree.
+- X (Twitter) publishing remains unverified.
 - LinkedIn scheduled publishing E2E is verified only for the owner's account;
   third-party LinkedIn publishing remains unvalidated.
 - TikTok public third-party publishing awaits platform approval.
@@ -77,6 +117,8 @@ verified results from work that is still pending.
 
 ## Recommended next work
 
+0. Investigate and fix the composer Suggested Time two-hour offset, then
+   re-verify in the browser before claiming it is resolved.
 1. Pursue the **PORTFOLIO RELEASE** goal: resolve Git integration carefully
    using the isolated integration worktree, then prepare the README, screenshots,
    demo, and GitHub repository.
