@@ -1,6 +1,7 @@
 # Project State
 
-Status recorded on 2026-10-16 and updated on 2026-10-17 (SCH-021, SCH-027).
+Status recorded on 2026-10-16 and updated on 2026-10-17 (SCH-021, SCH-027,
+SCH-033).
 This handoff distinguishes completed and verified results from work that is
 still pending.
 
@@ -22,10 +23,16 @@ still pending.
   - Security source: `D:\scheduler-next-security`,
     `sch-012-next-security`, `cb1ce57`, clean.
   - Security integration: `D:\scheduler-security-integration`,
-    `integration/next-security-20261016`, latest commit `682eef5`
-    (`fix: remove outdated scheduling quota copy`), clean when SCH-027 started.
+    `integration/next-security-20261016`, HEAD `d9cf7dc`
+    (`docs: replace obsolete credential examples`) when SCH-033 started, clean.
     The security commit `4433d19` and the later commits `5afcb4d`, `dcabab9`,
-    `31f1ffb` and `cf5df47` are ancestors of it.
+    `31f1ffb`, `cf5df47`, `682eef5`, `0615d61`, `b74ec28` and `8c3fbd1` are
+    ancestors of it.
+  - Temporary exact-revision build directory:
+    `D:\scheduler-build-8c3fbd1` (SCH-031B), a `git archive` export of
+    `8c3fbd1` with installed dependencies and build output. It is not a Git
+    worktree and was kept for inspection; it can be deleted when no longer
+    needed.
   - Disposable build validation: `D:\scheduler-security-build-check`,
     detached HEAD (last at `dcabab9`), with **local uncommitted changes** to
     `package.json` and `package-lock.json` copied from the integration worktree
@@ -35,8 +42,9 @@ still pending.
 - The security commit is on the integration branch but has not been merged
   into development `master` or the cron-release branch, pushed, or deployed.
   The same applies to every later commit on the integration branch
-  (SCH-020 through SCH-026). **No push or merge has been performed and the
-  integration branch is not deployed.**
+  (SCH-020 through SCH-032). **No push or merge has been performed and the
+  integration branch is not deployed. Deployment has not been performed or
+  approved.**
 - The protected development worktree on `master` contains separate,
   uncommitted WIP, including its own `next-mdx-remote` 6 package changes. Do
   not modify, reset, or overwrite it, and do not copy its package files.
@@ -45,8 +53,10 @@ still pending.
   production-tested; LinkedIn owner-account publishing was verified earlier,
   before these changes.
 - Production builds of the integration code have passed with dummy environment
-  values (SCH-024, SCH-025B, SCH-025C). These builds were **not**
-  network-isolated, and nothing was deployed.
+  values (SCH-024, SCH-025B, SCH-025C), and an exact-revision build of
+  `8c3fbd1` passed in SCH-031B. These builds were **not** network-isolated,
+  and nothing was deployed. A passing build does not verify Supabase, OAuth or
+  external platform publishing.
 
 ## Completed tickets
 
@@ -124,8 +134,50 @@ still pending.
   and from the Starter Pack preview strings in `lib/i18n.ts` (English, German
   and Hungarian). The blog posts were intentionally not changed.
 - **SCH-027:** Updated this project-state document.
+- **SCH-028B** (commit `0615d61`, `fix: preserve local time in suggested
+  scheduling slots`): Fixed the Suggested Times local-time conversion in the
+  post composer. The buttons stored `toISOString().slice(0,16)` (UTC wall time)
+  in a `datetime-local` field, which could schedule a post two hours early in
+  Europe/Budapest summer time. They now use shared helpers in
+  `lib/utils/schedule-prefill.ts` that convert once to local time. Added
+  `tests/suggested-times.test.ts` (11 tests, run by
+  `npm run test:schedule-prefill`). **Browser confirmation is still pending.**
+- **SCH-029** (commit `b74ec28`): Removed the obsolete 10-post free-tier and
+  invented pricing claims about the Scheduler from the blog posts.
+- **SCH-030** (commit `8c3fbd1`, `docs: align scheduler marketing with
+  verified capabilities`): Corrected unsupported product claims in
+  `content/posts/*.mdx`: TikTok auto-publishing (pending platform approval),
+  X publishing (unverified), account-specific AI posting times (the suggestions
+  are static guidance), engagement analytics and team features (not
+  available), AI video analysis, trending-hashtag detection, and "100% safe" or
+  "won't get you banned" guarantees. All six posts still compile with MDX v6.
+- **SCH-031:** Final automated release verification of `8c3fbd1`. Type-check
+  and all tests passed; the production audit reported 0 critical, 0 high and 8
+  moderate findings. Remaining release checks were classed as PENDING or
+  BLOCKED (see below).
+- **SCH-031B:** Exact-revision production build of `8c3fbd1`, exported with
+  `git archive` into `D:\scheduler-build-8c3fbd1` with dummy environment values
+  only: `npm ci --ignore-scripts` passed, `npm run build` passed, 40 static
+  pages were generated, and all six blog posts were prerendered. The build was
+  **not** network-isolated.
+- **SCH-032** (commit `d9cf7dc`): Documentation cleanup only. Replaced three
+  obsolete token-shaped example strings in `SETUP_GUIDE.md` and
+  `SUPABASE_DEPLOYMENT_GUIDE.md` with neutral placeholders. This is **not**
+  evidence of credential rotation, and Git history was not changed.
+- **SCH-033:** Updated this project-state document.
 
-### Verified validation results (integration branch, through `682eef5`)
+### Verified validation results (integration branch, through `d9cf7dc`)
+
+- Production build at commit `8c3fbd1`: PASS (`npm ci` PASS, Next.js build
+  PASS, 40 static pages, all six blog posts prerendered). Dummy environment
+  values, no network isolation, nothing deployed.
+- TypeScript checks (`npm run type-check`): PASS.
+- Automated tests: 31/31 PASS (schedule prefill and suggested times 19, posts
+  API 4, cron authentication 8).
+- Production `npm audit --omit=dev`: 0 critical, 0 high, 8 moderate.
+- `git diff --check`: PASS for the SCH-032 change.
+
+### Earlier validation results (through `682eef5`)
 
 - TypeScript checks (`npm run type-check`): passed.
 - Existing automated tests: 20/20 passed (cron-auth 8, posts API 4, schedule
@@ -138,30 +190,35 @@ still pending.
 
 ### Open issues before release
 
-- **A. Suggested Times (not fixed):** the internal post-composer suggestion
-  buttons can produce a two-hour scheduling offset. In browser testing, a
-  clicked Suggested Time displayed a time two hours earlier than the
-  suggestion in the user's timezone. The cause is not confirmed; the SCH-020F
-  fix covers only the Dashboard-to-Schedule link. Manual date/time entry is the
-  workaround. Fix or disable the affected shortcuts before release.
-- **B. Blog marketing:** several `content/posts/*.mdx` files still advertise
-  the removed 10-post free tier. A content review is required before
-  deployment.
+- **A. Suggested Times (fix committed, browser verification pending):** the
+  composer suggestion buttons previously produced a two-hour offset. The cause
+  was UTC wall time placed in a `datetime-local` field, and SCH-028B (`0615d61`)
+  fixed it with regression tests. It has **not** been re-checked in a browser:
+  selecting 08:00 must display 08:00 in the local datetime input. Manual
+  date/time entry remains the workaround until that is confirmed.
+- **B. Blog marketing (corrected, review pending):** SCH-029 and SCH-030
+  removed the obsolete quota, pricing and unsupported capability claims from
+  the six posts. Remaining statements (for example "free to try, no credit
+  card required", the described Settings and Create Post flow, and competitor
+  data) have not been verified against the live product. Do a final read-through
+  before deployment.
 - **C. Dependency audit:** 8 MODERATE production findings remain
   (`next-intl`, `resend` with `svix` and `uuid`, and `gray-matter` with
   `js-yaml`, `argparse` and `sprintf-js`). Their risk was assessed as
   relatively low based on current code paths, but not every exploitation
   condition was verified.
-- **D. Release and security:** real deployment configuration, credentials,
-  token rotation, OAuth integrations and platform publishing have not all been
-  verified end to end. The historical token-shaped literal in Git history has
-  not been confirmed as rotated.
+- **D. Release configuration and publishing (not verified):** production
+  environment settings, OAuth callback configuration and platform publishing
+  have not all been verified end to end. SCH-032 only replaced example token
+  strings in two guides and is not proof of credential rotation. The owner has
+  separately reviewed the historical credential and duplicate-publishing
+  questions; they are not reopened here.
 
 ### Other limitations
 
-- The quota-removal changes are untested in production. Production builds
-  passed only with dummy values and without network isolation, and the built
-  app was not run against real services.
+- The quota-removal and scheduling-fix changes are untested in production.
+  Production builds passed only with dummy values and without network
+  isolation, and the built app was not run against real services.
 - X (Twitter) publishing remains unverified.
 - LinkedIn scheduled publishing E2E is verified only for the owner's account;
   third-party LinkedIn publishing remains unvalidated.
@@ -179,21 +236,27 @@ still pending.
 
 ## Recommended next work
 
-**Next release decision:** resolve the Suggested Times issue and the stale
-blog claims, then perform a final targeted release check before deployment
-approval.
+**Next release decision:** complete the remaining release tasks below, then
+decide on deployment approval. Deployment has not been approved or performed.
 
-0. Fix or disable the composer Suggested Time shortcuts, then re-verify in the
-   browser before claiming it is resolved.
-0a. Review and correct the blog posts that advertise the removed 10-post free
-   tier.
+Remaining release tasks:
+
+- Manually verify Suggested Times in the browser: selecting 08:00 must display
+  08:00 in the local datetime input.
+- Verify one LinkedIn scheduled post end to end after the scheduling fixes.
+- Confirm the required production environment settings and the OAuth callback
+  configuration.
+- TikTok public publishing remains dependent on platform approval.
+- X publishing is not yet verified.
+
+Further work:
 1. Pursue the **PORTFOLIO RELEASE** goal: resolve Git integration carefully
    using the isolated integration worktree, then prepare the README, screenshots,
    demo, and GitHub repository.
 2. Reconcile the integration branch with the development WIP's
    `next-mdx-remote` 6 change deliberately. Preserve the dirty master worktree;
    do not copy its package files wholesale.
-3. Complete production-build validation in an environment that can establish
+3. Optionally repeat the production build in an environment that can establish
    outbound-network isolation, using only fake process-scoped Supabase values.
 4. Track the 8 remaining MODERATE findings in separate follow-up backlog items;
    do not claim them fixed.
