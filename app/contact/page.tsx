@@ -236,8 +236,9 @@ export default function ContactPage() {
               properly connected
             </p>
             <p>
-              <strong>Free Tier Limits:</strong> You can schedule up to 10 posts
-              per month on the free plan
+              <strong>Usage:</strong> This is a portfolio project without
+              billing or paid plans. Publishing depends on the connected
+              platform&apos;s own authorization and limits
             </p>
           </div>
         </div>
