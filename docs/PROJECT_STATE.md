@@ -1,7 +1,7 @@
 # Project State
 
 Status recorded on 2026-10-16 and updated on 2026-10-17 (SCH-021, SCH-027,
-SCH-033).
+SCH-033, SCH-034).
 This handoff distinguishes completed and verified results from work that is
 still pending.
 
@@ -10,8 +10,18 @@ still pending.
 - The development worktree is `D:\ai-personal-tiktok-scheduler`, on `master`
   at `c7ac93d`, with substantial uncommitted WIP. Preserve it.
 - Production LinkedIn scheduled publishing passed an end-to-end test on
-  2026-10-16 for the owner's account only. Third-party LinkedIn publishing has
+  2026-10-16, and a scheduled post passed again on 2026-10-17 in local testing
+  (Supabase cron and Edge Function), for the owner's account only. Third-party LinkedIn publishing has
   not been validated.
+- On 2026-10-17 the owner verified, in local testing of the integration branch
+  (Next.js 16.4.2), that Suggested Times in the post composer display the
+  selected time correctly (08:00 shows 08:00; Tuesday 10:00 updates both date
+  and time) and that LinkedIn scheduled publishing works end to end for the
+  owner's account (see SCH-034). This was local testing; the integration branch
+  itself is not deployed.
+- Scheduling architecture: Supabase Cron (every 5 minutes) calls an
+  authenticated Edge Function that publishes due posts. Vercel Cron is
+  disabled; Supabase is the only active scheduling mechanism.
 - Production Supabase Cron calls an authenticated Edge Function.
 - A separate release worktree exists at `D:\scheduler-cron-release`, on
   `release/cron-auth-20261015`. Its last verified HEAD was `0c521a5`.
@@ -23,8 +33,9 @@ still pending.
   - Security source: `D:\scheduler-next-security`,
     `sch-012-next-security`, `cb1ce57`, clean.
   - Security integration: `D:\scheduler-security-integration`,
-    `integration/next-security-20261016`, HEAD `d9cf7dc`
-    (`docs: replace obsolete credential examples`) when SCH-033 started, clean.
+    `integration/next-security-20261016`, HEAD `b5439d0`
+    when SCH-034 started (d9cf7dc, docs: replace obsolete credential examples,
+    precedes it), clean.
     The security commit `4433d19` and the later commits `5afcb4d`, `dcabab9`,
     `31f1ffb`, `cf5df47`, `682eef5`, `0615d61`, `b74ec28` and `8c3fbd1` are
     ancestors of it.
@@ -141,7 +152,7 @@ still pending.
   Europe/Budapest summer time. They now use shared helpers in
   `lib/utils/schedule-prefill.ts` that convert once to local time. Added
   `tests/suggested-times.test.ts` (11 tests, run by
-  `npm run test:schedule-prefill`). **Browser confirmation is still pending.**
+  `npm run test:schedule-prefill`). Browser confirmation passed on 2026-10-17 (SCH-034).
 - **SCH-029** (commit `b74ec28`): Removed the obsolete 10-post free-tier and
   invented pricing claims about the Scheduler from the blog posts.
 - **SCH-030** (commit `8c3fbd1`, `docs: align scheduler marketing with
@@ -165,6 +176,13 @@ still pending.
   `SUPABASE_DEPLOYMENT_GUIDE.md` with neutral placeholders. This is **not**
   evidence of credential rotation, and Git history was not changed.
 - **SCH-033:** Updated this project-state document.
+- **SCH-034:** Recorded the owner's manual verification of 2026-10-17: Suggested
+  Times browser test PASS (08:00 displayed 08:00; Tuesday 10:00 updated date and
+  time; no UTC/local offset) and LinkedIn scheduled publishing E2E PASS for the
+  owner's account (post scheduled, processed by the Supabase Edge Function on
+  the 5-minute Supabase cron, appeared on LinkedIn, status published). Vercel
+  Cron is disabled. Third-party LinkedIn accounts remain unverified. This was
+  local testing, not a deployment.
 
 ### Verified validation results (integration branch, through `d9cf7dc`)
 
@@ -190,12 +208,11 @@ still pending.
 
 ### Open issues before release
 
-- **A. Suggested Times (fix committed, browser verification pending):** the
-  composer suggestion buttons previously produced a two-hour offset. The cause
-  was UTC wall time placed in a `datetime-local` field, and SCH-028B (`0615d61`)
-  fixed it with regression tests. It has **not** been re-checked in a browser:
-  selecting 08:00 must display 08:00 in the local datetime input. Manual
-  date/time entry remains the workaround until that is confirmed.
+- **A. Suggested Times (RESOLVED, verified 2026-10-17):** the composer buttons
+  previously produced a two-hour offset (UTC wall time in a datetime-local
+  field). SCH-028B (0615d61) fixed it with regression tests, and the owner's
+  browser test passed: 08:00 displays 08:00 and Tuesday 10:00 updates date and
+  time.
 - **B. Blog marketing (corrected, review pending):** SCH-029 and SCH-030
   removed the obsolete quota, pricing and unsupported capability claims from
   the six posts. Remaining statements (for example "free to try, no credit
@@ -216,9 +233,9 @@ still pending.
 
 ### Other limitations
 
-- The quota-removal and scheduling-fix changes are untested in production.
-  Production builds passed only with dummy values and without network
-  isolation, and the built app was not run against real services.
+- The quota-removal and scheduling-fix changes were verified only in local
+  testing (2026-10-17) with the Supabase cron and Edge Function; the
+  integration branch is not deployed and production builds used dummy values.
 - X (Twitter) publishing remains unverified.
 - LinkedIn scheduled publishing E2E is verified only for the owner's account;
   third-party LinkedIn publishing remains unvalidated.
@@ -239,15 +256,18 @@ still pending.
 **Next release decision:** complete the remaining release tasks below, then
 decide on deployment approval. Deployment has not been approved or performed.
 
+Completed release checks (2026-10-17, owner, local testing):
+
+- Suggested Times browser verification: PASS.
+- LinkedIn scheduled post end to end (owner account): PASS.
+
 Remaining release tasks:
 
-- Manually verify Suggested Times in the browser: selecting 08:00 must display
-  08:00 in the local datetime input.
-- Verify one LinkedIn scheduled post end to end after the scheduling fixes.
 - Confirm the required production environment settings and the OAuth callback
   configuration.
 - TikTok public publishing remains dependent on platform approval.
 - X publishing is not yet verified.
+- Third-party LinkedIn accounts are not yet verified.
 
 Further work:
 1. Pursue the **PORTFOLIO RELEASE** goal: resolve Git integration carefully
