@@ -33,13 +33,13 @@ export function QuickActions() {
   };
 
   return (
-    <Card className="overflow-hidden border-2 hover:border-primary/30 transition-all duration-300 bg-gradient-to-br from-[#FFB3C1]/20 to-[#FF8FA3]/20">
+    <Card className="overflow-hidden border-2 hover:border-primary/30 transition-all duration-300 bg-card">
       <CardHeader>
-        <CardTitle className="flex items-center gap-2 text-gray-800">
+        <CardTitle className="flex items-center gap-2 text-foreground">
           Quick Actions
           <span>⚡</span>
         </CardTitle>
-        <CardDescription className="text-gray-600">
+        <CardDescription className="text-muted-foreground">
           Get started with common tasks
         </CardDescription>
       </CardHeader>

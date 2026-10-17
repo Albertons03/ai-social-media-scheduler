@@ -155,8 +155,6 @@ export default async function AdminDashboard() {
           ) : (
             <div className="space-y-2">
               {topUsers.map((user: Profile) => {
-                const isAtLimit = user.tier === 'free' && user.posts_this_month >= 10;
-
                 return (
                   <div
                     key={user.id}
@@ -176,11 +174,6 @@ export default async function AdminDashboard() {
                       <span className="text-primary font-bold text-base">
                         {user.posts_this_month} posts
                       </span>
-                      {isAtLimit && (
-                        <span className="flex items-center gap-1 text-yellow-500 text-xs bg-yellow-500/10 px-2 py-1 rounded-full">
-                          ⚠️ At limit
-                        </span>
-                      )}
                       <TierBadge tier={user.tier} />
                     </div>
                   </div>

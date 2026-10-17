@@ -12,7 +12,9 @@
     "supabase:start": "supabase start",
     "supabase:stop": "supabase stop",
     "supabase:serve": "supabase functions serve publish-scheduled-posts --debug",
-    "test:cron-auth": "deno test ./supabase/functions/publish-scheduled-posts/cron-auth.test.ts"
+    "test:cron-auth": "deno test ./supabase/functions/publish-scheduled-posts/cron-auth.test.ts",
+    "test:posts-api": "deno test --no-check --import-map=tests/api/import_map.json --allow-read --allow-env --allow-sys tests/api/posts-route.test.ts",
+    "test:schedule-prefill": "deno test --no-check tests/schedule-prefill.test.ts"
   },
   "keywords": [
     "social-media",

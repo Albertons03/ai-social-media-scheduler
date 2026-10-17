@@ -16,6 +16,7 @@ import {
   formatOptimalTime,
 } from "@/lib/utils/optimal-posting-times";
 import { useRouter } from "next/navigation";
+import { buildScheduleHref } from "@/lib/utils/schedule-prefill";
 
 interface BestPostingTimesProps {
   className?: string;
@@ -30,17 +31,14 @@ export function BestPostingTimes({ className }: BestPostingTimesProps) {
     nextTime: getNextOptimalTime(platform),
     color:
       platform === "twitter"
-        ? "text-blue-600"
+        ? "text-blue-600 dark:text-blue-400"
         : platform === "linkedin"
-        ? "text-blue-700"
-        : "text-pink-600",
+        ? "text-blue-700 dark:text-blue-300"
+        : "text-pink-600 dark:text-pink-400",
   }));
 
   const handleScheduleForTime = (platform: string, date: Date) => {
-    const dateTimeString = date.toISOString().slice(0, 16);
-    router.push(
-      `/schedule?platform=${platform}&time=${dateTimeString}&openAI=true`
-    );
+    router.push(buildScheduleHref(platform, date, { openAI: "true" }));
   };
 
   return (
@@ -51,17 +49,18 @@ export function BestPostingTimes({ className }: BestPostingTimesProps) {
           Best Times to Post
         </CardTitle>
         <CardDescription>
-          Optimal posting times for maximum engagement
+          General suggestions based on commonly cited posting windows — not
+          personalized or predicted for your audience
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-3">
         {nextOptimalTimes.map(({ platform, nextTime, color }) => (
           <div
             key={platform}
-            className="flex items-center justify-between p-3 bg-gradient-to-r from-gray-50 to-gray-100 rounded-lg border"
+            className="flex items-center justify-between p-3 bg-muted/50 rounded-lg border border-border"
           >
             <div className="flex items-center gap-3">
-              <div className={`p-2 rounded-full bg-white shadow-sm ${color}`}>
+              <div className={`p-2 rounded-full bg-background shadow-sm ${color}`}>
                 <Clock className="h-4 w-4" />
               </div>
               <div>
@@ -75,7 +74,7 @@ export function BestPostingTimes({ className }: BestPostingTimesProps) {
               variant="outline"
               size="sm"
               onClick={() => handleScheduleForTime(platform, nextTime)}
-              className="hover:bg-primary hover:text-primary-foreground"
+              className="hover:bg-accent hover:text-accent-foreground"
             >
               <Calendar className="h-3 w-3 mr-1" />
               Schedule
@@ -84,7 +83,7 @@ export function BestPostingTimes({ className }: BestPostingTimesProps) {
         ))}
         <div className="text-center pt-2 border-t">
           <p className="text-xs text-muted-foreground">
-            Times shown in your local timezone. Based on global engagement data.
+            Times shown in your local timezone. Static general suggestions, not data-driven predictions.
           </p>
         </div>
       </CardContent>

@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { useState, useEffect } from "react";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { CalendarView } from "@/components/calendar/calendar-view";
 import { CalendarGrid } from "@/components/calendar/calendar-grid";
@@ -41,9 +41,17 @@ import {
 } from "date-fns";
 import { triggerConfetti } from "@/lib/utils/confetti";
 import { toast } from "sonner";
+import {
+  parsePrefillParams,
+  stripPrefillParams,
+  resolveFormInitialData,
+  type SchedulePrefill,
+} from "@/lib/utils/schedule-prefill";
 
 export default function SchedulePage() {
   const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
   const [posts, setPosts] = useState<Post[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -54,7 +62,7 @@ export default function SchedulePage() {
   const [aiGeneratedContent, setAIGeneratedContent] = useState("");
   const [selectedPlatformForAI, setSelectedPlatformForAI] =
     useState<Platform>("twitter");
-  const [initialData, setInitialData] = useState<any>(null);
+  const [initialData, setInitialData] = useState<SchedulePrefill | null>(null);
 
   useEffect(() => {
     fetchPosts();
@@ -65,35 +73,30 @@ export default function SchedulePage() {
       setIsAIChatModalOpen(true);
     }
 
-    // Pre-fill form data from URL parameters
-    const platform = searchParams.get("platform");
-    const time = searchParams.get("time");
+    // Pre-fill form data from URL parameters (time is a zoned ISO instant)
+    const prefill = parsePrefillParams(new URLSearchParams(searchParams.toString()));
+    if (prefill) {
+      if (prefill.platform) setSelectedPlatformForAI(prefill.platform);
+      setInitialData(prefill);
+      setIsCreateModalOpen(true);
+    }
 
-    if (platform || time) {
-      const prefillData: any = {};
-
-      if (platform && ["twitter", "linkedin", "tiktok"].includes(platform)) {
-        prefillData.platform = platform as Platform;
-        setSelectedPlatformForAI(platform as Platform);
-      }
-
-      if (time) {
-        // Convert ISO time to datetime-local format
-        try {
-          const date = new Date(time);
-          const localDateTimeString = date.toISOString().slice(0, 16);
-          prefillData.scheduled_for = localDateTimeString;
-        } catch (error) {
-          console.warn("Invalid time parameter:", time);
-        }
-      }
-
-      if (Object.keys(prefillData).length > 0) {
-        setInitialData(prefillData);
-        setIsCreateModalOpen(true);
-      }
+    // Consume the prefill parameters so a reload or re-render doesn't reopen the modal
+    if (
+      prefill ||
+      searchParams.has("platform") ||
+      searchParams.has("time") ||
+      shouldOpenAI
+    ) {
+      const rest = stripPrefillParams(new URLSearchParams(searchParams.toString()));
+      router.replace(rest ? `${pathname}?${rest}` : pathname);
     }
   }, [searchParams]);
+
+  const handleCreateModalOpenChange = (open: boolean) => {
+    setIsCreateModalOpen(open);
+    if (!open) setInitialData(null);
+  };
 
   const fetchPosts = async () => {
     try {
@@ -135,7 +138,7 @@ export default function SchedulePage() {
       }
 
       await fetchPosts();
-      setIsCreateModalOpen(false);
+      handleCreateModalOpenChange(false);
       setAIGeneratedContent(""); // Clear AI content after post created
 
       // Trigger confetti animation
@@ -290,23 +293,20 @@ export default function SchedulePage() {
       </Dialog>
 
       {/* Create Post Modal */}
-      <Dialog open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen}>
+      <Dialog open={isCreateModalOpen} onOpenChange={handleCreateModalOpenChange}>
         <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
+          <DialogHeader className="sticky top-0 z-[55] -mx-6 -mt-6 border-b bg-card px-6 py-4">
             <DialogTitle>Create New Post</DialogTitle>
-            <DialogClose onClose={() => setIsCreateModalOpen(false)} />
+            <DialogClose onClose={() => handleCreateModalOpenChange(false)} />
           </DialogHeader>
           <PostForm
+            hideTitle
             onSubmit={handleCreatePost}
-            initialData={
-              initialData ||
-              (aiGeneratedContent
-                ? {
-                    content: aiGeneratedContent,
-                    platform: selectedPlatformForAI,
-                  }
-                : undefined)
-            }
+            initialData={resolveFormInitialData(
+              initialData,
+              aiGeneratedContent,
+              selectedPlatformForAI
+            )}
           />
         </DialogContent>
       </Dialog>

@@ -5,7 +5,6 @@ import { QuickActions } from "@/components/dashboard/quick-actions";
 import { RecentPosts } from "@/components/dashboard/recent-posts";
 import PiePlatformStats from "@/components/dashboard/pie-platform-stats";
 import { BestPostingTimes } from "@/components/dashboard/best-posting-times";
-import UsageCounter from "@/app/components/UsageCounter";
 
 export default async function DashboardPage() {
   const supabase = await createClient();
@@ -20,14 +19,6 @@ export default async function DashboardPage() {
 
   // Fetch analytics
   const analytics = await getPostAnalytics(user.id);
-
-  // Calculate engagement rate
-  const totalEngagements =
-    analytics.total_likes + analytics.total_comments + analytics.total_shares;
-  const engagementRate =
-    analytics.total_views > 0
-      ? ((totalEngagements / analytics.total_views) * 100).toFixed(2)
-      : "0.00";
 
   // Fetch recent posts
   const { data: recentPosts } = await supabase
@@ -53,23 +44,20 @@ export default async function DashboardPage() {
           value={analytics.scheduled}
           description="Posts ready to publish"
           icon="calendar"
-          trend={{ value: 12, isPositive: true }}
           index={0}
         />
         <StatsCard
           title="Total Views"
-          value={analytics.total_views.toLocaleString()}
-          description="Across all platforms"
+          value="N/A"
+          description="Platform analytics sync not available yet"
           icon="trending"
-          trend={{ value: 8, isPositive: true }}
           index={1}
         />
         <StatsCard
           title="Engagement Rate"
-          value={`${engagementRate}%`}
-          description="Average engagement"
+          value="N/A"
+          description="Platform analytics sync not available yet"
           icon="users"
-          trend={{ value: 3, isPositive: true }}
           index={2}
         />
         <StatsCard
@@ -86,9 +74,6 @@ export default async function DashboardPage() {
 
       {/* Best Posting Times */}
       <BestPostingTimes />
-
-      {/* Usage Counter */}
-      <UsageCounter />
 
       {/* Grid for Recent Posts and Platform Stats */}
       <div className="grid gap-4 md:grid-cols-2">

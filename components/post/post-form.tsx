@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { useState, useEffect } from "react";
+import { utcToLocalDatetimeString } from "@/lib/utils/schedule-prefill";
 import { toast } from "sonner";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -44,19 +45,42 @@ interface PostFormProps {
   onSubmit: (data: any) => Promise<void>;
   initialData?: any;
   isEditing?: boolean;
+  hideTitle?: boolean;
 }
 
-// Helper: Convert UTC ISO string to local datetime-local format
-function utcToLocalDatetimeString(utcString: string | null): string {
-  if (!utcString) return "";
-  const date = new Date(utcString);
-  // Format: YYYY-MM-DDTHH:mm (required by datetime-local input)
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
-  const hours = String(date.getHours()).padStart(2, "0");
-  const minutes = String(date.getMinutes()).padStart(2, "0");
-  return `${year}-${month}-${day}T${hours}:${minutes}`;
+// Native file inputs render browser-localized text, so use an English label
+// over a visually hidden (but still focusable and accessible) native input.
+function FilePicker({
+  id,
+  accept,
+  onChange,
+  fileName,
+}: {
+  id: string;
+  accept: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  fileName?: string;
+}) {
+  return (
+    <div className="flex items-center gap-3 rounded-md border border-input bg-background p-2 focus-within:ring-2 focus-within:ring-ring">
+      <input
+        id={id}
+        type="file"
+        accept={accept}
+        onChange={onChange}
+        className="sr-only"
+      />
+      <label
+        htmlFor={id}
+        className="cursor-pointer rounded-md border border-input bg-secondary px-3 py-1.5 text-sm font-medium text-secondary-foreground hover:bg-accent hover:text-accent-foreground"
+      >
+        Browse files
+      </label>
+      <span className="truncate text-sm text-muted-foreground">
+        {fileName || "No file selected"}
+      </span>
+    </div>
+  );
 }
 
 // Helper: Convert local datetime-local string to UTC ISO string
@@ -71,6 +95,7 @@ export function PostForm({
   onSubmit,
   initialData,
   isEditing = false,
+  hideTitle = false,
 }: PostFormProps) {
   const [platform, setPlatform] = useState<Platform>(
     initialData?.platform || "twitter"
@@ -403,10 +428,12 @@ export function PostForm({
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <Card>
-        <CardHeader>
-          <CardTitle>{isEditing ? "Edit Post" : "Create New Post"}</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
+        {!hideTitle && (
+          <CardHeader>
+            <CardTitle>{isEditing ? "Edit Post" : "Create New Post"}</CardTitle>
+          </CardHeader>
+        )}
+        <CardContent className={hideTitle ? "space-y-4 pt-6" : "space-y-4"}>
           {/* Platform Selection */}
           <div>
             <Label htmlFor="platform">Platform</Label>
@@ -435,7 +462,7 @@ export function PostForm({
                 Loading accounts...
               </div>
             ) : accountsForPlatform.length === 0 ? (
-              <div className="flex items-center gap-2 p-3 bg-yellow-50 border border-yellow-200 rounded-lg text-yellow-800">
+              <div className="flex items-center gap-2 p-3 bg-yellow-500/10 border border-yellow-500/30 rounded-lg text-yellow-700 dark:text-yellow-300">
                 <AlertCircle className="h-5 w-5" />
                 <div>
                   <p className="font-medium">No {platform} account connected</p>
@@ -501,11 +528,11 @@ export function PostForm({
           {/* Media Upload */}
           <div>
             <Label htmlFor="media">Media (Image/Video)</Label>
-            <Input
+            <FilePicker
               id="media"
-              type="file"
               accept="image/*,video/*"
               onChange={handleMediaChange}
+              fileName={mediaFile?.name}
             />
             {mediaPreviewUrl && (
               <div className="mt-4 rounded-lg overflow-hidden bg-accent">
@@ -532,11 +559,11 @@ export function PostForm({
             initialData?.media_type === "video") && (
             <div>
               <Label htmlFor="thumbnail">Thumbnail (Optional)</Label>
-              <Input
+              <FilePicker
                 id="thumbnail"
-                type="file"
                 accept="image/*"
                 onChange={(e) => setThumbnailFile(e.target.files?.[0] || null)}
+                fileName={thumbnailFile?.name}
               />
             </div>
           )}
@@ -550,11 +577,11 @@ export function PostForm({
 
             {/* Recommended Times */}
             {platform && (
-              <div className="mb-3 p-3 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg">
+              <div className="mb-3 p-3 bg-muted/50 border border-border rounded-lg">
                 <div className="flex items-center gap-2 mb-2">
-                  <TrendingUp className="h-4 w-4 text-blue-600" />
-                  <span className="text-sm font-medium text-blue-800">
-                    Recommended Times for{" "}
+                  <TrendingUp className="h-4 w-4 text-primary" />
+                  <span className="text-sm font-medium text-foreground">
+                    Suggested Times for{" "}
                     {platform.charAt(0).toUpperCase() + platform.slice(1)}
                   </span>
                 </div>
@@ -583,7 +610,7 @@ export function PostForm({
                           type="button"
                           variant="outline"
                           size="sm"
-                          className="text-xs hover:bg-blue-100 border-blue-300"
+                          className="text-xs hover:bg-accent hover:text-accent-foreground"
                           onClick={() => setScheduledFor(dateTimeString)}
                         >
                           <Clock className="h-3 w-3 mr-1" />
@@ -593,8 +620,8 @@ export function PostForm({
                       );
                     })}
                 </div>
-                <p className="text-xs text-blue-600 mt-2">
-                  Click to auto-fill optimal posting times
+                <p className="text-xs text-muted-foreground mt-2">
+                  Click to fill a general suggested time (static, not a prediction)
                 </p>
               </div>
             )}
@@ -602,9 +629,18 @@ export function PostForm({
             <Input
               id="scheduled_for"
               type="datetime-local"
+              lang="en"
+              aria-describedby="scheduled_for_hint"
               value={scheduledFor}
               onChange={(e) => setScheduledFor(e.target.value)}
             />
+            <p
+              id="scheduled_for_hint"
+              className="text-xs text-muted-foreground mt-1"
+            >
+              Date format: Year – Month – Day, then time (hour : minute). The
+              field layout is set by your browser.
+            </p>
             <p className="text-xs text-muted-foreground mt-1">
               Your timezone: {timezoneName}
             </p>
@@ -612,7 +648,7 @@ export function PostForm({
 
           {/* Twitter-specific: Add unique timestamp */}
           {platform === "twitter" && (
-            <div className="flex items-center space-x-2 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+            <div className="flex items-center space-x-2 p-4 bg-muted/50 border border-border rounded-lg">
               <Checkbox
                 id="add_timestamp"
                 checked={addTimestamp}

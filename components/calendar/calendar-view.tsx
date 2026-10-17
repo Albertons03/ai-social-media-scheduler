@@ -60,7 +60,7 @@ export function CalendarView({ posts, onDateClick, onPostClick }: CalendarViewPr
   };
 
   return (
-    <div className="bg-white rounded-lg border border-border p-6">
+    <div className="bg-card text-card-foreground rounded-lg border border-border p-6">
       {/* Calendar Header */}
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-2xl font-bold">
@@ -107,7 +107,7 @@ export function CalendarView({ posts, onDateClick, onPostClick }: CalendarViewPr
               key={day.toString()}
               className={`
                 h-24 border border-border rounded-lg p-2 cursor-pointer transition-colors
-                ${isCurrentMonth ? 'bg-white hover:bg-background' : 'bg-background text-muted-foreground'}
+                ${isCurrentMonth ? 'bg-card text-foreground hover:bg-accent' : 'bg-muted/40 text-muted-foreground'}
                 ${isToday ? 'ring-2 ring-blue-600' : ''}
               `}
               onClick={() => onDateClick?.(day)}
@@ -116,7 +116,7 @@ export function CalendarView({ posts, onDateClick, onPostClick }: CalendarViewPr
                 <span
                   className={`
                     text-sm font-medium mb-1
-                    ${isToday ? 'text-blue-600 font-bold' : ''}
+                    ${isToday ? 'text-blue-600 dark:text-blue-400 font-bold' : 'text-foreground'}
                   `}
                 >
                   {format(day, 'd')}
@@ -153,7 +153,7 @@ export function CalendarView({ posts, onDateClick, onPostClick }: CalendarViewPr
       </div>
 
       {/* Legend */}
-      <div className="flex gap-4 mt-6 text-sm">
+      <div className="flex gap-4 mt-6 text-sm text-foreground">
         <div className="flex items-center gap-2">
           <div className="w-4 h-4 bg-pink-500 rounded" />
           <span>TikTok</span>

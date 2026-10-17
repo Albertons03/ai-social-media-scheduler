@@ -65,39 +65,3 @@ export async function getUserUsage(userId: string) {
     throw error;
   }
 }
-
-/**
- * Check if user has reached their tier limit
- * Returns true if user can schedule more posts
- */
-export async function canSchedulePost(userId: string): Promise<{
-  allowed: boolean;
-  reason?: string;
-  postsThisMonth: number;
-  limit: number;
-}> {
-  try {
-    const usage = await getUserUsage(userId);
-
-    // Free tier limit is 10 posts per month
-    const limit = usage.tier === 'free' ? 10 : Number.MAX_SAFE_INTEGER;
-
-    if (usage.tier === 'free' && usage.posts_this_month >= limit) {
-      return {
-        allowed: false,
-        reason: 'Free tier limit reached (10 posts/month). Upgrade to Pro for unlimited posts!',
-        postsThisMonth: usage.posts_this_month,
-        limit,
-      };
-    }
-
-    return {
-      allowed: true,
-      postsThisMonth: usage.posts_this_month,
-      limit,
-    };
-  } catch (error) {
-    console.error('Error checking if user can schedule post:', error);
-    throw error;
-  }
-}

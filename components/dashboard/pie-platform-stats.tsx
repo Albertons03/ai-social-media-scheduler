@@ -9,8 +9,8 @@ import {
   Legend,
 } from "recharts";
 
-const COLORS = ["#FE2C55", "#0077B5", "#000000"];
-const PLATFORM_LABELS = ["TikTok", "LinkedIn", "Twitter/X"];
+const COLORS = ["#FE2C55", "#0077B5", "#1D9BF0"];
+const TEXT_COLOR = "hsl(var(--foreground))";
 
 export type PiePlatformStatsProps = {
   stats: {
@@ -19,6 +19,35 @@ export type PiePlatformStatsProps = {
     twitter: number;
   };
 };
+
+type PieLabelProps = {
+  cx: number;
+  cy: number;
+  midAngle: number;
+  outerRadius: number;
+  name: string;
+  percent: number;
+};
+
+const RADIAN = Math.PI / 180;
+
+function renderLabel({ cx, cy, midAngle, outerRadius, name, percent }: PieLabelProps) {
+  const radius = outerRadius + 16;
+  const x = cx + radius * Math.cos(-midAngle * RADIAN);
+  const y = cy + radius * Math.sin(-midAngle * RADIAN);
+  return (
+    <text
+      x={x}
+      y={y}
+      fill={TEXT_COLOR}
+      fontSize={12}
+      textAnchor={x > cx ? "start" : "end"}
+      dominantBaseline="central"
+    >
+      {`${name}: ${(percent * 100).toFixed(0)}%`}
+    </text>
+  );
+}
 
 export default function PiePlatformStats({ stats }: PiePlatformStatsProps) {
   const data = [
@@ -39,9 +68,7 @@ export default function PiePlatformStats({ stats }: PiePlatformStatsProps) {
             cx="50%"
             cy="50%"
             labelLine={false}
-            label={({ name, percent }) =>
-              `${name}: ${(percent * 100).toFixed(0)}%`
-            }
+            label={renderLabel}
             outerRadius={90}
             fill="#8884d8"
             dataKey="value"
@@ -54,8 +81,20 @@ export default function PiePlatformStats({ stats }: PiePlatformStatsProps) {
               />
             ))}
           </Pie>
-          <Tooltip formatter={(value: number) => value + " posts"} />
-          <Legend />
+          <Tooltip
+            formatter={(value: number) => value + " posts"}
+            contentStyle={{
+              backgroundColor: "hsl(var(--card))",
+              border: "1px solid hsl(var(--border))",
+              color: TEXT_COLOR,
+            }}
+            itemStyle={{ color: TEXT_COLOR }}
+          />
+          <Legend
+            formatter={(value: string) => (
+              <span style={{ color: TEXT_COLOR }}>{value}</span>
+            )}
+          />
         </PieChart>
       </ResponsiveContainer>
     </div>

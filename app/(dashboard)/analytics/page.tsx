@@ -2,7 +2,7 @@ import { createClient } from '@/lib/supabase/server';
 import { redirect } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { getPostAnalytics, getPosts } from '@/lib/db/posts';
-import { TrendingUp, Eye, Heart, MessageCircle, Share2, BarChart3 } from 'lucide-react';
+import { TrendingUp, Eye, Heart, MessageCircle, BarChart3 } from 'lucide-react';
 
 export default async function AnalyticsPage() {
   const supabase = await createClient();
@@ -19,17 +19,12 @@ export default async function AnalyticsPage() {
   const analytics = await getPostAnalytics(user.id);
   const posts = await getPosts(user.id);
 
-  // Get recent posts for top performing section
+  // Most recent published posts (engagement metrics are not synced from platforms)
   const publishedPosts = posts
     .filter((p) => p.status === 'published')
-    .sort((a, b) => b.views_count - a.views_count)
     .slice(0, 5);
 
-  // Calculate total engagement
-  const totalEngagements = analytics.total_likes + analytics.total_comments + analytics.total_shares;
-  const engagementRate = analytics.total_views > 0
-    ? ((totalEngagements / analytics.total_views) * 100).toFixed(2)
-    : '0.00';
+  const unavailableNote = 'Platform analytics sync not available yet';
 
   return (
     <div className="min-h-screen bg-background">
@@ -50,8 +45,8 @@ export default async function AnalyticsPage() {
               <Eye className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{analytics.total_views.toLocaleString()}</div>
-              <p className="text-xs text-muted-foreground mt-1">Across all platforms</p>
+              <div className="text-2xl font-bold">N/A</div>
+              <p className="text-xs text-muted-foreground mt-1">{unavailableNote}</p>
             </CardContent>
           </Card>
 
@@ -61,8 +56,8 @@ export default async function AnalyticsPage() {
               <Heart className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{analytics.total_likes.toLocaleString()}</div>
-              <p className="text-xs text-muted-foreground mt-1">Total engagement</p>
+              <div className="text-2xl font-bold">N/A</div>
+              <p className="text-xs text-muted-foreground mt-1">{unavailableNote}</p>
             </CardContent>
           </Card>
 
@@ -72,8 +67,8 @@ export default async function AnalyticsPage() {
               <MessageCircle className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{analytics.total_comments.toLocaleString()}</div>
-              <p className="text-xs text-muted-foreground mt-1">Total comments</p>
+              <div className="text-2xl font-bold">N/A</div>
+              <p className="text-xs text-muted-foreground mt-1">{unavailableNote}</p>
             </CardContent>
           </Card>
 
@@ -83,8 +78,8 @@ export default async function AnalyticsPage() {
               <TrendingUp className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{engagementRate}%</div>
-              <p className="text-xs text-muted-foreground mt-1">Overall engagement</p>
+              <div className="text-2xl font-bold">N/A</div>
+              <p className="text-xs text-muted-foreground mt-1">{unavailableNote}</p>
             </CardContent>
           </Card>
         </div>
@@ -183,7 +178,7 @@ export default async function AnalyticsPage() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <BarChart3 className="h-5 w-5" />
-              Top Performing Posts
+              Recent Published Posts
             </CardTitle>
           </CardHeader>
           <CardContent>
@@ -217,23 +212,8 @@ export default async function AnalyticsPage() {
                       </div>
                       <p className="text-sm text-foreground truncate">{post.content}</p>
                     </div>
-                    <div className="flex gap-6 text-sm text-muted-foreground">
-                      <div className="flex items-center gap-1">
-                        <Eye className="h-4 w-4" />
-                        {post.views_count.toLocaleString()}
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <Heart className="h-4 w-4" />
-                        {post.likes_count.toLocaleString()}
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <MessageCircle className="h-4 w-4" />
-                        {post.comments_count.toLocaleString()}
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <Share2 className="h-4 w-4" />
-                        {post.shares_count.toLocaleString()}
-                      </div>
+                    <div className="text-xs text-muted-foreground whitespace-nowrap">
+                      Metrics not available
                     </div>
                   </div>
                 ))}

@@ -1,0 +1,8 @@
+{
+  "imports": {
+    "@/lib/supabase/server": "./stubs/supabase-server.ts",
+    "@/lib/db/posts": "./stubs/db-posts.ts",
+    "@/lib/db/usage-tracking": "./stubs/usage-tracking.ts",
+    "next/server": "../../node_modules/next/server.js"
+  }
+}
