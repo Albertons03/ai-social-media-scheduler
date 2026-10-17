@@ -1,8 +1,8 @@
 # Project State
 
-Status recorded on 2026-10-16 and updated on 2026-10-17 (SCH-021). This
-handoff distinguishes completed and verified results from work that is still
-pending.
+Status recorded on 2026-10-16 and updated on 2026-10-17 (SCH-021, SCH-027).
+This handoff distinguishes completed and verified results from work that is
+still pending.
 
 ## Current verified state
 
@@ -22,19 +22,31 @@ pending.
   - Security source: `D:\scheduler-next-security`,
     `sch-012-next-security`, `cb1ce57`, clean.
   - Security integration: `D:\scheduler-security-integration`,
-    `integration/next-security-20261016`, latest commit `5afcb4d`
-    (`fix: polish scheduler UI and remove portfolio quota`), clean when
-    SCH-021 started. The security commit `4433d19` is an ancestor of it.
+    `integration/next-security-20261016`, latest commit `682eef5`
+    (`fix: remove outdated scheduling quota copy`), clean when SCH-027 started.
+    The security commit `4433d19` and the later commits `5afcb4d`, `dcabab9`,
+    `31f1ffb` and `cf5df47` are ancestors of it.
   - Disposable build validation: `D:\scheduler-security-build-check`,
-    detached at `4433d19`, clean.
+    detached HEAD (last at `dcabab9`), with **local uncommitted changes** to
+    `package.json` and `package-lock.json` copied from the integration worktree
+    for build validation. It contains no real env files. Do not reset or
+    overwrite it without checking, and do not treat those files as a source of
+    truth.
 - The security commit is on the integration branch but has not been merged
   into development `master` or the cron-release branch, pushed, or deployed.
-  The same applies to the SCH-020 UI and quota changes in `5afcb4d`.
+  The same applies to every later commit on the integration branch
+  (SCH-020 through SCH-026). **No push or merge has been performed and the
+  integration branch is not deployed.**
+- The protected development worktree on `master` contains separate,
+  uncommitted WIP, including its own `next-mdx-remote` 6 package changes. Do
+  not modify, reset, or overwrite it, and do not copy its package files.
 - The application-level 10-post monthly limit has been removed on the
   integration branch. The quota-removal changes have **not** been
   production-tested; LinkedIn owner-account publishing was verified earlier,
   before these changes.
-- A production build of the integration worktree has **not** been verified.
+- Production builds of the integration code have passed with dummy environment
+  values (SCH-024, SCH-025B, SCH-025C). These builds were **not**
+  network-isolated, and nothing was deployed.
 
 ## Completed tickets
 
@@ -90,45 +102,101 @@ pending.
     Reopening Create Post resets the date: PASS. Suggested Time displayed hour
     inside the composer: **FAIL** (see known issues).
 - **SCH-021:** Updated this project-state document.
+- **SCH-024:** The Next.js 16.4.2 production build of the integration code
+  passed using dummy environment values. The build was **not**
+  network-isolated, and no deployment was performed.
+- **SCH-025B** (commit `31f1ffb`, `fix: patch vulnerable production
+  dependencies`): Targeted, compatible lockfile-only updates, for example
+  `axios` 1.20.0, `form-data` 4.0.6, `js-yaml` 3.15.2, `lodash` 4.18.1,
+  `source-map-js` 1.2.2, `ws` 8.22.0, `follow-redirects` 1.16.1 and `yaml`
+  2.9.1. `package.json` was unchanged. The production build passed with the
+  updated lockfile (dummy environment, not network-isolated).
+- **SCH-025C** (commit `cf5df47`, `fix: upgrade next-mdx-remote to v6`):
+  `next-mdx-remote` was upgraded from v5 to v6.0.0 on the integration branch,
+  with no blog code changes. The existing posts use no JavaScript expressions,
+  imports or JSX components, so v6's default restrictions were not weakened.
+  All six blog posts compiled, and all six were prerendered during a
+  production build that passed (dummy environment, not network-isolated).
+  Code-block syntax highlighting was not exercised, because the posts contain
+  no code blocks. This resolved the last HIGH production audit finding.
+- **SCH-026** (commit `682eef5`, `fix: remove outdated scheduling quota
+  copy`): Removed outdated 10-post quota wording from `app/contact/page.tsx`
+  and from the Starter Pack preview strings in `lib/i18n.ts` (English, German
+  and Hungarian). The blog posts were intentionally not changed.
+- **SCH-027:** Updated this project-state document.
+
+### Verified validation results (integration branch, through `682eef5`)
+
+- TypeScript checks (`npm run type-check`): passed.
+- Existing automated tests: 20/20 passed (cron-auth 8, posts API 4, schedule
+  prefill 8).
+- Production build with `next-mdx-remote` v6: passed, with dummy environment
+  values and without network isolation.
+- Production `npm audit --omit=dev`: 0 critical, 0 HIGH, 8 MODERATE.
 
 ## Known limitations and risks
 
-- **Open issue (not fixed):** in browser testing, clicking a Suggested Time
-  inside the post composer still displays a time two hours earlier than the
-  suggestion in the user's timezone. The cause is not yet confirmed or fixed;
-  the SCH-020F changes cover only the Dashboard-to-Schedule link. Manual
-  date/time selection is the recommended workaround until this is verified.
-- The quota-removal changes are untested in production, and no production
-  build has been verified for the integration worktree.
+### Open issues before release
+
+- **A. Suggested Times (not fixed):** the internal post-composer suggestion
+  buttons can produce a two-hour scheduling offset. In browser testing, a
+  clicked Suggested Time displayed a time two hours earlier than the
+  suggestion in the user's timezone. The cause is not confirmed; the SCH-020F
+  fix covers only the Dashboard-to-Schedule link. Manual date/time entry is the
+  workaround. Fix or disable the affected shortcuts before release.
+- **B. Blog marketing:** several `content/posts/*.mdx` files still advertise
+  the removed 10-post free tier. A content review is required before
+  deployment.
+- **C. Dependency audit:** 8 MODERATE production findings remain
+  (`next-intl`, `resend` with `svix` and `uuid`, and `gray-matter` with
+  `js-yaml`, `argparse` and `sprintf-js`). Their risk was assessed as
+  relatively low based on current code paths, but not every exploitation
+  condition was verified.
+- **D. Release and security:** real deployment configuration, credentials,
+  token rotation, OAuth integrations and platform publishing have not all been
+  verified end to end. The historical token-shaped literal in Git history has
+  not been confirmed as rotated.
+
+### Other limitations
+
+- The quota-removal changes are untested in production. Production builds
+  passed only with dummy values and without network isolation, and the built
+  app was not run against real services.
 - X (Twitter) publishing remains unverified.
 - LinkedIn scheduled publishing E2E is verified only for the owner's account;
   third-party LinkedIn publishing remains unvalidated.
 - TikTok public third-party publishing awaits platform approval.
-- The latest recorded integration production audit had 15 findings (0 critical,
-  7 high, 8 moderate). These findings were not fixed by the Next.js update and
-  require separate follow-up remediation tickets.
-- The development WIP includes a `next-mdx-remote` 5-to-6 upgrade. Its changes
-  overlap with the security update in both package files; deliberate
-  reconciliation remains pending. Do not overwrite the master WIP.
+- The 15-finding audit (0 critical, 7 high, 8 moderate) recorded earlier for
+  the integration branch has been reduced to 0 high and 8 moderate by SCH-025B
+  and SCH-025C.
+- The development WIP on `master` includes its own `next-mdx-remote` 6 change.
+  The integration branch now also has v6, so merging will conflict in both
+  package files; reconcile deliberately and do not overwrite the master WIP.
 - Middleware deprecation and stale Browserslist warnings were observed during
   earlier source-branch build validation.
-- The security update is present only on the integration branch; it is not yet
-  integrated into development `master` or the cron-release branch.
+- The integration branch changes are not yet integrated into development
+  `master` or the cron-release branch.
 
 ## Recommended next work
 
-0. Investigate and fix the composer Suggested Time two-hour offset, then
-   re-verify in the browser before claiming it is resolved.
+**Next release decision:** resolve the Suggested Times issue and the stale
+blog claims, then perform a final targeted release check before deployment
+approval.
+
+0. Fix or disable the composer Suggested Time shortcuts, then re-verify in the
+   browser before claiming it is resolved.
+0a. Review and correct the blog posts that advertise the removed 10-post free
+   tier.
 1. Pursue the **PORTFOLIO RELEASE** goal: resolve Git integration carefully
    using the isolated integration worktree, then prepare the README, screenshots,
    demo, and GitHub repository.
-2. Reconcile the Next.js security update with the development WIP's
+2. Reconcile the integration branch with the development WIP's
    `next-mdx-remote` 6 change deliberately. Preserve the dirty master worktree;
    do not copy its package files wholesale.
 3. Complete production-build validation in an environment that can establish
    outbound-network isolation, using only fake process-scoped Supabase values.
-4. Track remaining dependency vulnerabilities and MDX 6 reconciliation in
-   separate follow-up backlog items; do not claim them fixed.
+4. Track the 8 remaining MODERATE findings in separate follow-up backlog items;
+   do not claim them fixed.
 5. Keep cron-release integration and release promotion as a separate decision.
 6. Keep TikTok public publishing gated pending platform approval; validate
    third-party LinkedIn accounts before claiming broader support.
