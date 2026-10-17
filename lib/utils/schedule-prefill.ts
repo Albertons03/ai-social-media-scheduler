@@ -89,3 +89,31 @@ export function utcToLocalDatetimeString(
     "minute"
   )}`;
 }
+
+// Next occurrence of a static suggestion slot, built in the browser's local zone.
+export function nextSuggestedDate(
+  now: Date,
+  dayOfWeek: number,
+  hour: number
+): Date {
+  const next = new Date(now.getTime());
+  const daysToAdd =
+    (dayOfWeek - next.getDay() + 7) % 7 || (hour > next.getHours() ? 0 : 7);
+  next.setDate(next.getDate() + daysToAdd);
+  next.setHours(hour, 0, 0, 0);
+  return next;
+}
+
+// datetime-local value (local wall time) for a suggested slot; never UTC wall time
+export function suggestedTimeToInputValue(
+  date: Date,
+  timeZone?: string
+): string {
+  return utcToLocalDatetimeString(date.toISOString(), timeZone);
+}
+
+// Converts a datetime-local string (local wall time) to a UTC ISO string
+export function localDatetimeStringToUtc(localString: string): string {
+  if (!localString) return "";
+  return new Date(localString).toISOString();
+}

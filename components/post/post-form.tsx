@@ -2,7 +2,12 @@
 
 import * as React from "react";
 import { useState, useEffect } from "react";
-import { utcToLocalDatetimeString } from "@/lib/utils/schedule-prefill";
+import {
+  localDatetimeStringToUtc,
+  nextSuggestedDate,
+  suggestedTimeToInputValue,
+  utcToLocalDatetimeString,
+} from "@/lib/utils/schedule-prefill";
 import { toast } from "sonner";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -81,14 +86,6 @@ function FilePicker({
       </span>
     </div>
   );
-}
-
-// Helper: Convert local datetime-local string to UTC ISO string
-function localDatetimeStringToUtc(localString: string): string {
-  if (!localString) return "";
-  // datetime-local gives us local time, create Date and convert to ISO (UTC)
-  const localDate = new Date(localString);
-  return localDate.toISOString();
 }
 
 export function PostForm({
@@ -591,18 +588,12 @@ export function PostForm({
                   )
                     .slice(0, 3)
                     .map((optimalTime, index) => {
-                      const nextDate = new Date();
-                      const targetDay = optimalTime.dayOfWeek;
-                      const currentDay = nextDate.getDay();
-                      const daysToAdd =
-                        (targetDay - currentDay + 7) % 7 ||
-                        (optimalTime.hour > nextDate.getHours() ? 0 : 7);
-                      nextDate.setDate(nextDate.getDate() + daysToAdd);
-                      nextDate.setHours(optimalTime.hour, 0, 0, 0);
-
-                      const dateTimeString = nextDate
-                        .toISOString()
-                        .slice(0, 16);
+                      const nextDate = nextSuggestedDate(
+                        new Date(),
+                        optimalTime.dayOfWeek,
+                        optimalTime.hour
+                      );
+                      const dateTimeString = suggestedTimeToInputValue(nextDate);
 
                       return (
                         <Button
